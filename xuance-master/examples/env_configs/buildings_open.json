@@ -1,0 +1,43 @@
+{
+    "description": "Auto-generated realistic city blocks for difficulty: open",
+    "map_size": 2000.0,
+    "format": "[xmin, xmax, ymin, ymax]",
+    "buildings": [
+        [
+            300,
+            340,
+            300,
+            340
+        ],
+        [
+            360,
+            400,
+            300,
+            340
+        ],
+        [
+            1200,
+            1260,
+            500,
+            560
+        ],
+        [
+            1200,
+            1260,
+            600,
+            660
+        ],
+        [
+            500,
+            600,
+            1400,
+            1450
+        ],
+        [
+            1600,
+            1680,
+            1500,
+            1580
+        ]
+    ]
+}

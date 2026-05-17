@@ -1,0 +1,61 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+# --- 参数设置 ---
+v_p = 11.0  # 追捕机速度 (m/s)
+v_e = 12.0  # 逃逸机速度 (m/s)
+lam = v_p / v_e  # 速度比 (lambda)
+d = 400.0   # 追捕机距离逃逸机的初始距离 (米)
+
+# --- 核心计算 (套用阿波罗尼乌斯圆公式) ---
+lam_sq = lam**2
+denom = 1 - lam_sq
+xc_dist = d / denom         # 圆心距离逃逸机(原点)的距离
+R = (lam * d) / denom       # 阿波罗尼乌斯圆的半径
+
+print(f"当前追逃距离 d = {d} 米")
+print(f"阿波罗尼乌斯圆心距离 xc = {xc_dist:.1f} 米")
+print(f"阿波罗尼乌斯圆半径 R = {R:.1f} 米")
+
+# --- 绘图准备 ---
+# 假设三架追捕机呈 120 度角均匀包围 (0度, 120度, 240度)
+angles = [0, 2*np.pi/3, 4*np.pi/3]
+colors = ['blue', 'green', 'orange']
+
+fig, ax = plt.subplots(figsize=(10, 10))
+
+# 1. 绘制逃逸机 E (红色)
+ax.plot(0, 0, 'ro', markersize=8, label='Evader (E) - 12m/s')
+
+# 2. 循环绘制3架追捕机及其对应的阿波罗尼乌斯圆
+for i, theta in enumerate(angles):
+    # 计算追捕机的真实坐标
+    px = d * np.cos(theta)
+    py = d * np.sin(theta)
+    ax.plot(px, py, 'bo', markersize=8, label='Pursuer' if i==0 else "")
+    ax.text(px*1.2, py*1.2, f'P{i+1}', fontsize=12, color='blue', fontweight='bold')
+    
+    # 计算对应的阿波罗尼乌斯圆圆心坐标
+    # 因为追捕机在原点外侧，根据几何关系，圆心会在追捕机所在射线的更远端
+    cx = xc_dist * np.cos(theta)
+    cy = xc_dist * np.sin(theta)
+    ax.plot(cx, cy, 'x', color=colors[i], markersize=6) # 画出圆心
+    
+    # 绘制阿波罗尼乌斯圆 (半透明)
+    circle = plt.Circle((cx, cy), R, color=colors[i], alpha=0.3, 
+                        label=f'Apollonius Circle {i+1}')
+    ax.add_patch(circle)
+
+# --- 图表格式化 ---
+ax.set_aspect('equal') # 保证 X 轴和 Y 轴比例一致，这样画出来的才是正圆
+limit = xc_dist + R + 100
+ax.set_xlim(-limit, limit)
+ax.set_ylim(-limit, limit)
+ax.set_xlabel('X Position (m)')
+ax.set_ylabel('Y Position (m)')
+ax.set_title(f'Apollonius Circles Intersection (d={d}m, v_p={v_p}m/s, v_e={v_e}m/s)')
+ax.legend(loc='upper right')
+ax.grid(True, linestyle='--', alpha=0.6)
+
+# 显示图表
+plt.show()
