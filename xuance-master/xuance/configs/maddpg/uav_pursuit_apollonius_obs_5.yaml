@@ -41,7 +41,7 @@ use_grad_clip: True
 grad_clip_norm: 0.5
 
 eval_interval: 100000
-test_episode: 10
+test_episode: 100
 
 log_dir: "logs/maddpg/"
 model_dir: "models/maddpg/"

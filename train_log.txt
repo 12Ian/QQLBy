@@ -1,5 +1,5 @@
 ==================================================
-🚀 训练开始时间: 2026-03-29 13:03:27
+🚀 训练开始时间: 2026-05-31 18:45:59
 ==================================================
 Deep learning toolbox: PyTorch.
 Calculating device: cuda:0
@@ -223,8 +223,8 @@ Epoch: 99/100:
 🌍 [Env Info] Loading medium map from: /home/ryy/UAV_Project/xuance-master/xuance/environment/buildings/buildings_medium.json
 🌍 [Env Info] Loading medium map from: /home/ryy/UAV_Project/xuance-master/xuance/environment/buildings/buildings_medium.json
 🌍 [Env Info] Loading medium map from: /home/ryy/UAV_Project/xuance-master/xuance/environment/buildings/buildings_medium.json
-Best Model Score: 154.40, std=73.96. Best Step: 9500000
+Best Model Score: 560.58, std=328.78. Best Step: 400000
 ==================================================
-✅ 训练结束时间: 2026-03-29 13:44:16
-⏱️  总执行耗时: 0小时 40分钟 49秒
+✅ 训练结束时间: 2026-05-31 21:28:18
+⏱️  总执行耗时: 2小时 42分钟 19秒
 ==================================================

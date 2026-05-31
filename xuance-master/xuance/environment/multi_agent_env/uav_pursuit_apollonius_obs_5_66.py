@@ -27,8 +27,6 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
         
         self.target_radius = 0.5
         self.catch_radius = 15.0
-        self.cartesian_lambda_cap = getattr(config, "cartesian_lambda_cap", 0.8)
-        self.cartesian_strength_weight = getattr(config, "cartesian_strength_weight", 0.3)
         
         self.radar_range = 100.0
         self.num_radar_rays = 16
@@ -81,22 +79,11 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
         self.target_trail = deque(maxlen=100)
 
         self.episode_sub_rewards = {
-            agent: {
-                "r_near": 0.0,
-                "r_safe": 0.0,
-                "r_pos": 0.0,
-                "r_gap": 0.0,
-                "r_finish": 0.0,
-            }
-            for agent in self.agents
+            agent: {"r_near": 0.0, "r_safe": 0.0, "r_turn": 0.0, "r_finish": 0.0, "r_mate": 0.0} for agent in self.agents
         }
         # [新增]: 用于存储渲染所需的射线与扇区可视化数据
         self.debug_rays = []
         self.debug_rf = 0.0
-        self.apollonius_escape = {}
-        self.apollonius_margin_ema = None
-        self.apollonius_dangerous_prev = None
-        self.guide_polar_state = {}
         self.current_guide_points = {}
 
 
@@ -184,444 +171,217 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
             d_buildings = np.full_like(angles, np.inf)
         return np.minimum(np.minimum(d_border, d_buildings), max_range) / max_range
 
-    def _angle_diff(self, a, b):
-        return (a - b + np.pi) % (2 * np.pi) - np.pi
-
-    def _split_open_sectors(self, open_indices, num_rays):
-        if len(open_indices) == 0:
-            return []
-
-        sectors = []
-        current = [int(open_indices[0])]
-
-        for k in range(1, len(open_indices)):
-            idx = int(open_indices[k])
-            if idx == current[-1] + 1:
-                current.append(idx)
-            else:
-                sectors.append(current)
-                current = [idx]
-        sectors.append(current)
-
-        if len(sectors) > 1 and sectors[0][0] == 0 and sectors[-1][-1] == num_rays - 1:
-            sectors[0] = sectors[-1] + sectors[0]
-            sectors.pop()
-
-        return sectors
-
-    def _sector_mid_angle(self, sector, num_rays):
-        angles = np.array(sector, dtype=np.float32) * (2 * np.pi / num_rays)
-        if sector[0] > sector[-1]:
-            angles = np.where(angles < np.pi, angles + 2 * np.pi, angles)
-        return float(np.mean(angles) % (2 * np.pi))
-
-    def _sector_width(self, sector, num_rays):
-        return max(1, len(sector)) * (2 * np.pi / num_rays)
-
-    def _make_point(self, angle, radius, safe_margin):
-        p = self.target_position + radius * np.array(
-            [np.cos(angle), np.sin(angle)], dtype=np.float32
-        )
-        p[0] = np.clip(p[0], safe_margin, self.map_size - safe_margin)
-        p[1] = np.clip(p[1], safe_margin, self.map_size - safe_margin)
-        return p.astype(np.float32)
-
-    def _cartesian_half_occupied_angles(self):
-        dists = np.linalg.norm(
-            self.uav_positions - self.target_position.reshape(1, 2),
-            axis=1,
-        )
-        dists = np.maximum(dists, 1e-6)
-
-        capture_ratio = np.clip(self.catch_radius / dists, 0.0, 1.0)
-        if hasattr(self, "uav_speeds") and len(self.uav_speeds) == len(self.uav_positions):
-            pursuer_speeds = np.asarray(self.uav_speeds, dtype=np.float32)
-        else:
-            pursuer_speeds = np.full(len(self.uav_positions), self.uav_max_speed, dtype=np.float32)
-        lambda_cap = float(getattr(self, "cartesian_lambda_cap", 0.8))
-        speed_ratio = np.clip(
-            pursuer_speeds / max(float(self.target_speed), 1e-6),
-            0.0,
-            lambda_cap,
-        )
-
-        half_angles = np.arcsin(capture_ratio) + np.arcsin(speed_ratio)
-        return np.clip(half_angles, 0.0, np.pi).astype(np.float32)
-
-    def _compute_cartesian_escape_coverage(self, angles):
-        bearings = np.arctan2(
-            self.uav_positions[:, 1] - self.target_position[1],
-            self.uav_positions[:, 0] - self.target_position[0],
-        )
-        half_angles = self._cartesian_half_occupied_angles()
-
-        angle_diffs = np.abs(
-            self._angle_diff(angles.reshape(1, -1), bearings.reshape(-1, 1))
-        )
-        angular_margins = half_angles.reshape(-1, 1) - angle_diffs
-        owners = np.argmax(angular_margins, axis=0).astype(np.int32)
-        best_margin = angular_margins[owners, np.arange(len(angles))]
-        controlled = best_margin >= 0.0
-
-        owner_half_angles = np.maximum(half_angles[owners], 1e-6)
-        strength = np.clip(best_margin / owner_half_angles, 0.0, 1.0).astype(np.float32)
-
-        return {
-            "controlled": controlled,
-            "best_owner": owners,
-            "best_margin": best_margin.astype(np.float32),
-            "strength": strength,
-            "half_angles": half_angles,
-            "bearings": bearings.astype(np.float32),
-        }
-
-    def _compute_apollonius_escape_field(self, angles, min_dists, r_f):
-        """Classify each escape ray by time reachability with Cartesian support.
-
-        Cartesian oval coverage is used as a soft confidence signal. It should
-        not remove a ray from the dangerous set by itself because turn limits,
-        acceleration limits, obstacles, and decentralized control make the
-        theoretical occupied angle optimistic in this environment.
-        """
-        vt = max(float(self.target_speed), 1e-6)
-        vu = max(float(self.uav_max_speed), 1e-6)
-        n_rays = len(angles)
-
-        # Geometric openness is only the first filter. Apollonius reachability
-        # decides whether the open ray is actually dangerous.
-        geometry_open = min_dists > max(self.catch_radius * 1.2, r_f * 0.8)
-        cartesian_coverage = self._compute_cartesian_escape_coverage(angles)
-        cartesian_controlled = geometry_open & cartesian_coverage["controlled"]
-
-        controlled = np.zeros(n_rays, dtype=bool)
-        dangerous = np.zeros(n_rays, dtype=bool)
-        best_owner = np.full(n_rays, -1, dtype=np.int32)
-        best_radius = np.full(n_rays, r_f, dtype=np.float32)
-        best_margin = np.full(n_rays, np.inf, dtype=np.float32)
-        control_strength = np.zeros(n_rays, dtype=np.float32)
-
-        min_probe = max(self.catch_radius * 1.2, 1.0)
-        max_probe_base = max(r_f * 1.8, self.catch_radius * 4.0)
-        probe_count = 12
-
-        for k, angle in enumerate(angles):
-            if not geometry_open[k]:
-                continue
-
-            ray_limit = min(float(min_dists[k]), max_probe_base)
-            if ray_limit <= min_probe:
-                continue
-
-            direction = np.array([np.cos(angle), np.sin(angle)], dtype=np.float32)
-            radii = np.linspace(min_probe, ray_limit, probe_count, dtype=np.float32)
-            ray_points = self.target_position.reshape(1, 2) + radii.reshape(-1, 1) * direction.reshape(1, 2)
-            target_times = radii / vt
-
-            for i, uav_pos in enumerate(self.uav_positions):
-                uav_times = np.linalg.norm(ray_points - uav_pos.reshape(1, 2), axis=1) / vu
-                margins = uav_times - target_times
-                local_idx = int(np.argmin(margins))
-                local_margin = float(margins[local_idx])
-
-                if local_margin < best_margin[k]:
-                    best_margin[k] = local_margin
-                    best_owner[k] = i
-                    best_radius[k] = radii[local_idx]
-
-        finite_margin = np.where(np.isfinite(best_margin), best_margin, 10.0)
-        if self.apollonius_margin_ema is None or len(self.apollonius_margin_ema) != n_rays:
-            margin_ema = finite_margin.astype(np.float32)
-        else:
-            margin_ema = (0.65 * self.apollonius_margin_ema + 0.35 * finite_margin).astype(np.float32)
-
-        prev_dangerous = self.apollonius_dangerous_prev
-        if prev_dangerous is None or len(prev_dangerous) != n_rays:
-            prev_dangerous = np.zeros(n_rays, dtype=bool)
-
-        # Hysteresis: once a ray is dangerous, require a stronger safety margin
-        # before removing it; once safe, require a stronger late margin to add it.
-        time_dangerous = np.where(prev_dangerous, margin_ema > -0.10, margin_ema > 0.20)
-        dangerous = geometry_open & time_dangerous
-        controlled = geometry_open & ~dangerous
-        time_strength = 1.0 / (1.0 + np.exp(np.clip(1.25 * margin_ema, -60.0, 60.0)))
-        cartesian_weight = np.clip(float(getattr(self, "cartesian_strength_weight", 0.3)), 0.0, 1.0)
-        control_strength = (
-            (1.0 - cartesian_weight) * time_strength
-            + cartesian_weight * cartesian_coverage["strength"]
-        ).astype(np.float32)
-
-        replace_owner = cartesian_controlled & (
-            (best_owner < 0) | (cartesian_coverage["strength"] >= time_strength)
-        )
-        best_owner = np.where(replace_owner, cartesian_coverage["best_owner"], best_owner)
-
-        self.apollonius_margin_ema = margin_ema
-        self.apollonius_dangerous_prev = dangerous.copy()
-
-        self.apollonius_escape = {
-            "angles": angles,
-            "geometry_open": geometry_open,
-            "cartesian_controlled": cartesian_controlled,
-            "cartesian_margin": cartesian_coverage["best_margin"],
-            "cartesian_strength": cartesian_coverage["strength"],
-            "cartesian_half_angles": cartesian_coverage["half_angles"],
-            "cartesian_bearings": cartesian_coverage["bearings"],
-            "controlled": controlled,
-            "dangerous": dangerous,
-            "best_owner": best_owner,
-            "best_radius": best_radius,
-            "best_margin": margin_ema,
-            "raw_margin": best_margin,
-            "control_strength": control_strength,
-        }
-        return self.apollonius_escape
-
     def _assign_target_points(self):
-        cur_dists_to_target = np.array(
-            [np.linalg.norm(pos - self.target_position) for pos in self.uav_positions],
-            dtype=np.float32,
-        )
-        avg_dist = float(np.mean(cur_dists_to_target))
+        cur_dists_to_target = [np.linalg.norm(pos - self.target_position) for pos in self.uav_positions]
+        avg_dist = np.mean(cur_dists_to_target)
 
+        # 1. 动态合围半径
+        r_f = np.clip(avg_dist * 0.8, self.catch_radius * 0.5, self.catch_radius * 4.0)
+        self.debug_rf = r_f  # [新增]: 记录当前合围半径供渲染使用
         safe_margin = 50.0
+
+        # 2. [极致优化] 射线探测逃生路线 (全向量化)
         num_rays = 72
         angles = np.linspace(0, 2 * np.pi, num_rays, endpoint=False)
-        dx = np.cos(angles)
-        dy = np.sin(angles)
-
-        speed_ratio = self.target_speed / max(self.uav_max_speed, 1e-6)
-
-        # Apollonius-style interception radius:
-        # faster evaders and larger initial gaps need earlier interception points.
-        r_by_dist = avg_dist * (0.25 + 0.35 * speed_ratio)
-        r_by_speed = self.target_speed * 5.0
-        r_f = np.clip(
-            max(r_by_dist, r_by_speed, self.catch_radius * 1.5),
-            self.catch_radius * 1.2,
-            self.catch_radius * 8.0,
-        )
-        self.debug_rf = r_f
-
-        tx_bound = np.where(
-            dx > 0,
-            (self.map_size - safe_margin - self.target_position[0]) / (dx + 1e-8),
-            (safe_margin - self.target_position[0]) / (dx - 1e-8),
-        )
-        ty_bound = np.where(
-            dy > 0,
-            (self.map_size - safe_margin - self.target_position[1]) / (dy + 1e-8),
-            (safe_margin - self.target_position[1]) / (dy - 1e-8),
-        )
-
+        dx = np.cos(angles)  # shape: (72,)
+        dy = np.sin(angles)  # shape: (72,)
+        
+        # (A) 批量检测边界
+        tx_bound = np.where(dx > 0, 
+                            (self.map_size - safe_margin - self.target_position[0]) / (dx + 1e-8), 
+                            (safe_margin - self.target_position[0]) / (dx - 1e-8))
+        ty_bound = np.where(dy > 0, 
+                            (self.map_size - safe_margin - self.target_position[1]) / (dy + 1e-8), 
+                            (safe_margin - self.target_position[1]) / (dy - 1e-8))
+        
         tx_bound = np.maximum(0.0, tx_bound)
         ty_bound = np.maximum(0.0, ty_bound)
-        min_dists = np.minimum(tx_bound, ty_bound)
+        min_dists = np.minimum(tx_bound, ty_bound)  # 初始最短距离为主地图边界距离
 
+        # (B) 批量检测建筑物 AABB
         if len(self.buildings) > 0:
+            # 将建筑物坐标变为列向量 shape: (N, 1)
             xmins = self.buildings[:, 0:1]
             xmaxs = self.buildings[:, 1:2]
             ymins = self.buildings[:, 2:3]
             ymaxs = self.buildings[:, 3:4]
-
+            
+            # 将射线方向变为行向量 shape: (1, 72)
             dx_b = dx.reshape(1, -1)
             dy_b = dy.reshape(1, -1)
-
+            
+            # 利用广播机制，一次性计算 N个建筑 x 72根射线 的交点参数
             tx1 = (xmins - self.target_position[0]) / (dx_b + 1e-8)
             tx2 = (xmaxs - self.target_position[0]) / (dx_b + 1e-8)
             ty1 = (ymins - self.target_position[1]) / (dy_b + 1e-8)
             ty2 = (ymaxs - self.target_position[1]) / (dy_b + 1e-8)
-
-            tmin = np.maximum(np.minimum(tx1, tx2), np.minimum(ty1, ty2))
-            tmax = np.minimum(np.maximum(tx1, tx2), np.maximum(ty1, ty2))
-
+            
+            tmin_x = np.minimum(tx1, tx2)
+            tmax_x = np.maximum(tx1, tx2)
+            tmin_y = np.minimum(ty1, ty2)
+            tmax_y = np.maximum(ty1, ty2)
+            
+            tmin = np.maximum(tmin_x, tmin_y)  # 进入 AABB 的时间
+            tmax = np.minimum(tmax_x, tmax_y)  # 离开 AABB 的时间
+            
+            # 命中条件
             valid_hit = (tmax >= 0) & (tmin <= tmax) & (tmin > 0)
+            
+            # 沿着建筑物维度(axis=0)取最小的有效击中距离
             building_dists = np.min(np.where(valid_hit, tmin, np.inf), axis=0)
+            
+            # 更新最终的最短距离
             min_dists = np.minimum(min_dists, building_dists)
 
-        escape_field = self._compute_apollonius_escape_field(angles, min_dists, r_f)
-        is_open = escape_field["geometry_open"]
-        is_dangerous = escape_field["dangerous"]
-        best_radius = escape_field["best_radius"]
-
-        plot_dists = np.minimum(min_dists, r_f * 1.3)
+        # (C) 批量评判缺口与记录渲染数据
+        is_open = min_dists > (r_f * 1.5)
+        plot_dists = np.minimum(min_dists, r_f * 1.5)
+        # 直接使用 zip 快速打包供 render 使用
         self.debug_rays = list(zip(angles, plot_dists, is_open))
 
-        open_indices = np.where(is_dangerous)[0]
+        # ---------------- 提取独立扇区与分兵策略 (保持原样) ----------------
+        open_indices = np.where(is_open)[0]
         target_points = []
-
+        
         if len(open_indices) == 0:
-            # All geometric escapes are already contestable. Tighten the net
-            # around the target while still staying outside the capture radius.
-            close_r = self.catch_radius * 1.4
-            base_angles = [
-                self.target_yaw,
-                self.target_yaw + np.pi / 2,
-                self.target_yaw - np.pi / 2,
-                self.target_yaw + np.pi,
-            ]
-            target_points = [self._make_point(a, close_r, safe_margin) for a in base_angles]
+            # 【阶段二：无路可逃】全部被封死，强制缩小半径捕杀
+            r_f_shrink = self.catch_radius * 0.8
+            angles_to_use = [0.0, np.pi / 2, np.pi, -np.pi / 2]
+            for angle in angles_to_use:
+                gx = self.target_position[0] + r_f_shrink * np.cos(angle)
+                gy = self.target_position[1] + r_f_shrink * np.sin(angle)
+                gx = np.clip(gx, safe_margin, self.map_size - safe_margin)
+                gy = np.clip(gy, safe_margin, self.map_size - safe_margin)
+                target_points.append(np.array([gx, gy], dtype=np.float32))
+
         elif len(open_indices) == num_rays:
-            # Open field: generate interception points in the target-heading frame.
-            base_angles = [
-                self.target_yaw,
-                self.target_yaw + np.pi / 2,
-                self.target_yaw - np.pi / 2,
-                self.target_yaw + np.pi,
-            ]
-            radii = [r_f * 1.2, r_f, r_f, r_f * 0.85]
-            target_points = [
-                self._make_point(angle, radius, safe_margin)
-                for angle, radius in zip(base_angles, radii)
-            ]
+            # 【阶段一 (A)：完美空旷】东南西北均匀包围
+            angles_to_use = [0.0, np.pi / 2, np.pi, -np.pi / 2]
+            for angle in angles_to_use:
+                gx = self.target_position[0] + r_f * np.cos(angle)
+                gy = self.target_position[1] + r_f * np.sin(angle)
+                gx = np.clip(gx, safe_margin, self.map_size - safe_margin)
+                gy = np.clip(gy, safe_margin, self.map_size - safe_margin)
+                target_points.append(np.array([gx, gy], dtype=np.float32))
+
         else:
-            sectors = self._split_open_sectors(open_indices, num_rays)
-            sector_infos = []
-
-            for sector in sectors:
-                mid_angle = self._sector_mid_angle(sector, num_rays)
-                width = self._sector_width(sector, num_rays)
-
-                heading_align = np.cos(self._angle_diff(mid_angle, self.target_yaw))
-                heading_score = 0.25 + 0.75 * ((heading_align + 1.0) / 2.0)
-
-                sector_margins = escape_field["best_margin"][sector]
-                sector_control = escape_field["control_strength"][sector]
-                mean_lateness = float(np.mean(np.maximum(sector_margins, 0.0)))
-                mean_uncontrolled = float(np.mean(1.0 - sector_control))
-
-                # Wider, forward-facing, less controllable sectors get more UAVs.
-                score = width * heading_score * (1.0 + mean_uncontrolled + 0.3 * mean_lateness)
-                sector_infos.append(
-                    {
-                        "sector": sector,
-                        "mid_angle": mid_angle,
-                        "width": width,
-                        "score": float(score),
-                    }
-                )
-
-            sector_infos = sorted(sector_infos, key=lambda x: x["score"], reverse=True)
-            if len(sector_infos) > self.num_agents:
-                sector_infos = sector_infos[: self.num_agents]
-
-            total_score = sum(s["score"] for s in sector_infos) + 1e-8
-            agents_left = self.num_agents
-            sectors_left = len(sector_infos)
-
-            for idx, info in enumerate(sector_infos):
-                if idx == len(sector_infos) - 1:
-                    num_for_sector = agents_left
+            # 【阶段一 (B)：复杂地形，提取多个独立扇区并按比例分兵】
+            sectors = []
+            current_sector = [open_indices[0]]
+            for i in range(1, len(open_indices)):
+                if open_indices[i] == open_indices[i-1] + 1:
+                    current_sector.append(open_indices[i])
                 else:
-                    raw = info["score"] / total_score * self.num_agents
-                    num_for_sector = int(np.round(raw))
-                    num_for_sector = max(1, num_for_sector)
-                    num_for_sector = min(
-                        num_for_sector, agents_left - (sectors_left - 1)
-                    )
+                    sectors.append(current_sector)
+                    current_sector = [open_indices[i]]
+            sectors.append(current_sector)
 
-                sector = info["sector"]
-                start = sector[0] * (2 * np.pi / num_rays)
-                end = sector[-1] * (2 * np.pi / num_rays)
-                if sector[0] > sector[-1]:
-                    end += 2 * np.pi
+            # 处理 360 度首尾相连的扇区
+            if len(sectors) > 1 and sectors[0][0] == 0 and sectors[-1][-1] == num_rays - 1:
+                sectors[0] = sectors[-1] + sectors[0]
+                sectors.pop()
 
-                width = max(end - start, 2 * np.pi / num_rays)
-                step = width / num_for_sector
+            # 【新增防御】：如果环境过于破碎，缺口数量超过了无人机数量
+            # 战略性放弃最小的缺口，只防守最大的前 num_agents 个缺口
+            if len(sectors) > self.num_agents:
+                sectors = sorted(sectors, key=len, reverse=True)[:self.num_agents]
 
-                for k in range(num_for_sector):
-                    raw_angle = start + step * (k + 0.5)
-                    ray_idx = int(np.round((raw_angle % (2 * np.pi)) / (2 * np.pi) * num_rays)) % num_rays
-                    angle = angles[ray_idx]
-                    frontness = (np.cos(self._angle_diff(angle, self.target_yaw)) + 1.0) / 2.0
-                    # Place the guide near the Apollonius contest boundary for
-                    # that ray, not on a fixed enclosing circle.
-                    boundary_radius = float(best_radius[ray_idx])
-                    radius = np.clip(
-                        0.75 * boundary_radius + 0.25 * r_f * (0.85 + 0.35 * frontness),
-                        self.catch_radius * 1.2,
-                        min(float(min_dists[ray_idx]) * 0.9, r_f * 1.8),
-                    )
-                    target_points.append(self._make_point(angle, radius, safe_margin))
+            total_open_rays = sum(len(s) for s in sectors)
+            agents_left = self.num_agents
+            sectors_left = len(sectors)
 
+            for i, sector in enumerate(sectors):
+                if i == len(sectors) - 1:
+                    num_for_sector = agents_left 
+                else:
+                    proportion = len(sector) / total_open_rays
+                    num_for_sector = int(np.round(proportion * self.num_agents))
+                    
+                    # 【保底逻辑】：确保每个缺口至少派 1 架，且给后面留出名额
+                    if num_for_sector < 1:
+                        num_for_sector = 1
+                    max_allowed = agents_left - (sectors_left - 1)
+                    if num_for_sector > max_allowed:
+                        num_for_sector = max_allowed
+                
+                if num_for_sector > 0:
+                    start_angle = sector[0] * (2 * np.pi / num_rays)
+                    end_angle = sector[-1] * (2 * np.pi / num_rays)
+                    
+                    if sector[0] > sector[-1]: 
+                        end_angle += 2 * np.pi
+                        
+                    # 1. 计算扣除边界余量后的实际可用扇区起点、终点和总宽度
+                    eff_start = start_angle
+                    eff_end = end_angle
+                    eff_width = eff_end - eff_start
+                    
+                    # 2. 将可用扇区等分为 num_for_sector 个子扇区 (计算步长)
+                    step = eff_width / num_for_sector
+                    
+                    # 3. 引导点放在每个子扇区的正中间 (首个点偏移半个步长)
+                    angles_to_use = [eff_start + step / 2.0 + k * step for k in range(num_for_sector)]
+                        
+                    for angle in angles_to_use:
+                        gx = self.target_position[0] + r_f * np.cos(angle)
+                        gy = self.target_position[1] + r_f * np.sin(angle)
+                        gx = np.clip(gx, safe_margin, self.map_size - safe_margin)
+                        gy = np.clip(gy, safe_margin, self.map_size - safe_margin)
+                        target_points.append(np.array([gx, gy], dtype=np.float32))
+                
                 agents_left -= num_for_sector
                 sectors_left -= 1
 
-        while len(target_points) < self.num_agents:
-            angle = self.target_yaw + 2 * np.pi * len(target_points) / self.num_agents
-            target_points.append(self._make_point(angle, r_f, safe_margin))
-
-        target_points = target_points[: self.num_agents]
-        cost_matrix = np.zeros((self.num_agents, self.num_agents), dtype=np.float32)
-
+        # ---------------- 匈牙利算法最优分配 (引入惯性与防穿墙检测) ----------------
+        cost_matrix = np.zeros((self.num_agents, 4), dtype=np.float32)
+        
         for i, uav_pos in enumerate(self.uav_positions):
-            agent = self.agents[i]
+            agent_name = self.agents[i]
             uav_yaw = self.uav_yaws[i]
-            prev_guide = self.current_guide_points.get(agent, None)
+            prev_guide_pos = self.current_guide_points.get(agent_name, None)
 
-            for j, tp in enumerate(target_points):
-                vec_to_tp = tp - uav_pos
-                dist = np.linalg.norm(vec_to_tp)
+            for j, tp_pos in enumerate(target_points):
+                # 基础物理成本：距离 + 航向角变化
+                dist = np.linalg.norm(uav_pos - tp_pos)
+                vec_to_tp = tp_pos - uav_pos
                 ideal_yaw = np.arctan2(vec_to_tp[1], vec_to_tp[0])
-                angle_cost = abs(self._angle_diff(uav_yaw, ideal_yaw))
+                angle_diff = abs((uav_yaw - ideal_yaw + np.pi) % (2 * np.pi) - np.pi)
+                
+                base_cost = dist + 10.0 * angle_diff
 
-                los_cost = 0.0 if self._check_los(uav_pos, tp) else 1500.0
+                # 【视线防穿墙惩罚】
+                if not self._check_los(uav_pos, tp_pos):
+                    base_cost += 1500.0  
 
-                consistency_cost = 0.0
-                if prev_guide is not None:
-                    consistency_cost = 0.8 * np.linalg.norm(tp - prev_guide)
-
-                target_to_tp = np.linalg.norm(tp - self.target_position)
-                target_time = target_to_tp / max(self.target_speed, 1e-6)
-                uav_time = dist / max(self.uav_max_speed, 1e-6)
-                late_time = max(0.0, uav_time - target_time)
-                apollonius_cost = 25.0 * late_time
-
-                cost_matrix[i, j] = (
-                    dist
-                    + 10.0 * angle_cost
-                    + los_cost
-                    + consistency_cost
-                    + apollonius_cost
-                )
+                # 分配惯性惩罚
+                consistency_penalty = 0.0
+                if prev_guide_pos is not None:
+                    shift_dist = np.linalg.norm(tp_pos - prev_guide_pos)
+                    consistency_penalty = 1.5 * shift_dist
+                
+                cost_matrix[i, j] = base_cost + consistency_penalty
 
         row_ind, col_ind = linear_sum_assignment(cost_matrix)
-
-        assignment = {}
-        target_speed_ratio = self.target_speed / max(self.target_max_speed, 1e-6)
-        old_w = 0.65 - 0.25 * target_speed_ratio
-        new_w = 1.0 - old_w
-
+        
+        assignment_dict = {}
         for idx in range(self.num_agents):
-            agent = self.agents[row_ind[idx]]
+            agent_name = self.agents[row_ind[idx]]
             new_target = target_points[col_ind[idx]]
-
-            new_vec = new_target - self.target_position
-            new_radius = float(np.linalg.norm(new_vec))
-            new_angle = float(np.arctan2(new_vec[1], new_vec[0]))
-
-            if agent in self.guide_polar_state:
-                old_angle, old_radius = self.guide_polar_state[agent]
-                angle_delta = self._angle_diff(new_angle, old_angle)
-                radius_delta = abs(new_radius - old_radius)
-
-                # Large sector changes should be allowed to respond quickly,
-                # while ordinary jitter is smoothed in target-relative polar space.
-                if abs(angle_delta) < np.pi * 0.75 and radius_delta < 70.0:
-                    smooth_angle = old_angle + new_w * angle_delta
-                    smooth_radius = old_w * old_radius + new_w * new_radius
+            # [新增]: 引导点平滑逻辑 (EMA)
+            if hasattr(self, 'current_guide_points') and agent_name in self.current_guide_points:
+                old_target = self.current_guide_points[agent_name]
+                
+                # 检查是否是极端的瞬移 (比如扇区彻底重组，距离超过50米)
+                # 如果是合理的变动，进行 70%历史 + 30%新目标的平滑过滤
+                if np.linalg.norm(new_target - old_target) < 50.0:
+                    smooth_target = 0.7 * old_target + 0.3 * new_target
                 else:
-                    smooth_angle = new_angle
-                    smooth_radius = new_radius
-
-                smooth_target = self._make_point(smooth_angle, smooth_radius, 50.0)
-                self.guide_polar_state[agent] = (smooth_angle % (2 * np.pi), smooth_radius)
-                assignment[agent] = smooth_target.astype(np.float32)
+                    smooth_target = new_target # 极端情况允许跳变，靠 修改2 的奖励逻辑兜底
+                    
+                assignment_dict[agent_name] = smooth_target
             else:
-                self.guide_polar_state[agent] = (new_angle % (2 * np.pi), new_radius)
-                assignment[agent] = new_target.astype(np.float32)
-
-        return assignment
-
+                assignment_dict[agent_name] = new_target
+        return assignment_dict
     def _get_obs(self):
         obs_dict = {}
         for i, agent in enumerate(self.agents):
@@ -699,10 +459,6 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
 
         for agent in self.agents: self.uav_trails[agent].clear()
         self.target_trail.clear()
-        self.apollonius_escape = {}
-        self.apollonius_margin_ema = None
-        self.apollonius_dangerous_prev = None
-        self.guide_polar_state = {}
         
         self.uav_positions = self.init_uav_positions.copy()
 
@@ -853,130 +609,62 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
         d_capture = self.catch_radius
         is_caught = any(d <= d_capture for d in cur_dists)
 
-        # 五项奖励：接近/引导、安全、位置分布、逃逸缺口、终局捕获。
-        w_near = 2.0
+
+        # 保持你原始的权重定义
+        w_near = 2.5  
         w_safe = 1.0
-        w_pos = 1.2
-        w_gap = 1.5
+        w_turn = 0.2 
         w_finish = 2.0
+        w_mate = 0.5
 
         max_relative_speed = self.uav_max_speed + self.target_max_speed
 
-        min_dist_old = float(np.min(self.last_distances))
-        min_dist_new = float(np.min(cur_dists))
-        r_team_progress = np.clip((min_dist_old - min_dist_new) / max_relative_speed, -1.0, 1.0)
-
-        # 基础角度分布：保留论文中的位置分布思想，但不再作为唯一标准。
-        rel_angles = []
-        for pos in self.uav_positions:
-            v = pos - self.target_position
-            rel_angles.append(np.arctan2(v[1], v[0]))
-        rel_angles = np.sort(np.array(rel_angles))
-        angle_gaps = np.diff(np.concatenate([rel_angles, [rel_angles[0] + 2 * np.pi]]))
-        theta_min = float(np.min(angle_gaps))
-        ideal_gap = 2 * np.pi / self.num_agents
-        r_angle_uniform = np.exp(-abs(theta_min - ideal_gap))
-
-        # Apollonius 奖励核心：只惩罚“几何开放且无人能先到”的危险逃逸角。
-        escape_field = getattr(self, "apollonius_escape", {})
-        if escape_field:
-            geometry_open = escape_field["geometry_open"]
-            controlled = escape_field["controlled"]
-            dangerous = escape_field["dangerous"]
-            control_strength = escape_field["control_strength"]
-            best_owner = escape_field["best_owner"]
-            n_rays = len(geometry_open)
-
-            dangerous_indices = np.where(dangerous)[0]
-            if len(dangerous_indices) == 0:
-                max_danger_angle = 0.0
-            elif len(dangerous_indices) == n_rays:
-                max_danger_angle = 2 * np.pi
-            else:
-                sectors = self._split_open_sectors(dangerous_indices, n_rays)
-                max_danger_angle = max(len(s) for s in sectors) * (2 * np.pi / n_rays)
-            r_gap_global = np.exp(-max_danger_angle)
-
-            open_indices = np.where(geometry_open)[0]
-            if len(open_indices) == 0:
-                r_boundary_coverage = 1.0
-                r_owner_balance = 1.0
-            else:
-                r_boundary_coverage = float(np.mean(control_strength[open_indices]))
-
-                controlled_indices = np.where(geometry_open & controlled & (best_owner >= 0))[0]
-                if len(controlled_indices) == 0:
-                    r_owner_balance = 0.0
-                else:
-                    owner_counts = np.bincount(
-                        best_owner[controlled_indices],
-                        minlength=self.num_agents,
-                    ).astype(np.float32)
-                    owner_probs = owner_counts / max(float(np.sum(owner_counts)), 1e-6)
-                    active_probs = owner_probs[owner_probs > 0]
-                    entropy = -float(np.sum(active_probs * np.log(active_probs + 1e-8)))
-                    r_owner_balance = entropy / np.log(self.num_agents)
-
-            # 70% 边界控制覆盖 + 30% 传统角度均匀，兼顾可捕获性和队形稳定。
-            r_pos_global = 0.7 * (r_boundary_coverage * r_owner_balance) + 0.3 * r_angle_uniform
-        else:
-            r_pos_global = r_angle_uniform
-            r_gap_global = 0.0
-
         for i, agent in enumerate(self.agents):
             dist = cur_dists[i]
+            r_turn = - (np.clip(actions_dict[agent][1], -1.0, 1.0) ** 2)   #利用差值来平滑转向惩罚，鼓励更合理的转向行为
 
             dist_to_guide_new = np.linalg.norm(self.uav_positions[i] - self.current_guide_points[agent])
             dist_to_guide_old = np.linalg.norm(old_uav_positions[i] - self.current_guide_points[agent])
-            r_guide_progress = np.clip(
-                (dist_to_guide_old - dist_to_guide_new) / max_relative_speed,
-                -1.0,
-                1.0,
-            )
-
             if hit_flags[i]:
-                r_near = 0.0
-                r_safe = -15.0
+                r_safe, r_near = -15.0, 0.0
             else:
-                # 保留引导点进度，同时加入真实最近距离进步，避免只学会追引导点。
-                r_near = 0.6 * r_guide_progress + 0.4 * r_team_progress
+                # 保持原始的 r_near 计算逻辑
+                r_near = (dist_to_guide_old - dist_to_guide_new) / max_relative_speed
 
-                radar_penalty = ((radar_distances[i] - self.radar_range) / self.radar_range) ** 2
-                r_obstacle_safe = -0.5 * radar_penalty
-
-                r_turn_smooth = -float(np.clip(actions_dict[agent][1], -1.0, 1.0) ** 2)
-
-                r_mate_safe = 0.0
-                mate_safe_dist = 10.0
-                for j in range(self.num_agents):
-                    if i == j:
-                        continue
-                    dist_to_mate = np.linalg.norm(self.uav_positions[i] - self.uav_positions[j])
-                    if dist_to_mate < mate_safe_dist:
-                        r_mate_safe -= (mate_safe_dist - dist_to_mate) / mate_safe_dist
-
-                # 把避障、队友安全、转向平滑合并为一个 r_safe，不增加奖励项数量。
-                r_safe = r_obstacle_safe + 0.5 * r_mate_safe + 0.2 * r_turn_smooth
-
+                radar_penalty = ((radar_distances[i] - self.radar_range) / self.radar_range)**2
+                r_safe = - 0.5 * radar_penalty
+            
+            # 保持原始的抓捕与软奖励逻辑
             r_finish = 0.0
             if is_caught:
-                r_finish = 80.0
+                r_finish += 80.0 
             elif dist < self.catch_radius * 3:
-                r_finish = (self.catch_radius * 3 - dist) / (self.catch_radius * 2)
+                soft_r = (self.catch_radius * 3 - dist) / (self.catch_radius * 2)
+                r_finish += soft_r * 0.5 
+
+            r_mate_collision = 0.0
+            mate_safe_dist = 10.0  # 设定无人机互相之间的安全距离阈值（比如 10 米）
+            
+            for j in range(self.num_agents):
+                if i != j:
+                    dist_to_mate = np.linalg.norm(self.uav_positions[i] - self.uav_positions[j])
+                    if dist_to_mate < mate_safe_dist:
+                        # 越靠近，惩罚越大。距离为 0 时惩罚为 -1.0
+                        r_mate_collision -= (mate_safe_dist - dist_to_mate) / mate_safe_dist
 
             w_r_near = w_near * r_near
             w_r_safe = w_safe * r_safe
-            w_r_pos = w_pos * r_pos_global
-            w_r_gap = w_gap * r_gap_global
+            w_r_turn = w_turn * r_turn
             w_r_finish = w_finish * r_finish
+            w_r_mate = w_mate * r_mate_collision
 
-            rewards_dict[agent] = w_r_near + w_r_safe + w_r_pos + w_r_gap + w_r_finish
-
+            
+            rewards_dict[agent] = w_r_near + w_r_safe +  w_r_finish 
             self.episode_sub_rewards[agent]["r_near"] += w_r_near
             self.episode_sub_rewards[agent]["r_safe"] += w_r_safe
-            self.episode_sub_rewards[agent]["r_pos"] += w_r_pos
-            self.episode_sub_rewards[agent]["r_gap"] += w_r_gap
+            self.episode_sub_rewards[agent]["r_turn"] += w_r_turn
             self.episode_sub_rewards[agent]["r_finish"] += w_r_finish
+            self.episode_sub_rewards[agent]["r_mate"] += w_r_mate
 
 
         self.last_distances = cur_dists.copy()
@@ -1076,24 +764,15 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
                                               linestyle=':', color='orange', alpha=0.8, zorder=2)
             ax.add_patch(threshold_circle)
 
-            dangerous_flags = None
-            if hasattr(self, "apollonius_escape") and self.apollonius_escape:
-                dangerous_flags = self.apollonius_escape.get("dangerous", None)
-
             # 绘制 72 根射线
-            for ray_idx, (angle, dist, is_open_ray) in enumerate(self.debug_rays):
+            for angle, dist, is_open_ray in self.debug_rays:
                 dx, dy = np.cos(angle), np.sin(angle)
                 end_x = tx + dist * dx
                 end_y = ty + dist * dy
 
                 if is_open_ray:
-                    is_dangerous_ray = dangerous_flags is not None and bool(dangerous_flags[ray_idx])
-                    if is_dangerous_ray:
-                        # 几何开放且无人机无法先到的危险逃逸方向
-                        ax.plot([tx, end_x], [ty, end_y], color='orangered', alpha=0.65, linewidth=1.8, zorder=2)
-                    else:
-                        # 几何开放但已被 Apollonius 可达边界控制
-                        ax.plot([tx, end_x], [ty, end_y], color='limegreen', alpha=0.5, linewidth=1.5, zorder=2)
+                    # 开阔的路线（视为安全逃逸角/分配引导扇区），用浅绿色实线
+                    ax.plot([tx, end_x], [ty, end_y], color='limegreen', alpha=0.5, linewidth=1.5, zorder=2)
                 else:
                     # 被建筑物或边界阻挡的路线，用浅红色细线，并在末端画一个碰撞红点
                     ax.plot([tx, end_x], [ty, end_y], color='tomato', alpha=0.3, linewidth=1.0, zorder=2)

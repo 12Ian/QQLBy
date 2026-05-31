@@ -27,8 +27,6 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
         
         self.target_radius = 0.5
         self.catch_radius = 15.0
-        self.cartesian_lambda_cap = getattr(config, "cartesian_lambda_cap", 0.8)
-        self.cartesian_strength_weight = getattr(config, "cartesian_strength_weight", 0.3)
         
         self.radar_range = 100.0
         self.num_radar_rays = 16
@@ -93,10 +91,6 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
         # [新增]: 用于存储渲染所需的射线与扇区可视化数据
         self.debug_rays = []
         self.debug_rf = 0.0
-        self.apollonius_escape = {}
-        self.apollonius_margin_ema = None
-        self.apollonius_dangerous_prev = None
-        self.guide_polar_state = {}
         self.current_guide_points = {}
 
 
@@ -226,156 +220,6 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
         p[1] = np.clip(p[1], safe_margin, self.map_size - safe_margin)
         return p.astype(np.float32)
 
-    def _cartesian_half_occupied_angles(self):
-        dists = np.linalg.norm(
-            self.uav_positions - self.target_position.reshape(1, 2),
-            axis=1,
-        )
-        dists = np.maximum(dists, 1e-6)
-
-        capture_ratio = np.clip(self.catch_radius / dists, 0.0, 1.0)
-        if hasattr(self, "uav_speeds") and len(self.uav_speeds) == len(self.uav_positions):
-            pursuer_speeds = np.asarray(self.uav_speeds, dtype=np.float32)
-        else:
-            pursuer_speeds = np.full(len(self.uav_positions), self.uav_max_speed, dtype=np.float32)
-        lambda_cap = float(getattr(self, "cartesian_lambda_cap", 0.8))
-        speed_ratio = np.clip(
-            pursuer_speeds / max(float(self.target_speed), 1e-6),
-            0.0,
-            lambda_cap,
-        )
-
-        half_angles = np.arcsin(capture_ratio) + np.arcsin(speed_ratio)
-        return np.clip(half_angles, 0.0, np.pi).astype(np.float32)
-
-    def _compute_cartesian_escape_coverage(self, angles):
-        bearings = np.arctan2(
-            self.uav_positions[:, 1] - self.target_position[1],
-            self.uav_positions[:, 0] - self.target_position[0],
-        )
-        half_angles = self._cartesian_half_occupied_angles()
-
-        angle_diffs = np.abs(
-            self._angle_diff(angles.reshape(1, -1), bearings.reshape(-1, 1))
-        )
-        angular_margins = half_angles.reshape(-1, 1) - angle_diffs
-        owners = np.argmax(angular_margins, axis=0).astype(np.int32)
-        best_margin = angular_margins[owners, np.arange(len(angles))]
-        controlled = best_margin >= 0.0
-
-        owner_half_angles = np.maximum(half_angles[owners], 1e-6)
-        strength = np.clip(best_margin / owner_half_angles, 0.0, 1.0).astype(np.float32)
-
-        return {
-            "controlled": controlled,
-            "best_owner": owners,
-            "best_margin": best_margin.astype(np.float32),
-            "strength": strength,
-            "half_angles": half_angles,
-            "bearings": bearings.astype(np.float32),
-        }
-
-    def _compute_apollonius_escape_field(self, angles, min_dists, r_f):
-        """Classify each escape ray by time reachability with Cartesian support.
-
-        Cartesian oval coverage is used as a soft confidence signal. It should
-        not remove a ray from the dangerous set by itself because turn limits,
-        acceleration limits, obstacles, and decentralized control make the
-        theoretical occupied angle optimistic in this environment.
-        """
-        vt = max(float(self.target_speed), 1e-6)
-        vu = max(float(self.uav_max_speed), 1e-6)
-        n_rays = len(angles)
-
-        # Geometric openness is only the first filter. Apollonius reachability
-        # decides whether the open ray is actually dangerous.
-        geometry_open = min_dists > max(self.catch_radius * 1.2, r_f * 0.8)
-        cartesian_coverage = self._compute_cartesian_escape_coverage(angles)
-        cartesian_controlled = geometry_open & cartesian_coverage["controlled"]
-
-        controlled = np.zeros(n_rays, dtype=bool)
-        dangerous = np.zeros(n_rays, dtype=bool)
-        best_owner = np.full(n_rays, -1, dtype=np.int32)
-        best_radius = np.full(n_rays, r_f, dtype=np.float32)
-        best_margin = np.full(n_rays, np.inf, dtype=np.float32)
-        control_strength = np.zeros(n_rays, dtype=np.float32)
-
-        min_probe = max(self.catch_radius * 1.2, 1.0)
-        max_probe_base = max(r_f * 1.8, self.catch_radius * 4.0)
-        probe_count = 12
-
-        for k, angle in enumerate(angles):
-            if not geometry_open[k]:
-                continue
-
-            ray_limit = min(float(min_dists[k]), max_probe_base)
-            if ray_limit <= min_probe:
-                continue
-
-            direction = np.array([np.cos(angle), np.sin(angle)], dtype=np.float32)
-            radii = np.linspace(min_probe, ray_limit, probe_count, dtype=np.float32)
-            ray_points = self.target_position.reshape(1, 2) + radii.reshape(-1, 1) * direction.reshape(1, 2)
-            target_times = radii / vt
-
-            for i, uav_pos in enumerate(self.uav_positions):
-                uav_times = np.linalg.norm(ray_points - uav_pos.reshape(1, 2), axis=1) / vu
-                margins = uav_times - target_times
-                local_idx = int(np.argmin(margins))
-                local_margin = float(margins[local_idx])
-
-                if local_margin < best_margin[k]:
-                    best_margin[k] = local_margin
-                    best_owner[k] = i
-                    best_radius[k] = radii[local_idx]
-
-        finite_margin = np.where(np.isfinite(best_margin), best_margin, 10.0)
-        if self.apollonius_margin_ema is None or len(self.apollonius_margin_ema) != n_rays:
-            margin_ema = finite_margin.astype(np.float32)
-        else:
-            margin_ema = (0.65 * self.apollonius_margin_ema + 0.35 * finite_margin).astype(np.float32)
-
-        prev_dangerous = self.apollonius_dangerous_prev
-        if prev_dangerous is None or len(prev_dangerous) != n_rays:
-            prev_dangerous = np.zeros(n_rays, dtype=bool)
-
-        # Hysteresis: once a ray is dangerous, require a stronger safety margin
-        # before removing it; once safe, require a stronger late margin to add it.
-        time_dangerous = np.where(prev_dangerous, margin_ema > -0.10, margin_ema > 0.20)
-        dangerous = geometry_open & time_dangerous
-        controlled = geometry_open & ~dangerous
-        time_strength = 1.0 / (1.0 + np.exp(np.clip(1.25 * margin_ema, -60.0, 60.0)))
-        cartesian_weight = np.clip(float(getattr(self, "cartesian_strength_weight", 0.3)), 0.0, 1.0)
-        control_strength = (
-            (1.0 - cartesian_weight) * time_strength
-            + cartesian_weight * cartesian_coverage["strength"]
-        ).astype(np.float32)
-
-        replace_owner = cartesian_controlled & (
-            (best_owner < 0) | (cartesian_coverage["strength"] >= time_strength)
-        )
-        best_owner = np.where(replace_owner, cartesian_coverage["best_owner"], best_owner)
-
-        self.apollonius_margin_ema = margin_ema
-        self.apollonius_dangerous_prev = dangerous.copy()
-
-        self.apollonius_escape = {
-            "angles": angles,
-            "geometry_open": geometry_open,
-            "cartesian_controlled": cartesian_controlled,
-            "cartesian_margin": cartesian_coverage["best_margin"],
-            "cartesian_strength": cartesian_coverage["strength"],
-            "cartesian_half_angles": cartesian_coverage["half_angles"],
-            "cartesian_bearings": cartesian_coverage["bearings"],
-            "controlled": controlled,
-            "dangerous": dangerous,
-            "best_owner": best_owner,
-            "best_radius": best_radius,
-            "best_margin": margin_ema,
-            "raw_margin": best_margin,
-            "control_strength": control_strength,
-        }
-        return self.apollonius_escape
-
     def _assign_target_points(self):
         cur_dists_to_target = np.array(
             [np.linalg.norm(pos - self.target_position) for pos in self.uav_positions],
@@ -438,20 +282,14 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
             building_dists = np.min(np.where(valid_hit, tmin, np.inf), axis=0)
             min_dists = np.minimum(min_dists, building_dists)
 
-        escape_field = self._compute_apollonius_escape_field(angles, min_dists, r_f)
-        is_open = escape_field["geometry_open"]
-        is_dangerous = escape_field["dangerous"]
-        best_radius = escape_field["best_radius"]
-
+        is_open = min_dists > (r_f * 1.3)
         plot_dists = np.minimum(min_dists, r_f * 1.3)
         self.debug_rays = list(zip(angles, plot_dists, is_open))
 
-        open_indices = np.where(is_dangerous)[0]
+        open_indices = np.where(is_open)[0]
         target_points = []
 
         if len(open_indices) == 0:
-            # All geometric escapes are already contestable. Tighten the net
-            # around the target while still staying outside the capture radius.
             close_r = self.catch_radius * 1.4
             base_angles = [
                 self.target_yaw,
@@ -484,13 +322,17 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
                 heading_align = np.cos(self._angle_diff(mid_angle, self.target_yaw))
                 heading_score = 0.25 + 0.75 * ((heading_align + 1.0) / 2.0)
 
-                sector_margins = escape_field["best_margin"][sector]
-                sector_control = escape_field["control_strength"][sector]
-                mean_lateness = float(np.mean(np.maximum(sector_margins, 0.0)))
-                mean_uncontrolled = float(np.mean(1.0 - sector_control))
+                mid_point = self._make_point(mid_angle, r_f, safe_margin)
+                target_time = r_f / max(self.target_speed, 1e-6)
+                uav_times = [
+                    np.linalg.norm(pos - mid_point) / max(self.uav_max_speed, 1e-6)
+                    for pos in self.uav_positions
+                ]
+                best_uav_time = min(uav_times)
+                slack = target_time - best_uav_time
+                reachability_score = 1.0 / (1.0 + np.exp(-0.7 * slack))
 
-                # Wider, forward-facing, less controllable sectors get more UAVs.
-                score = width * heading_score * (1.0 + mean_uncontrolled + 0.3 * mean_lateness)
+                score = width * heading_score * (0.3 + 0.7 * reachability_score)
                 sector_infos.append(
                     {
                         "sector": sector,
@@ -529,18 +371,9 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
                 step = width / num_for_sector
 
                 for k in range(num_for_sector):
-                    raw_angle = start + step * (k + 0.5)
-                    ray_idx = int(np.round((raw_angle % (2 * np.pi)) / (2 * np.pi) * num_rays)) % num_rays
-                    angle = angles[ray_idx]
+                    angle = start + step * (k + 0.5)
                     frontness = (np.cos(self._angle_diff(angle, self.target_yaw)) + 1.0) / 2.0
-                    # Place the guide near the Apollonius contest boundary for
-                    # that ray, not on a fixed enclosing circle.
-                    boundary_radius = float(best_radius[ray_idx])
-                    radius = np.clip(
-                        0.75 * boundary_radius + 0.25 * r_f * (0.85 + 0.35 * frontness),
-                        self.catch_radius * 1.2,
-                        min(float(min_dists[ray_idx]) * 0.9, r_f * 1.8),
-                    )
+                    radius = r_f * (0.85 + 0.35 * frontness)
                     target_points.append(self._make_point(angle, radius, safe_margin))
 
                 agents_left -= num_for_sector
@@ -595,29 +428,15 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
             agent = self.agents[row_ind[idx]]
             new_target = target_points[col_ind[idx]]
 
-            new_vec = new_target - self.target_position
-            new_radius = float(np.linalg.norm(new_vec))
-            new_angle = float(np.arctan2(new_vec[1], new_vec[0]))
-
-            if agent in self.guide_polar_state:
-                old_angle, old_radius = self.guide_polar_state[agent]
-                angle_delta = self._angle_diff(new_angle, old_angle)
-                radius_delta = abs(new_radius - old_radius)
-
-                # Large sector changes should be allowed to respond quickly,
-                # while ordinary jitter is smoothed in target-relative polar space.
-                if abs(angle_delta) < np.pi * 0.75 and radius_delta < 70.0:
-                    smooth_angle = old_angle + new_w * angle_delta
-                    smooth_radius = old_w * old_radius + new_w * new_radius
+            if agent in self.current_guide_points:
+                old_target = self.current_guide_points[agent]
+                shift = np.linalg.norm(new_target - old_target)
+                if shift < 60.0:
+                    smooth_target = old_w * old_target + new_w * new_target
                 else:
-                    smooth_angle = new_angle
-                    smooth_radius = new_radius
-
-                smooth_target = self._make_point(smooth_angle, smooth_radius, 50.0)
-                self.guide_polar_state[agent] = (smooth_angle % (2 * np.pi), smooth_radius)
+                    smooth_target = new_target
                 assignment[agent] = smooth_target.astype(np.float32)
             else:
-                self.guide_polar_state[agent] = (new_angle % (2 * np.pi), new_radius)
                 assignment[agent] = new_target.astype(np.float32)
 
         return assignment
@@ -699,10 +518,6 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
 
         for agent in self.agents: self.uav_trails[agent].clear()
         self.target_trail.clear()
-        self.apollonius_escape = {}
-        self.apollonius_margin_ema = None
-        self.apollonius_dangerous_prev = None
-        self.guide_polar_state = {}
         
         self.uav_positions = self.init_uav_positions.copy()
 
@@ -866,7 +681,7 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
         min_dist_new = float(np.min(cur_dists))
         r_team_progress = np.clip((min_dist_old - min_dist_new) / max_relative_speed, -1.0, 1.0)
 
-        # 基础角度分布：保留论文中的位置分布思想，但不再作为唯一标准。
+        # 位置分布奖励：鼓励 UAV 在目标周围形成接近均匀的角度分布。
         rel_angles = []
         for pos in self.uav_positions:
             v = pos - self.target_position
@@ -875,52 +690,21 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
         angle_gaps = np.diff(np.concatenate([rel_angles, [rel_angles[0] + 2 * np.pi]]))
         theta_min = float(np.min(angle_gaps))
         ideal_gap = 2 * np.pi / self.num_agents
-        r_angle_uniform = np.exp(-abs(theta_min - ideal_gap))
+        r_pos_global = np.exp(-abs(theta_min - ideal_gap))
 
-        # Apollonius 奖励核心：只惩罚“几何开放且无人能先到”的危险逃逸角。
-        escape_field = getattr(self, "apollonius_escape", {})
-        if escape_field:
-            geometry_open = escape_field["geometry_open"]
-            controlled = escape_field["controlled"]
-            dangerous = escape_field["dangerous"]
-            control_strength = escape_field["control_strength"]
-            best_owner = escape_field["best_owner"]
-            n_rays = len(geometry_open)
-
-            dangerous_indices = np.where(dangerous)[0]
-            if len(dangerous_indices) == 0:
-                max_danger_angle = 0.0
-            elif len(dangerous_indices) == n_rays:
-                max_danger_angle = 2 * np.pi
-            else:
-                sectors = self._split_open_sectors(dangerous_indices, n_rays)
-                max_danger_angle = max(len(s) for s in sectors) * (2 * np.pi / n_rays)
-            r_gap_global = np.exp(-max_danger_angle)
-
-            open_indices = np.where(geometry_open)[0]
+        # 逃逸缺口奖励：最大开放缺口越小，奖励越大。
+        if hasattr(self, "debug_rays") and len(self.debug_rays) > 0:
+            open_flags = np.array([bool(x[2]) for x in self.debug_rays], dtype=bool)
+            open_indices = np.where(open_flags)[0]
             if len(open_indices) == 0:
-                r_boundary_coverage = 1.0
-                r_owner_balance = 1.0
+                max_open_angle = 0.0
+            elif len(open_indices) == len(open_flags):
+                max_open_angle = 2 * np.pi
             else:
-                r_boundary_coverage = float(np.mean(control_strength[open_indices]))
-
-                controlled_indices = np.where(geometry_open & controlled & (best_owner >= 0))[0]
-                if len(controlled_indices) == 0:
-                    r_owner_balance = 0.0
-                else:
-                    owner_counts = np.bincount(
-                        best_owner[controlled_indices],
-                        minlength=self.num_agents,
-                    ).astype(np.float32)
-                    owner_probs = owner_counts / max(float(np.sum(owner_counts)), 1e-6)
-                    active_probs = owner_probs[owner_probs > 0]
-                    entropy = -float(np.sum(active_probs * np.log(active_probs + 1e-8)))
-                    r_owner_balance = entropy / np.log(self.num_agents)
-
-            # 70% 边界控制覆盖 + 30% 传统角度均匀，兼顾可捕获性和队形稳定。
-            r_pos_global = 0.7 * (r_boundary_coverage * r_owner_balance) + 0.3 * r_angle_uniform
+                sectors = self._split_open_sectors(open_indices, len(open_flags))
+                max_open_angle = max(len(s) for s in sectors) * (2 * np.pi / len(open_flags))
+            r_gap_global = np.exp(-max_open_angle)
         else:
-            r_pos_global = r_angle_uniform
             r_gap_global = 0.0
 
         for i, agent in enumerate(self.agents):
@@ -1076,24 +860,15 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
                                               linestyle=':', color='orange', alpha=0.8, zorder=2)
             ax.add_patch(threshold_circle)
 
-            dangerous_flags = None
-            if hasattr(self, "apollonius_escape") and self.apollonius_escape:
-                dangerous_flags = self.apollonius_escape.get("dangerous", None)
-
             # 绘制 72 根射线
-            for ray_idx, (angle, dist, is_open_ray) in enumerate(self.debug_rays):
+            for angle, dist, is_open_ray in self.debug_rays:
                 dx, dy = np.cos(angle), np.sin(angle)
                 end_x = tx + dist * dx
                 end_y = ty + dist * dy
 
                 if is_open_ray:
-                    is_dangerous_ray = dangerous_flags is not None and bool(dangerous_flags[ray_idx])
-                    if is_dangerous_ray:
-                        # 几何开放且无人机无法先到的危险逃逸方向
-                        ax.plot([tx, end_x], [ty, end_y], color='orangered', alpha=0.65, linewidth=1.8, zorder=2)
-                    else:
-                        # 几何开放但已被 Apollonius 可达边界控制
-                        ax.plot([tx, end_x], [ty, end_y], color='limegreen', alpha=0.5, linewidth=1.5, zorder=2)
+                    # 开阔的路线（视为安全逃逸角/分配引导扇区），用浅绿色实线
+                    ax.plot([tx, end_x], [ty, end_y], color='limegreen', alpha=0.5, linewidth=1.5, zorder=2)
                 else:
                     # 被建筑物或边界阻挡的路线，用浅红色细线，并在末端画一个碰撞红点
                     ax.plot([tx, end_x], [ty, end_y], color='tomato', alpha=0.3, linewidth=1.0, zorder=2)

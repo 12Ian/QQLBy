@@ -27,8 +27,6 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
         
         self.target_radius = 0.5
         self.catch_radius = 15.0
-        self.cartesian_lambda_cap = getattr(config, "cartesian_lambda_cap", 0.8)
-        self.cartesian_strength_weight = getattr(config, "cartesian_strength_weight", 0.3)
         
         self.radar_range = 100.0
         self.num_radar_rays = 16
@@ -238,11 +236,10 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
             pursuer_speeds = np.asarray(self.uav_speeds, dtype=np.float32)
         else:
             pursuer_speeds = np.full(len(self.uav_positions), self.uav_max_speed, dtype=np.float32)
-        lambda_cap = float(getattr(self, "cartesian_lambda_cap", 0.8))
         speed_ratio = np.clip(
             pursuer_speeds / max(float(self.target_speed), 1e-6),
             0.0,
-            lambda_cap,
+            1.0,
         )
 
         half_angles = np.arcsin(capture_ratio) + np.arcsin(speed_ratio)
@@ -276,12 +273,10 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
         }
 
     def _compute_apollonius_escape_field(self, angles, min_dists, r_f):
-        """Classify each escape ray by time reachability with Cartesian support.
+        """Classify each escape ray by Cartesian oval and time reachability.
 
-        Cartesian oval coverage is used as a soft confidence signal. It should
-        not remove a ray from the dangerous set by itself because turn limits,
-        acceleration limits, obstacles, and decentralized control make the
-        theoretical occupied angle optimistic in this environment.
+        A ray is dangerous only when it is geometrically open and no UAV can
+        cover it by occupied angle or reach it before the target escapes.
         """
         vt = max(float(self.target_speed), 1e-6)
         vu = max(float(self.uav_max_speed), 1e-6)
@@ -341,14 +336,10 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
         # Hysteresis: once a ray is dangerous, require a stronger safety margin
         # before removing it; once safe, require a stronger late margin to add it.
         time_dangerous = np.where(prev_dangerous, margin_ema > -0.10, margin_ema > 0.20)
-        dangerous = geometry_open & time_dangerous
+        dangerous = geometry_open & ~cartesian_controlled & time_dangerous
         controlled = geometry_open & ~dangerous
-        time_strength = 1.0 / (1.0 + np.exp(np.clip(1.25 * margin_ema, -60.0, 60.0)))
-        cartesian_weight = np.clip(float(getattr(self, "cartesian_strength_weight", 0.3)), 0.0, 1.0)
-        control_strength = (
-            (1.0 - cartesian_weight) * time_strength
-            + cartesian_weight * cartesian_coverage["strength"]
-        ).astype(np.float32)
+        time_strength = 1.0 / (1.0 + np.exp(1.25 * margin_ema))
+        control_strength = np.maximum(time_strength, cartesian_coverage["strength"])
 
         replace_owner = cartesian_controlled & (
             (best_owner < 0) | (cartesian_coverage["strength"] >= time_strength)
