@@ -77,7 +77,6 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
         self.target_position = np.zeros(2, dtype=np.float32)
         self.target_yaw = 0.0
         self.last_distances = np.zeros(self.num_agents, dtype=np.float32)
-        self.episode_target_speed_max = self.target_speed
 
         self.uav_trails = {agent: deque(maxlen=100) for agent in self.agents}
         self.target_trail = deque(maxlen=100)
@@ -171,7 +170,7 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
             {
                 "level": 4,
                 "target_min_speed": 4.0,
-                "target_max_speed": 12.0,
+                "target_max_speed": 11.0,
                 "target_accel": 0.5,
                 "spawn_offset": 100.0,
                 "building_mode": "medium",
@@ -263,24 +262,6 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
 
         return self.curriculum_level
 
-    def get_curriculum_info(self):
-        return {
-            "curriculum_enabled": self.curriculum_enabled,
-            "curriculum_level": self.curriculum_level,
-            "building_mode": self.building_mode,
-            "spawn_offset": self.spawn_offset,
-            "target_min_speed": self.target_min_speed,
-            "target_max_speed": self.target_max_speed,
-            "target_accel": self.target_accel,
-            "target_speed_current": float(getattr(self, "target_speed", self.target_min_speed)),
-            "target_speed_max_episode": float(
-                getattr(self, "episode_target_speed_max", getattr(self, "target_speed", self.target_min_speed))
-            ),
-            "building_count": int(len(getattr(self, "buildings", []))),
-            "reward_weights": copy.deepcopy(self.reward_weights),
-            "reward_mix": copy.deepcopy(self.reward_mix),
-        }
-
 
     def _generate_city_blocks(self):
         import json
@@ -293,12 +274,12 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
                                    f"buildings_{difficulty}.json")
 
         if os.path.exists(config_file):
-            print(f"[Env Info] Loading {difficulty} map from: {config_file}")
+            print(f"🌍 [Env Info] Loading {difficulty} map from: {config_file}")
             with open(config_file, 'r', encoding='utf-8') as f:
                 buildings = json.load(f)
             return buildings
         else:
-            print(f"[Warning] Config file {config_file} not found! Loading empty map.")
+            print(f"⚠️ [Warning] Config file {config_file} not found! Loading empty map.")
             return []
 
     def _check_los(self, p1, p2):
@@ -905,8 +886,6 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
         self.target_yaw = np.random.uniform(0, 2 * np.pi)
         self.target_speed = self.target_min_speed # 初始未被发现，速度为4
 
-        self.episode_target_speed_max = self.target_speed
-
         for i in range(self.num_agents):
             self.last_distances[i] = np.linalg.norm(self.uav_positions[i] - self.target_position)
 
@@ -916,7 +895,7 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
         self.current_guide_points = self._assign_target_points()
 
         return self._get_obs(), {
-            "infos": self.get_curriculum_info(),
+            "infos": {"curriculum_level": self.curriculum_level},
             "individual_episode_rewards": self.individual_episode_reward,
         }
 
@@ -964,7 +943,6 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
             self.target_speed = min(self.target_max_speed, self.target_speed + self.target_accel)
         else:
             self.target_speed = max(self.target_min_speed, self.target_speed - self.target_accel)
-        self.episode_target_speed_max = max(self.episode_target_speed_max, self.target_speed)
 
         # ---------------- 2. 躲避地图边界 (软气垫墙效果) ----------------
         wall_sense = 100.0  
@@ -1182,7 +1160,10 @@ class UAVPursuitApolloniusObs5Env(RawMultiAgentEnv):
         truncated = (self._episode_step >= self.max_episode_steps) if not terminated[self.agents[0]] else False
 
         info = {
-            "infos": self.get_curriculum_info(),
+            "infos": {
+                "curriculum_level": self.curriculum_level,
+                "curriculum_config": copy.deepcopy(self.curriculum_config),
+            },
             "individual_episode_rewards": self.individual_episode_reward,
             "episode_sub_rewards": copy.deepcopy(self.episode_sub_rewards),
             "is_success": is_caught 

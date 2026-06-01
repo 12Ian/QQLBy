@@ -1,5 +1,5 @@
 ==================================================
-🚀 训练开始时间: 2026-05-31 18:45:59
+🚀 训练开始时间: 2026-06-01 09:45:55
 ==================================================
 Deep learning toolbox: PyTorch.
 Calculating device: cuda:0
@@ -206,25 +206,8 @@ Epoch: 98/100:
 
 Epoch: 99/100:
 
-🌍 [Env Info] Loading medium map from: /home/ryy/UAV_Project/xuance-master/xuance/environment/buildings/buildings_medium.json
-🌍 [Env Info] Loading medium map from: /home/ryy/UAV_Project/xuance-master/xuance/environment/buildings/buildings_medium.json
-🌍 [Env Info] Loading medium map from: /home/ryy/UAV_Project/xuance-master/xuance/environment/buildings/buildings_medium.json
-🌍 [Env Info] Loading medium map from: /home/ryy/UAV_Project/xuance-master/xuance/environment/buildings/buildings_medium.json
-🌍 [Env Info] Loading medium map from: /home/ryy/UAV_Project/xuance-master/xuance/environment/buildings/buildings_medium.json
-🌍 [Env Info] Loading medium map from: /home/ryy/UAV_Project/xuance-master/xuance/environment/buildings/buildings_medium.json
-🌍 [Env Info] Loading medium map from: /home/ryy/UAV_Project/xuance-master/xuance/environment/buildings/buildings_medium.json
-🌍 [Env Info] Loading medium map from: /home/ryy/UAV_Project/xuance-master/xuance/environment/buildings/buildings_medium.json
-🌍 [Env Info] Loading medium map from: /home/ryy/UAV_Project/xuance-master/xuance/environment/buildings/buildings_medium.json
-🌍 [Env Info] Loading medium map from: /home/ryy/UAV_Project/xuance-master/xuance/environment/buildings/buildings_medium.json
-🌍 [Env Info] Loading medium map from: /home/ryy/UAV_Project/xuance-master/xuance/environment/buildings/buildings_medium.json
-🌍 [Env Info] Loading medium map from: /home/ryy/UAV_Project/xuance-master/xuance/environment/buildings/buildings_medium.json
-🌍 [Env Info] Loading medium map from: /home/ryy/UAV_Project/xuance-master/xuance/environment/buildings/buildings_medium.json
-🌍 [Env Info] Loading medium map from: /home/ryy/UAV_Project/xuance-master/xuance/environment/buildings/buildings_medium.json
-🌍 [Env Info] Loading medium map from: /home/ryy/UAV_Project/xuance-master/xuance/environment/buildings/buildings_medium.json
-🌍 [Env Info] Loading medium map from: /home/ryy/UAV_Project/xuance-master/xuance/environment/buildings/buildings_medium.json
-🌍 [Env Info] Loading medium map from: /home/ryy/UAV_Project/xuance-master/xuance/environment/buildings/buildings_medium.json
-Best Model Score: 560.58, std=328.78. Best Step: 400000
+Best Model Score: 313.49, std=6.33. Best Step: 9100000
 ==================================================
-✅ 训练结束时间: 2026-05-31 21:28:18
-⏱️  总执行耗时: 2小时 42分钟 19秒
+✅ 训练结束时间: 2026-06-01 11:50:55
+⏱️  总执行耗时: 2小时 5分钟 0秒
 ==================================================
