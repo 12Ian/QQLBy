@@ -1,213 +1,314 @@
 ==================================================
-🚀 训练开始时间: 2026-06-01 09:45:55
+🚀 训练开始时间: 2026-06-01 14:51:46
 ==================================================
 Deep learning toolbox: PyTorch.
 Calculating device: cuda:0
 Algorithm: MADDPG
 Environment: uav_pursuit_apollonius_obs_5
 Scenario: apollonius_obs_5
+[Warning] Could not set curriculum level to 4.
 Epoch: 0/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 1/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 2/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 3/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 4/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 5/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 6/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 7/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 8/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 9/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 10/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 11/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 12/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 13/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 14/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 15/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 16/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 17/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 18/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 19/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 20/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 21/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 22/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 23/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 24/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 25/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 26/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 27/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 28/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 29/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 30/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 31/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 32/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 33/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 34/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 35/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 36/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 37/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 38/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 39/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 40/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 41/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 42/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 43/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 44/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 45/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 46/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 47/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 48/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 49/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 50/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 51/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 52/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 53/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 54/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 55/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 56/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 57/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 58/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 59/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 60/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 61/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 62/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 63/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 64/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 65/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 66/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 67/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 68/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 69/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 70/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 71/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 72/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 73/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 74/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 75/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 76/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 77/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 78/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 79/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 80/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 81/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 82/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 83/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 84/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 85/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 86/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 87/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 88/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 89/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 90/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 91/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 92/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 93/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 94/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 95/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 96/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 97/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 98/100:
 
+[Warning] Could not set curriculum level to 4.
 Epoch: 99/100:
 
-Best Model Score: 313.49, std=6.33. Best Step: 9100000
+[Warning] Could not set curriculum level to 4.
+Best Model Score: 313.71, std=4.94. Best Step: 9900000
 ==================================================
-✅ 训练结束时间: 2026-06-01 11:50:55
-⏱️  总执行耗时: 2小时 5分钟 0秒
+✅ 训练结束时间: 2026-06-01 16:56:55
+⏱️  总执行耗时: 2小时 5分钟 9秒
 ==================================================

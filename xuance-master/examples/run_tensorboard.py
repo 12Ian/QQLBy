@@ -20,7 +20,7 @@ def get_latest_log_dir(base_dir):
 def main():
     # 设置命令行参数解析
     parser = argparse.ArgumentParser(description="一键启动 TensorBoard")
-    parser.add_argument("-n", "--name", type=str, default="seed_1_2026_0601_094558", 
+    parser.add_argument("-n", "--name", type=str, default="seed_1_2026_0601_145149", 
                         help="指定的日志文件夹名称")
     
     args = parser.parse_args()

@@ -447,24 +447,62 @@ class OffPolicyMARLAgents(MARLAgents):
                                             train_steps=train_steps, train_info=train_info)
         return train_info
 
-    def run_episodes(self, 
-                     n_episodes: int = 1, 
+    def _set_env_curriculum_level(self, envs, level: int) -> bool:
+        """Set curriculum level for vectorized envs if supported."""
+        changed = False
+
+        if hasattr(envs, "env_method"):
+            try:
+                envs.env_method("set_curriculum_level", level)
+                return True
+            except Exception:
+                pass
+
+        if hasattr(envs, "call"):
+            try:
+                envs.call("set_curriculum_level", level)
+                return True
+            except Exception:
+                pass
+
+        if hasattr(envs, "envs"):
+            for env in envs.envs:
+                if hasattr(env, "set_curriculum_level"):
+                    env.set_curriculum_level(level)
+                    changed = True
+            return changed
+
+        if hasattr(envs, "set_curriculum_level"):
+            envs.set_curriculum_level(level)
+            return True
+
+        return changed
+
+    def run_episodes(self,
+                     n_episodes: int = 1,
                      run_envs: Optional[DummyVecMultiAgentEnv | SubprocVecMultiAgentEnv] = None,
                      test_mode: bool = False,
-                     close_envs: bool = True) -> list:
+                     close_envs: bool = True,
+                     curriculum_level: Optional[int] = None) -> list:
         envs = self.train_envs if run_envs is None else run_envs
         num_envs = envs.num_envs
+
+        if test_mode and curriculum_level is not None:
+            changed = self._set_env_curriculum_level(envs, curriculum_level)
+            if not changed:
+                print(f"[Warning] Could not set curriculum level to {curriculum_level}.")
+
         videos, episode_videos, images = [[] for _ in range(num_envs)], [], None
         _current_episode, _current_step, scores, best_score = 0, 0, [], -np.inf
 
-        # [新增]: 初始化收集测试环境子奖励的列表
         test_sub_scores_list = []
-        # [新增胜率统计 1]: 初始化收集胜负的列表
-        test_wins_list = [] 
+        test_wins_list = []
+        test_curriculum_infos = []
 
         obs_dict, info = envs.reset()
         state = envs.buf_state.copy() if self.use_global_state else None
         avail_actions = envs.buf_avail_actions if self.use_actions_mask else None
+
         if test_mode:
             if self.config.render_mode == "rgb_array" and self.render:
                 images = envs.render(self.config.render_mode)
@@ -473,34 +511,60 @@ class OffPolicyMARLAgents(MARLAgents):
         else:
             if self.use_rnn:
                 self.memory.clear_episodes()
+
         rnn_hidden = self.init_rnn_hidden(num_envs)
 
         while _current_episode < n_episodes:
-            policy_out = self.action(obs_dict=obs_dict,
-                                     avail_actions_dict=avail_actions,
-                                     rnn_hidden=rnn_hidden,
-                                     test_mode=test_mode)
-            rnn_hidden, actions_dict = policy_out['hidden_state'], policy_out['actions']
+            policy_out = self.action(
+                obs_dict=obs_dict,
+                avail_actions_dict=avail_actions,
+                rnn_hidden=rnn_hidden,
+                test_mode=test_mode
+            )
+            rnn_hidden, actions_dict = policy_out["hidden_state"], policy_out["actions"]
+
             next_obs_dict, rewards_dict, terminated_dict, truncated, info = envs.step(actions_dict)
             next_state = envs.buf_state.copy() if self.use_global_state else None
             next_avail_actions = envs.buf_avail_actions if self.use_actions_mask else None
+
             if test_mode:
                 if self.config.render_mode == "rgb_array" and self.render:
                     images = envs.render(self.config.render_mode)
                     for idx, img in enumerate(images):
                         videos[idx].append(img)
             else:
-                self.store_experience(obs_dict, avail_actions, actions_dict, next_obs_dict, next_avail_actions,
-                                      rewards_dict, terminated_dict, info,
-                                      **{'state': state, 'next_state': next_state})
+                self.store_experience(
+                    obs_dict,
+                    avail_actions,
+                    actions_dict,
+                    next_obs_dict,
+                    next_avail_actions,
+                    rewards_dict,
+                    terminated_dict,
+                    info,
+                    **{"state": state, "next_state": next_state}
+                )
 
-            self.callback.on_test_step(envs=envs, policy=self.policy, images=images, test_mode=test_mode,
-                                       obs=obs_dict, policy_out=policy_out, acts=actions_dict,
-                                       next_obs=next_obs_dict, rewards=rewards_dict,
-                                       terminals=terminated_dict, truncations=truncated, infos=info,
-                                       state=state, next_state=next_state,
-                                       current_train_step=self.current_step, n_episodes=n_episodes,
-                                       current_step=_current_step, current_episode=_current_episode)
+            self.callback.on_test_step(
+                envs=envs,
+                policy=self.policy,
+                images=images,
+                test_mode=test_mode,
+                obs=obs_dict,
+                policy_out=policy_out,
+                acts=actions_dict,
+                next_obs=next_obs_dict,
+                rewards=rewards_dict,
+                terminals=terminated_dict,
+                truncations=truncated,
+                infos=info,
+                state=state,
+                next_state=next_state,
+                current_train_step=self.current_step,
+                n_episodes=n_episodes,
+                current_step=_current_step,
+                current_episode=_current_episode
+            )
 
             obs_dict = deepcopy(next_obs_dict)
             if self.use_global_state:
@@ -511,95 +575,183 @@ class OffPolicyMARLAgents(MARLAgents):
             for i in range(num_envs):
                 if all(terminated_dict[i].values()) or truncated[i]:
                     _current_episode += 1
+
                     obs_dict[i] = info[i]["reset_obs"]
                     envs.buf_obs[i] = info[i]["reset_obs"]
+
                     if self.use_global_state:
                         state = info[i]["reset_state"]
                         envs.buf_state[i] = info[i]["reset_state"]
+
                     if self.use_actions_mask:
                         avail_actions[i] = info[i]["reset_avail_actions"]
                         envs.buf_avail_actions[i] = info[i]["reset_avail_actions"]
+
                     if self.use_rnn:
                         rnn_hidden = self.init_hidden_item(i_env=i, rnn_hidden=rnn_hidden)
                         if not test_mode:
-                            terminal_data = {'obs': next_obs_dict[i],
-                                             'episode_step': info[i]['episode_step']}
+                            terminal_data = {
+                                "obs": next_obs_dict[i],
+                                "episode_step": info[i]["episode_step"]
+                            }
                             if self.use_global_state:
-                                terminal_data['state'] = next_state[i]
+                                terminal_data["state"] = next_state[i]
                             if self.use_actions_mask:
-                                terminal_data['avail_actions'] = next_avail_actions[i]
+                                terminal_data["avail_actions"] = next_avail_actions[i]
                             self.memory.finish_path(i, **terminal_data)
+
                     episode_score = float(np.mean(itemgetter(*self.agent_keys)(info[i]["episode_score"])))
                     scores.append(episode_score)
-                    
-                    # [新增胜率统计 2]: 提取本回合的胜利标志
+
                     is_win = info[i].get("is_success", False)
 
                     if test_mode:
                         if best_score < episode_score:
                             best_score = episode_score
                             episode_videos = videos[i].copy()
+
                         if "episode_sub_rewards" in info[i]:
                             test_sub_scores_list.append(info[i]["episode_sub_rewards"])
-                        # 记录当前测试回合的胜负 (赢了记 1.0，输了记 0.0)
+
                         test_wins_list.append(1.0 if is_win else 0.0)
+
+                        if "infos" in info[i] and isinstance(info[i]["infos"], dict):
+                            test_curriculum_infos.append(info[i]["infos"])
+
                     else:
                         self.current_episode[i] += 1
+
                         if self.use_wandb:
                             episode_info = {
                                 "Train-Results/Episode-Steps/env-%d" % i: info[i]["episode_step"],
-                                "Train-Results/Episode-Rewards/env-%d" % i: info[i]["episode_score"],
-                                "Train-Results/Win-Rate/env-%d" % i: 1.0 if is_win else 0.0  # 也可以在训练图表里看单环境的胜负
+                                "Train-Results/Episode-Rewards/env-%d" % i: episode_score,
+                                "Train-Results/Win-Rate/env-%d" % i: 1.0 if is_win else 0.0,
                             }
                         else:
                             episode_info = {
                                 "Train-Results/Episode-Steps": {"env-%d" % i: info[i]["episode_step"]},
-                                "Train-Results/Episode-Rewards": {
-                                    "env-%d" % i: np.mean(itemgetter(*self.agent_keys)(info[i]["episode_score"]))},
-                                "Train-Results/Win-Rate": {"env-%d" % i: 1.0 if is_win else 0.0}
+                                "Train-Results/Episode-Rewards": {"env-%d" % i: episode_score},
+                                "Train-Results/Win-Rate": {"env-%d" % i: 1.0 if is_win else 0.0},
                             }
+
+                        if "infos" in info[i] and isinstance(info[i]["infos"], dict):
+                            curriculum_info = info[i]["infos"]
+                            flat_curriculum_info = {}
+
+                            for key, value in curriculum_info.items():
+                                if isinstance(value, (int, float, np.integer, np.floating, bool)):
+                                    flat_curriculum_info[f"Train-Curriculum/{key}/env-{i}"] = float(value)
+
+                            building_mode = curriculum_info.get("building_mode", None)
+                            if building_mode is not None:
+                                mode_id = {
+                                    "empty": 0.0,
+                                    "easy": 1.0,
+                                    "medium": 2.0,
+                                    "hard": 3.0,
+                                }.get(str(building_mode), -1.0)
+                                flat_curriculum_info[f"Train-Curriculum/building_mode_id/env-{i}"] = mode_id
+
+                            episode_info.update(flat_curriculum_info)
+
+                        if "episode_sub_rewards" in info[i]:
+                            for agent_name, sub_rewards in info[i]["episode_sub_rewards"].items():
+                                for reward_name, reward_value in sub_rewards.items():
+                                    if self.use_wandb:
+                                        metric_key = f"Train-SubRewards-{agent_name}/{reward_name}/env-{i}"
+                                        episode_info[metric_key] = reward_value
+                                    else:
+                                        metric_key = f"Train-SubRewards-{agent_name}/{reward_name}"
+                                        if metric_key not in episode_info:
+                                            episode_info[metric_key] = {}
+                                        episode_info[metric_key][f"env-{i}"] = reward_value
+
                         self.current_step += info[i]["episode_step"]
                         self.log_infos(episode_info, self.current_step)
                         self._update_explore_factor()
-                        self.callback.on_train_episode_info(envs=envs, policy=self.policy, env_id=i,
-                                                            infos=info, rank=self.rank, use_wandb=self.use_wandb,
-                                                            current_step=self.current_step,
-                                                            current_episode=self.current_episode,
-                                                            n_episodes=n_episodes)
+
+                        self.callback.on_train_episode_info(
+                            envs=envs,
+                            policy=self.policy,
+                            env_id=i,
+                            infos=info,
+                            rank=self.rank,
+                            use_wandb=self.use_wandb,
+                            current_step=self.current_step,
+                            current_episode=self.current_episode,
+                            n_episodes=n_episodes
+                        )
+
             _current_step += num_envs
 
         if test_mode:
             if self.config.render_mode == "rgb_array" and self.render:
-                videos_info = {"Videos_Test": np.array([episode_videos], dtype=np.uint8).transpose((0, 1, 4, 2, 3))}
+                videos_info = {
+                    "Videos_Test": np.array([episode_videos], dtype=np.uint8).transpose((0, 1, 4, 2, 3))
+                }
                 self.log_videos(info=videos_info, fps=self.fps, x_index=self.current_step)
 
-            test_info = {
-                "Test-Results/Episode-Rewards": np.mean(scores),
-                "Test-Results/Episode-Rewards-Std": np.std(scores),
-            }
-            
-            # [新增胜率统计 3]: 计算并记录所有测试回合的平均胜率
-            if len(test_wins_list) > 0:
-                test_info["Test-Results/Win-Rate"] = np.mean(test_wins_list)
+            tag_suffix = "" if curriculum_level is None else f"-Level-{curriculum_level}"
 
-            # =====================================================================
-            # [重点修改区]: 计算并记录所有测试回合(Episodes)的子奖励平均值
-            # =====================================================================
+            test_info = {
+                f"Test-Results/Episode-Rewards{tag_suffix}": np.mean(scores),
+                f"Test-Results/Episode-Rewards-Std{tag_suffix}": np.std(scores),
+            }
+
+            if len(test_wins_list) > 0:
+                test_info[f"Test-Results/Win-Rate{tag_suffix}"] = np.mean(test_wins_list)
+
+            if len(test_curriculum_infos) > 0:
+                numeric_keys = [
+                    "curriculum_level",
+                    "spawn_offset",
+                    "target_min_speed",
+                    "target_max_speed",
+                    "target_accel",
+                    "target_speed_current",
+                    "target_speed_max_episode",
+                    "building_count",
+                ]
+
+                for key in numeric_keys:
+                    values = [c[key] for c in test_curriculum_infos if key in c]
+                    if len(values) > 0:
+                        test_info[f"Test-Curriculum/{key}{tag_suffix}"] = float(np.mean(values))
+
+                building_modes = [
+                    c.get("building_mode") for c in test_curriculum_infos
+                    if "building_mode" in c
+                ]
+                if len(building_modes) > 0:
+                    mode_id = {
+                        "empty": 0.0,
+                        "easy": 1.0,
+                        "medium": 2.0,
+                        "hard": 3.0,
+                    }.get(str(building_modes[-1]), -1.0)
+                    test_info[f"Test-Curriculum/building_mode_id{tag_suffix}"] = mode_id
+
             if len(test_sub_scores_list) > 0:
                 for agent_name in self.agent_keys:
                     for sub_name in test_sub_scores_list[0][agent_name].keys():
                         avg_sub = np.mean([s[agent_name][sub_name] for s in test_sub_scores_list])
-                        test_info[f"Test-SubRewards-{agent_name}/{sub_name}"] = avg_sub
-            # =====================================================================
+                        test_info[f"Test-SubRewards-{agent_name}/{sub_name}{tag_suffix}"] = avg_sub
+
             self.log_infos(test_info, self.current_step)
 
-            self.callback.on_test_end(envs=envs, policy=self.policy,
-                                      current_train_step=self.current_step,
-                                      current_step=_current_step, current_episode=_current_episode,
-                                      scores=scores, best_score=best_score)
+            self.callback.on_test_end(
+                envs=envs,
+                policy=self.policy,
+                current_train_step=self.current_step,
+                current_step=_current_step,
+                current_episode=_current_episode,
+                scores=scores,
+                best_score=best_score
+            )
 
         if close_envs:
             envs.close()
+
         return scores
 
     def train_epochs(self, n_epochs: int = 1) -> dict:
@@ -629,26 +781,39 @@ class OffPolicyMARLAgents(MARLAgents):
              test_episodes: int,
              test_envs: Optional[DummyVecMultiAgentEnv | SubprocVecMultiAgentEnv] = None,
              close_envs: bool = True) -> list:
-        """Evaluate the current multi-agent policy for a number of episodes.
+        """Evaluate policy.
 
-        This method runs evaluation episodes in `test_envs` by delegating to `run_episodes(test_mode=True)` and returns
-        the per-episode scores. During evaluation, exploration is disabled and optional RGB-array frames can be recorded
-        and logged as a video when rendering is enabled.
-
-        Args:
-            test_episodes (int): Number of completed episodes to evaluate across all parallel environments.
-            test_envs (Optional[DummyVecMultiAgentEnv | SubprocVecMultiAgentEnv]): Vectorized multi-agent environments
-                used for evaluation. If None, `self.train_envs` is used.
-            close_envs (bool): Whether to close `test_envs` before returning. Set this to False if `test_envs` is
-                managed externally and will be reused after evaluation.
-
-        Returns:
-            list: Episode scores (mean reward across agents) for each completed evaluation episode.
+        If config.curriculum_eval_all_levels=True, evaluate all configured
+        curriculum levels and log separate TensorBoard tags:
+        Test-Results/Win-Rate-Level-0 ... Level-4.
         """
+        eval_all_levels = bool(getattr(self.config, "curriculum_eval_all_levels", False))
+
+        if eval_all_levels:
+            levels = list(getattr(self.config, "test_curriculum_levels", [0, 1, 2, 3, 4]))
+            all_scores = []
+
+            for level in levels:
+                scores = self.run_episodes(
+                    n_episodes=test_episodes,
+                    run_envs=test_envs,
+                    test_mode=True,
+                    close_envs=False,
+                    curriculum_level=level,
+                )
+                all_scores.extend(scores)
+
+            if close_envs and test_envs is not None:
+                test_envs.close()
+
+            return all_scores
+
+        level = int(getattr(self.config, "test_curriculum_level", 4))
         scores = self.run_episodes(
             n_episodes=test_episodes,
             run_envs=test_envs,
             test_mode=True,
-            close_envs=close_envs
+            close_envs=close_envs,
+            curriculum_level=level,
         )
         return scores
