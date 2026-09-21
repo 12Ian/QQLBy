@@ -53,3 +53,6 @@ eval_*.json
 train*_log.txt
 train*_smoke.log
 settings.json
+
+# Local shell scripts
+*.sh
