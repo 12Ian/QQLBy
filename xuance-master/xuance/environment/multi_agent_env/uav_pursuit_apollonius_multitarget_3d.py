@@ -30,7 +30,7 @@ class UAVPursuitApolloniusMultiTarget3DEnv(UAVPursuitApollonius3DEnv):
                                    if self.use_obstacle_gat else 0)
         self.observation_space = {a: gym.spaces.Box(-1.0, 1.0, (self.obs_dim,), np.float32)
                                   for a in self.agents}
-        self.state_dim = 9 * N + 6 * M
+        self.state_dim = 10 * N + 6 * M
         self.state_space = gym.spaces.Box(-np.inf, np.inf, (self.state_dim,), np.float32)
 
         self.target_positions = np.zeros((M, 3), np.float32)
@@ -196,6 +196,8 @@ class UAVPursuitApolloniusMultiTarget3DEnv(UAVPursuitApollonius3DEnv):
                     np.arctan2(d[2], float(np.linalg.norm(d[:2])) + 1e-6),
                     -self.pitch_max, self.pitch_max))
                 self.uav_speeds[i] = self.uav_min_speed
+                self.uav_velocities[i] = self._velocity_from_yaw_pitch_speed(
+                    self.uav_yaws[i], self.uav_pitches[i], self.uav_speeds[i])
 
     def step(self, actions_dict):
         self._episode_step += 1
@@ -203,13 +205,15 @@ class UAVPursuitApolloniusMultiTarget3DEnv(UAVPursuitApollonius3DEnv):
         hit_flags = []
         for i, a in enumerate(self.agents):
             act = np.clip(actions_dict[a], -1.0, 1.0)
-            self.uav_speeds[i] = np.clip(self.uav_speeds[i] + act[0] * self.max_accel,
-                                         self.uav_min_speed, self.uav_max_speed)
-            self.uav_yaws[i] = (self.uav_yaws[i] + act[1] * self.max_yaw_rate) % (2 * np.pi)
-            self.uav_pitches[i] = np.clip(self.uav_pitches[i] + act[2] * self.max_pitch_rate,
-                                          -self.pitch_max, self.pitch_max)
-            new_pos, hit = self._move_with_clip_3d(self.uav_positions[i], self.uav_yaws[i],
-                                                   self.uav_pitches[i], self.uav_speeds[i], self.uav_radius)
+            accel = self._limit_acceleration_by_load(act[:3] * self.max_accel,
+                                                       self.uav_velocities[i])
+            yaw_rate = self._limit_yaw_rate_by_load(act[3] * self.max_yaw_rate,
+                                                     self.uav_velocities[i])
+            self.uav_yaws[i] = (self.uav_yaws[i] + yaw_rate) % (2 * np.pi)
+            self.uav_velocities[i] = self._clip_speed_vector(self.uav_velocities[i] + accel)
+            self._sync_uav_kinematics_from_velocity([i])
+            new_pos, hit = self._move_velocity_with_clip_3d(
+                self.uav_positions[i], self.uav_velocities[i], self.uav_radius)
             self.uav_positions[i] = new_pos
             hit_flags.append(hit)
             self.uav_trails[a].append(new_pos.copy())
@@ -312,11 +316,14 @@ class UAVPursuitApolloniusMultiTarget3DEnv(UAVPursuitApollonius3DEnv):
         zr = max(self.z_max - self.z_min, 1e-6)
         for i, ag in enumerate(self.agents):
             m = int(self.assign[i]) if self.assign[i] >= 0 else 0
-            pos, yaw, pit = self.uav_positions[i], self.uav_yaws[i], self.uav_pitches[i]
+            pos, yaw = self.uav_positions[i], self.uav_yaws[i]
+            vel = self.uav_velocities[i]
+            spd = float(np.linalg.norm(vel))
+            pit = float(np.arcsin(np.clip(vel[2] / max(spd, 1e-6), -1.0, 1.0)))
             norm_pos = np.array([pos[0] / ms * 2 - 1, pos[1] / ms * 2 - 1,
                                  (pos[2] - self.z_min) / zr * 2 - 1], np.float32)
             heading = np.array([np.cos(yaw), np.sin(yaw), np.sin(pit)], np.float32)
-            nspd = np.array([(self.uav_speeds[i] - self.uav_min_speed) /
+            nspd = np.array([(spd - self.uav_min_speed) /
                              (self.uav_max_speed - self.uav_min_speed) * 2 - 1], np.float32)
             gp = self.current_guide_points.get(ag, self.target_positions[m])
             rel_guide = ((gp - pos) / ms).astype(np.float32)
@@ -340,5 +347,5 @@ class UAVPursuitApolloniusMultiTarget3DEnv(UAVPursuitApollonius3DEnv):
         tstate = np.concatenate([
             self.target_positions.flatten(), self.target_yaws, self.target_pitches, self.target_speeds])
         return np.concatenate([
-            self.uav_positions.flatten(), self.uav_yaws, self.uav_pitches, self.uav_speeds,
+            self.uav_positions.flatten(), self.uav_velocities.flatten(), self.uav_yaws,
             guides, tstate]).astype(np.float32)

@@ -39,6 +39,8 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
         self.max_yaw_rate = np.pi / 4
         self.max_pitch_rate = np.pi / 12
         self.pitch_max = np.pi / 6           # +/- 30 deg flight-path angle
+        self.gravity = float(getattr(config, "gravity", 9.81))
+        self.max_load_factor = float(getattr(config, "max_load_factor", 4.0))
         self.uav_radius = 0.5
         self.spawn_safety_enabled = bool(getattr(config, "spawn_safety_enabled", True))
         self.spawn_safety_margin = float(getattr(config, "spawn_safety_margin", 1.5))
@@ -160,7 +162,7 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
         self.target_plot_radius = plot_config.get("target_radius", 4)
 
         # ---------------- 2. spaces ----------------
-        self.action_space = {a: gym.spaces.Box(low=-1.0, high=1.0, shape=(3,), dtype=np.float32)
+        self.action_space = {a: gym.spaces.Box(low=-1.0, high=1.0, shape=(4,), dtype=np.float32)
                              for a in self.agents}
         # obs: norm_pos(3)+heading(3)+nspd(1)+rel_guide(3)+rel_target(3)
         #      +rel_mates(3*(N-1))+t_head(3)+ntspd(1)+radar(16) [+ obstacle nodes k*4]
@@ -169,8 +171,8 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
                                    if self.use_obstacle_gat else 0)
         self.observation_space = {a: gym.spaces.Box(low=-1.0, high=1.0, shape=(self.obs_dim,), dtype=np.float32)
                                   for a in self.agents}
-        # state: pos(3N)+yaw(N)+pitch(N)+speed(N)+tpos(3)+tyaw(1)+tpitch(1)+tspeed(1)+guides(3N)
-        self.state_dim = 9 * self.num_agents + 6
+        # state: pursuer pos(3N)+vel(3N)+yaw(N)+target(6)+guides(3N)
+        self.state_dim = 10 * self.num_agents + 6
         self.state_space = gym.spaces.Box(low=-np.inf, high=np.inf, shape=(self.state_dim,), dtype=np.float32)
 
         # ---------------- 3. runtime ----------------
@@ -179,7 +181,9 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
         self.individual_episode_reward = {k: 0.0 for k in self.agents}
 
         self.uav_positions = np.zeros((self.num_agents, 3), dtype=np.float32)
+        self.uav_velocities = np.zeros((self.num_agents, 3), dtype=np.float32)
         self.uav_yaws = np.zeros(self.num_agents, dtype=np.float32)
+        # Compatibility fields derived from uav_velocities for radar/reward code.
         self.uav_pitches = np.zeros(self.num_agents, dtype=np.float32)
         self.uav_speeds = np.zeros(self.num_agents, dtype=np.float32)
 
@@ -427,6 +431,82 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
                     f"position={pos.tolist()}, clearance={self.spawn_clearance}")
             assigned.append(pos)
 
+
+    def _sync_uav_kinematics_from_velocity(self, indices=None):
+        if indices is None:
+            indices = range(self.num_agents)
+        for i in indices:
+            v = np.asarray(self.uav_velocities[i], dtype=np.float32)
+            speed = float(np.linalg.norm(v))
+            self.uav_speeds[i] = speed
+            if speed > 1e-6:
+                self.uav_pitches[i] = float(np.arcsin(np.clip(v[2] / speed, -1.0, 1.0)))
+
+    def _velocity_from_yaw_pitch_speed(self, yaw, pitch, speed):
+        return speed * np.array([np.cos(pitch) * np.cos(yaw),
+                                 np.cos(pitch) * np.sin(yaw),
+                                 np.sin(pitch)], dtype=np.float32)
+
+    def _clip_speed_vector(self, velocity):
+        speed = float(np.linalg.norm(velocity))
+        if speed < 1e-6:
+            return np.array([self.uav_min_speed, 0.0, 0.0], dtype=np.float32)
+        if speed < self.uav_min_speed:
+            return (velocity / speed * self.uav_min_speed).astype(np.float32)
+        if speed > self.uav_max_speed:
+            return (velocity / speed * self.uav_max_speed).astype(np.float32)
+        return velocity.astype(np.float32)
+
+    def _limit_acceleration_by_load(self, accel, velocity):
+        accel = np.asarray(accel, dtype=np.float32)
+        an = float(np.linalg.norm(accel))
+        if an > self.max_accel > 0.0:
+            accel = accel / an * self.max_accel
+        speed = float(np.linalg.norm(velocity))
+        if speed <= 1e-6 or self.max_load_factor <= 1.0:
+            return accel.astype(np.float32)
+        vhat = velocity / speed
+        a_parallel = float(np.dot(accel, vhat)) * vhat
+        a_normal = accel - a_parallel
+        normal_limit = self.gravity * np.sqrt(max(self.max_load_factor ** 2 - 1.0, 0.0))
+        nn = float(np.linalg.norm(a_normal))
+        if nn > normal_limit > 0.0:
+            a_normal = a_normal / nn * normal_limit
+        return (a_parallel + a_normal).astype(np.float32)
+
+    def _limit_yaw_rate_by_load(self, yaw_rate, velocity):
+        speed = float(np.linalg.norm(velocity))
+        if speed <= 1e-6 or self.max_load_factor <= 1.0:
+            return 0.0
+        load_yaw = self.gravity * np.sqrt(max(self.max_load_factor ** 2 - 1.0, 0.0)) / speed
+        limit = min(abs(self.max_yaw_rate), load_yaw)
+        return float(np.clip(yaw_rate, -limit, limit))
+
+    def _move_velocity_with_clip_3d(self, pos, velocity, radius):
+        next_pos = (pos + velocity).astype(np.float32)
+        hit = False
+        if next_pos[0] < radius:
+            next_pos[0] = radius; hit = True
+        elif next_pos[0] > self.map_size - radius:
+            next_pos[0] = self.map_size - radius; hit = True
+        if next_pos[1] < radius:
+            next_pos[1] = radius; hit = True
+        elif next_pos[1] > self.map_size - radius:
+            next_pos[1] = self.map_size - radius; hit = True
+        next_pos[2] = np.clip(next_pos[2], self.z_min, self.z_max)
+        for b in self.buildings:
+            xmin, xmax, ymin, ymax = b
+            if (xmin - radius < next_pos[0] < xmax + radius) and (ymin - radius < next_pos[1] < ymax + radius):
+                hit = True
+                px = np.array([next_pos[0], pos[1], next_pos[2]], dtype=np.float32)
+                if not ((xmin - radius < px[0] < xmax + radius) and (ymin - radius < px[1] < ymax + radius)):
+                    next_pos = px; break
+                py = np.array([pos[0], next_pos[1], next_pos[2]], dtype=np.float32)
+                if not ((xmin - radius < py[0] < xmax + radius) and (ymin - radius < py[1] < ymax + radius)):
+                    next_pos = py; break
+                next_pos = np.array([pos[0], pos[1], next_pos[2]], dtype=np.float32); break
+        return next_pos, hit
+
     def _move_with_clip_3d(self, pos, yaw, pitch, speed, radius):
         vel = speed * np.array([np.cos(pitch) * np.cos(yaw),
                                 np.cos(pitch) * np.sin(yaw),
@@ -666,8 +746,10 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
         cost = np.zeros((n, len(target_points)), dtype=np.float32)
         for i in range(n):
             upos = self.uav_positions[i]
-            yaw, pit = self.uav_yaws[i], self.uav_pitches[i]
-            vdir = np.array([np.cos(pit) * np.cos(yaw), np.cos(pit) * np.sin(yaw), np.sin(pit)], np.float32)
+            yaw = self.uav_yaws[i]
+            vel = self.uav_velocities[i]
+            speed = max(float(np.linalg.norm(vel)), 1e-6)
+            vdir = (vel / speed).astype(np.float32)
             prev = self.current_guide_points.get(self.agents[i], None)
             for j, tp in enumerate(target_points):
                 vec = tp - upos
@@ -692,11 +774,14 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
         ms = self.map_size
         zr = max(self.z_max - self.z_min, 1e-6)
         for i, ag in enumerate(self.agents):
-            pos, yaw, pit = self.uav_positions[i], self.uav_yaws[i], self.uav_pitches[i]
+            pos, yaw = self.uav_positions[i], self.uav_yaws[i]
+            vel = self.uav_velocities[i]
+            spd = float(np.linalg.norm(vel))
+            pit = float(np.arcsin(np.clip(vel[2] / max(spd, 1e-6), -1.0, 1.0)))
             norm_pos = np.array([pos[0] / ms * 2 - 1, pos[1] / ms * 2 - 1,
                                  (pos[2] - self.z_min) / zr * 2 - 1], np.float32)
             heading = np.array([np.cos(yaw), np.sin(yaw), np.sin(pit)], np.float32)
-            nspd = np.array([(self.uav_speeds[i] - self.uav_min_speed) /
+            nspd = np.array([(spd - self.uav_min_speed) /
                              (self.uav_max_speed - self.uav_min_speed) * 2 - 1], np.float32)
             rel_guide = ((self.current_guide_points[ag] - pos) / ms).astype(np.float32)
             rel_target = ((self.target_position - pos) / ms).astype(np.float32)
@@ -716,7 +801,7 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
     def state(self):
         guides = np.concatenate([self.current_guide_points[a] for a in self.agents])
         return np.concatenate([
-            self.uav_positions.flatten(), self.uav_yaws, self.uav_pitches, self.uav_speeds,
+            self.uav_positions.flatten(), self.uav_velocities.flatten(), self.uav_yaws,
             self.target_position, [self.target_yaw], [self.target_pitch], [self.target_speed],
             guides]).astype(np.float32)
 
@@ -766,6 +851,10 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
         self.uav_speeds = np.ones(self.num_agents, np.float32) * self.uav_min_speed
         self.uav_yaws = np.random.uniform(0, 2 * np.pi, size=self.num_agents).astype(np.float32)
         self.uav_pitches = np.zeros(self.num_agents, np.float32)
+        self.uav_velocities = np.array([
+            self._velocity_from_yaw_pitch_speed(self.uav_yaws[i], self.uav_pitches[i], self.uav_speeds[i])
+            for i in range(self.num_agents)
+        ], dtype=np.float32)
         if self.surround_spawn:
             self._place_pursuers_around_target()   # encircling spawn (override one-sided)
         desired_positions = self.uav_positions.copy()
