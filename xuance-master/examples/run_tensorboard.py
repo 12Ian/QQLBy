@@ -3,7 +3,7 @@ import argparse
 import subprocess
 
 # 把你的日志基础路径配置在这里
-BASE_LOG_DIR = r"/home/ryy/UAV_Mine/logs/maddpg/apollonius_obs_5"  # 修改为你的实际路径
+BASE_LOG_DIR = r"/home/ryy/UAV_Mine/logs/maddpg/apollonius_3d_abl_noclosure"  # 修改为你的实际路径
 
 def get_latest_log_dir(base_dir):
     """获取指定目录下最新的文件夹"""
@@ -20,7 +20,7 @@ def get_latest_log_dir(base_dir):
 def main():
     # 设置命令行参数解析
     parser = argparse.ArgumentParser(description="一键启动 TensorBoard")
-    parser.add_argument("-n", "--name", type=str, default="seed_1_2026_0601_145149", 
+    parser.add_argument("-n", "--name", type=str, default="", 
                         help="指定的日志文件夹名称")
     
     args = parser.parse_args()

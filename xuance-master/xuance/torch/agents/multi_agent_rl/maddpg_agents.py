@@ -64,7 +64,12 @@ class MADDPG_Agents(IDDPG_Agents):
                 use_rnn=self.use_rnn, rnn=self.config.rnn if self.use_rnn else None,
                 use_graph_module=getattr(self.config, "use_graph_module", False),
                 graph_hidden_dim=getattr(self.config, "graph_hidden_dim", 128),
-                graph_alpha=getattr(self.config, "graph_alpha", 0.2))
+                graph_alpha=getattr(self.config, "graph_alpha", 0.2),
+                use_obstacle_gat=getattr(self.config, "use_obstacle_gat", False),
+                obstacle_gat_k=getattr(self.config, "obstacle_gat_k", 4),
+                obstacle_gat_feat_dim=getattr(self.config, "obstacle_gat_feat_dim", 4),
+                obstacle_gat_hidden=getattr(self.config, "obstacle_gat_hidden", 32),
+                obstacle_gat_heads=getattr(self.config, "obstacle_gat_heads", 2))
         else:
             raise AttributeError(f"MADDPG currently does not support the policy named {self.config.policy}.")
 

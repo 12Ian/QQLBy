@@ -72,6 +72,19 @@ try:
     REGISTRY_MULTI_AGENT_ENV['uav_pursuit_apollonius_obs_5'] = UAVPursuitApolloniusObs5Env
 except Exception as error:
     REGISTRY_MULTI_AGENT_ENV["uav_pursuit_apollonius_obs_5"] = str(error)
+
+try:
+    from xuance.environment.multi_agent_env.uav_pursuit_apollonius_3d import UAVPursuitApollonius3DEnv
+    REGISTRY_MULTI_AGENT_ENV['uav_pursuit_apollonius_3d'] = UAVPursuitApollonius3DEnv
+except Exception as error:
+    REGISTRY_MULTI_AGENT_ENV["uav_pursuit_apollonius_3d"] = str(error)
+
+try:
+    from xuance.environment.multi_agent_env.uav_pursuit_apollonius_multitarget_3d import UAVPursuitApolloniusMultiTarget3DEnv
+    REGISTRY_MULTI_AGENT_ENV['uav_pursuit_apollonius_multitarget_3d'] = UAVPursuitApolloniusMultiTarget3DEnv
+except Exception as error:
+    REGISTRY_MULTI_AGENT_ENV["uav_pursuit_apollonius_multitarget_3d"] = str(error)
+
 __all__ = [
     "REGISTRY_MULTI_AGENT_ENV",
 ]

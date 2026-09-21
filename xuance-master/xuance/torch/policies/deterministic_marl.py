@@ -10,6 +10,7 @@ from xuance.torch.policies import BasicQhead, ActorNet, CriticNet, VDN_mixer, QM
 from xuance.torch.representations import Basic_MLP
 from xuance.torch.utils import ModuleType
 from xuance.torch import Tensor, Module, ModuleDict, DistributedDataParallel
+from xuance.torch.policies.gat_modules import ObstacleGAT
 
 
 class GraphCommLayer(Module):
@@ -1182,6 +1183,11 @@ class Independent_DDPG_Policy(Module):
         self.use_graph_module = kwargs.get("use_graph_module", False)
         self.graph_hidden_dim = kwargs.get("graph_hidden_dim", 128)
         self.graph_alpha = kwargs.get("graph_alpha", 0.2)
+        self.use_obstacle_gat = bool(kwargs.get("use_obstacle_gat", False))
+        self.obstacle_gat_k = int(kwargs.get("obstacle_gat_k", 4))
+        self.obstacle_gat_feat_dim = int(kwargs.get("obstacle_gat_feat_dim", 4))
+        self.obstacle_gat_hidden = int(kwargs.get("obstacle_gat_hidden", 32))
+        self.obstacle_gat_heads = int(kwargs.get("obstacle_gat_heads", 2))
 
         self.actor, self.target_actor = ModuleDict(), ModuleDict()
         self.critic, self.target_critic = ModuleDict(), ModuleDict()
@@ -1206,6 +1212,17 @@ class Independent_DDPG_Policy(Module):
             self.graph_comm = None
             self.target_graph_comm = None
 
+        if self.use_obstacle_gat:
+            query_dim = self.actor_representation[self.model_keys[0]].output_shapes['state'][0]
+            self.obstacle_gat = ObstacleGAT(node_dim=self.obstacle_gat_feat_dim,
+                                            query_dim=query_dim,
+                                            hidden_dim=self.obstacle_gat_hidden,
+                                            num_heads=self.obstacle_gat_heads, device=device)
+            self.target_obstacle_gat = deepcopy(self.obstacle_gat)
+        else:
+            self.obstacle_gat = None
+            self.target_obstacle_gat = None
+
         # Prepare DDP module.
         self.distributed_training = use_distributed_training
         if self.distributed_training:
@@ -1228,6 +1245,8 @@ class Independent_DDPG_Policy(Module):
                 self.actor[key].parameters())
             if self.use_graph_module:
                 parameters_actor[key] += list(self.graph_comm.parameters())
+            if self.use_obstacle_gat:
+                parameters_actor[key] += list(self.obstacle_gat.parameters())
         return parameters_actor
 
     def _apply_graph_comm(self, state_dict: Dict[str, Tensor], agent_list: List[str], use_target: bool = False):
@@ -1255,6 +1274,23 @@ class Independent_DDPG_Policy(Module):
         for idx, key in enumerate(agent_list):
             state_dict[key] = updated[:, idx, :]
         return state_dict
+
+    def _obstacle_gat_emb(self, obs_tensor, actor_state, use_target=False):
+        if (not self.use_obstacle_gat) or (self.obstacle_gat is None):
+            return None
+        module = self.target_obstacle_gat if use_target else self.obstacle_gat
+        k, f = self.obstacle_gat_k, self.obstacle_gat_feat_dim
+        # observation may be numpy in the action()/inference path -> tensorize on
+        # the actor_state's device/dtype (training already passes tensors).
+        if not torch.is_tensor(obs_tensor):
+            obs_tensor = torch.as_tensor(obs_tensor, dtype=actor_state.dtype,
+                                         device=actor_state.device)
+        else:
+            obs_tensor = obs_tensor.to(dtype=actor_state.dtype, device=actor_state.device)
+        base_dim = obs_tensor.shape[-1] - k * f
+        nodes = obs_tensor[:, base_dim:].reshape(obs_tensor.shape[0], k, f)
+        valid = nodes[..., -1]
+        return module(actor_state, nodes, valid)
 
     @property
     def parameters_critic(self):
@@ -1315,10 +1351,12 @@ class Independent_DDPG_Policy(Module):
         actor_states = self._apply_graph_comm(actor_states, agent_list, use_target=False)
 
         for key in agent_list:
+            actor_in = actor_states[key]
+            emb = self._obstacle_gat_emb(observation[key], actor_states[key], use_target=False)
+            if emb is not None:
+                actor_in = torch.concat([actor_in, emb], dim=-1)
             if self.use_parameter_sharing:
-                actor_in = torch.concat([actor_states[key], agent_ids], dim=-1)
-            else:
-                actor_in = actor_states[key]
+                actor_in = torch.concat([actor_in, agent_ids], dim=-1)
             actions[key] = self.actor[key](actor_in)
         return rnn_hidden_new, actions
 
@@ -1420,10 +1458,12 @@ class Independent_DDPG_Policy(Module):
         actor_states = self._apply_graph_comm(actor_states, agent_list, use_target=True)
 
         for key in agent_list:
+            actor_in = actor_states[key]
+            emb = self._obstacle_gat_emb(next_observation[key], actor_states[key], use_target=True)
+            if emb is not None:
+                actor_in = torch.concat([actor_in, emb], dim=-1)
             if self.use_parameter_sharing:
-                actor_in = torch.concat([actor_states[key], agent_ids], dim=-1)
-            else:
-                actor_in = actor_states[key]
+                actor_in = torch.concat([actor_in, agent_ids], dim=-1)
             next_actions[key] = self.target_actor[key](actor_in)
         return rnn_hidden_new, next_actions
 
@@ -1442,6 +1482,10 @@ class Independent_DDPG_Policy(Module):
             tp.data.add_(tau * ep.data)
         if self.use_graph_module:
             for ep, tp in zip(self.graph_comm.parameters(), self.target_graph_comm.parameters()):
+                tp.data.mul_(1 - tau)
+                tp.data.add_(tau * ep.data)
+        if self.use_obstacle_gat:
+            for ep, tp in zip(self.obstacle_gat.parameters(), self.target_obstacle_gat.parameters()):
                 tp.data.mul_(1 - tau)
                 tp.data.add_(tau * ep.data)
 
@@ -1501,6 +1545,8 @@ class MADDPG_Policy(Independent_DDPG_Policy):
         """
         dim_actor_in, dim_actor_out = dim_actor_rep, dim_action
         dim_critic_in = dim_critic_rep
+        if getattr(self, "use_obstacle_gat", False):
+            dim_actor_in += self.obstacle_gat_hidden
         if self.use_parameter_sharing:
             dim_actor_in += n_agents
             dim_critic_in += n_agents

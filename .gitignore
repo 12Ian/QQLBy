@@ -29,3 +29,27 @@ videos/
 .DS_Store
 .vscode/
 .idea/
+
+# Experiment outputs and local archives
+p2_results/
+p3_results/
+backups/
+staging/
+models_local/
+uav3d/
+
+# Runtime sidecar files
+*.pid
+*.exit
+*.sha256
+*.elapsed_seconds
+*.tee_exit
+*.launcher_pid
+*.evaluator_exit
+
+# Evaluation and training logs
+*.log
+eval_*.json
+train*_log.txt
+train*_smoke.log
+settings.json
