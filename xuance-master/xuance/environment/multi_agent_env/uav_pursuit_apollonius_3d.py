@@ -542,7 +542,10 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
         velocity = speed * np.array([
             np.cos(pitch) * np.cos(yaw), np.cos(pitch) * np.sin(yaw), np.sin(pitch)
         ], dtype=np.float32)
-        candidate = np.asarray(pos, np.float32) + velocity
+        return self._prospective_collision_sources_velocity(pos, velocity, radius)
+
+    def _prospective_collision_sources_velocity(self, pos, velocity, radius):
+        candidate = np.asarray(pos, np.float32) + np.asarray(velocity, np.float32)
         sources = []
         if candidate[0] < radius:
             sources.append("boundary:x_min")
@@ -870,6 +873,10 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
                 self.uav_pitches[i] = float(np.clip(
                     np.arctan2(vector[2], np.hypot(vector[0], vector[1]) + 1e-6),
                     -self.pitch_max, self.pitch_max))
+        for i in range(self.num_agents):
+            self.uav_velocities[i] = self._velocity_from_yaw_pitch_speed(
+                self.uav_yaws[i], self.uav_pitches[i], self.uav_speeds[i])
+        self._sync_uav_kinematics_from_velocity()
         self.target_yaw = float(np.random.uniform(0, 2 * np.pi))
         self.target_pitch = 0.0
         self.target_speed = self.target_min_speed
@@ -908,6 +915,8 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
             self.uav_yaws[i] = float(np.arctan2(v[1], v[0]))
             self.uav_pitches[i] = float(np.clip(np.arctan2(v[2], np.hypot(v[0], v[1]) + 1e-6),
                                                 -self.pitch_max, self.pitch_max))
+            self.uav_velocities[i] = self._velocity_from_yaw_pitch_speed(
+                self.uav_yaws[i], self.uav_pitches[i], self.uav_speeds[i])
 
     def _evader_step(self):
         rep = np.zeros(3, np.float32)
@@ -1021,31 +1030,34 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
         old_positions = self.uav_positions.copy()
 
         for i, a in enumerate(self.agents):
-            act = np.clip(actions_dict[a], -1.0, 1.0)
+            raw_act = np.asarray(actions_dict[a], dtype=np.float32).reshape(-1)
+            if raw_act.size < 4:
+                raw_act = np.pad(raw_act, (0, 4 - raw_act.size))
+            act = np.clip(raw_act[:4], -1.0, 1.0)
             if self.cbf_enabled:
-                # Safety layer of Cheng et al. (AAAI-19): the policy proposes, a model-based
-                # barrier filter applies the smallest correction that keeps the vehicle in the
-                # safe set. Unlike relaxing the crash rule, this removes collisions rather than
-                # rescoring them.
-                act, _did, _eff = cbf_filter_action(
-                    act, self.uav_positions[i], float(self.uav_yaws[i]),
+                # The legacy CBF works on the first three control channels. Keep yaw_rate
+                # as the policy's fourth channel, then apply the load-factor limiter below.
+                cbf_act, _did, _eff = cbf_filter_action(
+                    act[:3], self.uav_positions[i], float(self.uav_yaws[i]),
                     float(self.uav_pitches[i]), float(self.uav_speeds[i]),
                     self.buildings, self.map_size, self.uav_radius,
                     self.uav_min_speed, self.uav_max_speed, self.max_accel,
                     self.max_yaw_rate, self.max_pitch_rate, self.pitch_max,
                     eta=self.cbf_eta, margin=self.cbf_margin)
+                act[:3] = np.asarray(cbf_act, dtype=np.float32)[:3]
                 self.episode_cbf_steps += int(_did)
                 self.episode_cbf_effort += float(_eff)
-            self.uav_speeds[i] = np.clip(self.uav_speeds[i] + act[0] * self.max_accel,
-                                         self.uav_min_speed, self.uav_max_speed)
-            self.uav_yaws[i] = (self.uav_yaws[i] + act[1] * self.max_yaw_rate) % (2 * np.pi)
-            self.uav_pitches[i] = np.clip(self.uav_pitches[i] + act[2] * self.max_pitch_rate,
-                                          -self.pitch_max, self.pitch_max)
-            sources = self._prospective_collision_sources(
-                self.uav_positions[i], self.uav_yaws[i], self.uav_pitches[i],
-                self.uav_speeds[i], self.uav_radius)
-            new_pos, hit = self._move_with_clip_3d(self.uav_positions[i], self.uav_yaws[i],
-                                                   self.uav_pitches[i], self.uav_speeds[i], self.uav_radius)
+            accel = self._limit_acceleration_by_load(
+                act[:3] * self.max_accel, self.uav_velocities[i])
+            yaw_rate = self._limit_yaw_rate_by_load(
+                act[3] * self.max_yaw_rate, self.uav_velocities[i])
+            self.uav_yaws[i] = (self.uav_yaws[i] + yaw_rate) % (2 * np.pi)
+            self.uav_velocities[i] = self._clip_speed_vector(self.uav_velocities[i] + accel)
+            self._sync_uav_kinematics_from_velocity([i])
+            sources = self._prospective_collision_sources_velocity(
+                self.uav_positions[i], self.uav_velocities[i], self.uav_radius)
+            new_pos, hit = self._move_velocity_with_clip_3d(
+                self.uav_positions[i], self.uav_velocities[i], self.uav_radius)
             self.uav_positions[i] = new_pos
             hit_flags.append(hit)
             if hit:
@@ -1120,7 +1132,7 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
                     probs = counts / max(float(np.sum(counts)), 1e-6)
                     ap = probs[probs > 0]
                     entropy = -float(np.sum(ap * np.log(ap + 1e-8)))
-                    r_owner = entropy / np.log(self.num_agents)
+                    r_owner = entropy / np.log(self.num_agents) if self.num_agents > 1 else 1.0
             r_pos_global = 0.7 * (r_boundary * r_owner) + 0.3 * r_sphere_uniform
         else:
             r_pos_global = r_sphere_uniform

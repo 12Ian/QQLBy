@@ -18,6 +18,8 @@ _sys.modules["tensorflow"] = _tf
 _sys.modules["tensorflow.io"] = _io
 
 import numpy as np
+from xuance.environment.multi_agent_env.uav_pursuit_apollonius_3d import (
+    UAVPursuitApollonius3DEnv)
 from xuance.environment.multi_agent_env.uav_pursuit_apollonius_multitarget_3d import (
     UAVPursuitApolloniusMultiTarget3DEnv)
 
@@ -30,6 +32,12 @@ class Cfg:
 def make(M, N=6, mode="medium"):
     return UAVPursuitApolloniusMultiTarget3DEnv(
         Cfg(num_agents=N, num_targets=M, env_seed=0, building_mode=mode,
+            curriculum_enabled=False))
+
+
+def make_single(N=1, mode="empty"):
+    return UAVPursuitApollonius3DEnv(
+        Cfg(num_agents=N, env_seed=0, building_mode=mode,
             curriculum_enabled=False))
 
 
@@ -100,9 +108,32 @@ def test_velocity_action_model_and_load_limit():
     print("velocity action model load limit OK")
 
 
+def test_single_target_velocity_action_model():
+    e = make_single(N=1, mode="empty")
+    assert e.action_space[e.agents[0]].shape == (4,)
+    e.reset()
+    a0 = e.agents[0]
+    e.uav_positions[0] = np.array([500.0, 500.0, 200.0], np.float32)
+    e.uav_velocities[0] = np.array([10.0, 0.0, 0.0], np.float32)
+    e.uav_yaws[0] = 0.0
+    e.max_accel = 2.0
+    e.max_yaw_rate = 10.0
+    e.max_load_factor = 2.0
+    before_yaw = float(e.uav_yaws[0])
+    e.step({a0: np.array([1.0, 0.0, 0.0, 1.0], np.float32)})
+    dyaw = abs(((float(e.uav_yaws[0]) - before_yaw + np.pi) % (2 * np.pi)) - np.pi)
+    expected = np.sqrt(e.max_load_factor ** 2 - 1.0) * e.gravity / 10.0
+    assert dyaw <= expected + 1e-5, (dyaw, expected)
+    assert e.uav_velocities[0][0] > 10.0
+    assert np.isfinite(e.uav_velocities[0]).all()
+    assert e.state().shape == (e.state_dim,)
+    print("single-target velocity action model OK")
+
+
 if __name__ == "__main__":
     test_dims_and_step()
     test_100_random_steps_no_nan()
     test_capture_flips_alive()
     test_velocity_action_model_and_load_limit()
+    test_single_target_velocity_action_model()
     print("ALL PASS")
