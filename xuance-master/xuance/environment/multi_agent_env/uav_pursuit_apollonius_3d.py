@@ -57,9 +57,8 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
         # override per-level when enabled). Lets us set a learnable lambda.
         self.target_min_speed = float(getattr(config, "target_min_speed", 4.0))
         self.target_max_speed = float(getattr(config, "target_max_speed", 11.0))
-        # Keeps the evader off the walls so captures have to be earned in open air; see
-        # _evader_step. 0 reproduces the previous behaviour exactly.
-        self.evader_center_pull = float(getattr(config, "evader_center_pull", 0.0))
+        # Keeps the evader from exploiting the arena edges; see _evader_step.
+        self.evader_center_pull = float(getattr(config, "evader_center_pull", 1.5))
         self.target_accel = 0.5
         self.target_speed = self.target_min_speed
         self.target_radius = 0.5
@@ -67,11 +66,31 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
         self.cartesian_lambda_cap = getattr(config, "cartesian_lambda_cap", 0.8)
         # euclidean | visibility (visibility voids pursuers occluded from probe points)
         self.criterion_mode = getattr(config, "criterion_mode", "euclidean")
-        # GAT-O: conditionally expose nearest-k obstacle node features in obs
-        self.use_obstacle_gat = bool(getattr(config, "use_obstacle_gat", False))
-        self.obstacle_gat_k = int(getattr(config, "obstacle_gat_k", 4))
-        self.obstacle_gat_feat_dim = 4
+        # Nearest-building observation, inspired by the reference environment:
+        # each pursuer sees the nearest k building prisms as relative geometry.
+        self.use_nearest_building_obs = bool(getattr(
+            config, "use_nearest_building_obs",
+            getattr(config, "use_obstacle_gat", True)))
+        self.nearest_building_k = int(getattr(
+            config, "nearest_building_k",
+            getattr(config, "obstacle_gat_k", 10)))
+        self.nearest_building_feat_dim = 6
+        # Backward-compatible names used by older scripts.
+        self.use_obstacle_gat = self.use_nearest_building_obs
+        self.obstacle_gat_k = self.nearest_building_k
+        self.obstacle_gat_feat_dim = self.nearest_building_feat_dim
         self.obstacle_sense = 200.0
+        # Environment-side short-horizon target prediction. This is heuristic,
+        # not a learned network, so no target-trajectory dataset is required.
+        self.use_target_prediction_obs = bool(getattr(config, "use_target_prediction_obs", True))
+        self.future_prediction_steps = int(getattr(config, "future_prediction_steps", 5))
+        self.building_collision_penalty = float(getattr(config, "building_collision_penalty", 100.0))
+        self.boundary_collision_penalty = float(getattr(config, "boundary_collision_penalty", 200.0))
+        self.boundary_warning_distance = float(getattr(config, "boundary_warning_distance", 100.0))
+        self.uav_collision_penalty = float(getattr(config, "uav_collision_penalty", 50.0))
+        # Keep per-step safety shaping bounded; collision events are charged separately.
+        self.safe_dense_scale = float(getattr(config, "safe_dense_scale", 0.1))
+        self.capture_bonus = float(getattr(config, "capture_bonus", 500.0))
         # reward-term ablation (3.2): names in this set get zero weight
         self.reward_disable = set(getattr(config, "reward_disable", []) or [])
         # closure: drive capture once encircled (anti "encircle-but-never-close" optimum)
@@ -80,7 +99,7 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
         # fails (it outruns the one closer). This rewards ALSO reducing the 2nd-nearest
         # distance once encircled -> two pursuers close together and the evader flees one
         # INTO the other. Opt-in (0.0 -> flagship reward byte-identical). See _pincer_bonus.
-        self.pincer_weight = float(getattr(config, "pincer_weight", 0.0))
+        self.pincer_weight = float(getattr(config, "pincer_weight", 4.0))
         # close_k: LAYERED encirclement. Once encircled, guide_collapse pulls EVERY pursuer onto
         # a catch_radius*1.3 (~19.5 m) sphere. Since pursuers cannot fly slower than
         # uav_min_speed (9 m/s) they cannot hold station there, so N bodies orbit one small
@@ -88,7 +107,7 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
         # at N=6). With close_k>0 only the close_k most dangerous escape directions collapse
         # inward (sealing the capture sphere needs 3-4 agents); the remaining pursuers hold the
         # outer containment ring. 0 = legacy "everyone collapses".
-        self.close_k = int(getattr(config, "close_k", 0))
+        self.close_k = int(getattr(config, "close_k", 2))
         # obs_avoid_weight: scales the radar-based obstacle penalty so avoidance engages EARLIER
         # (client-approved simplification). 1.0 = legacy.
         self.obs_avoid_weight = float(getattr(config, "obs_avoid_weight", 1.0))
@@ -114,10 +133,14 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
         # FASTER evader (a one-sided chase can never catch/surround a faster target).
         self.surround_spawn = bool(getattr(config, "surround_spawn", False))
         self.spawn_radius = float(getattr(config, "spawn_radius", 200.0))
-        # Training-only curriculum switch.  With soft collisions the UAV still
-        # receives the full crash penalty and slides off the obstacle, but the
-        # episode continues so the replay buffer contains recovery trajectories.
-        # Evaluation and all legacy runs keep hard termination by default.
+        # Building collisions can be softened independently from boundary and
+        # teammate collisions. The UAV still receives a large penalty and slides
+        # off the obstacle, but the episode continues.
+        self.terminate_on_building_collision = bool(
+            getattr(config, "terminate_on_building_collision", False))
+        # Boundary contact is recoverable by default; this switch controls teammate crashes.
+        self.terminate_on_boundary_collision = bool(
+            getattr(config, "terminate_on_boundary_collision", False))
         self.terminate_on_collision = bool(getattr(config, "terminate_on_collision", True))
 
         self._setup_curriculum(config)       # sets reward_weights/mix, building_mode, spawn_offset, target_pitch_max
@@ -142,14 +165,14 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
         self.buildings_dir = getattr(
             config, "buildings_dir",
             os.path.join(os.path.dirname(__file__), "buildings"))
-        self.buildings = np.array(self._generate_city_blocks(), dtype=np.float32)
+        self.buildings = self._as_building_array(self._generate_city_blocks())
 
         # domain randomization: if set, each reset draws a random density from this
         # pool -> one model robust across obstacle densities (no XuanCe curriculum surgery).
         self.randomize_density = getattr(config, "randomize_density", None)
         if self.randomize_density:
             self.randomize_density = list(self.randomize_density)
-            self._density_pool = {m: np.array(self._load_blocks(m), dtype=np.float32)
+            self._density_pool = {m: self._as_building_array(self._load_blocks(m))
                                   for m in self.randomize_density}
 
         z_mid = 0.5 * (self.z_min + self.z_max)
@@ -165,10 +188,14 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
         self.action_space = {a: gym.spaces.Box(low=-1.0, high=1.0, shape=(4,), dtype=np.float32)
                              for a in self.agents}
         # obs: norm_pos(3)+heading(3)+nspd(1)+rel_guide(3)+rel_target(3)
-        #      +rel_mates(3*(N-1))+t_head(3)+ntspd(1)+radar(16) [+ obstacle nodes k*4]
+        #      +rel_mates(3*(N-1))+t_head(3)+ntspd(1)+radar(16)
+        #      +nearest buildings(k*6)+heuristic future target rel positions(h*3)
         base_obs = 17 + 3 * (self.num_agents - 1) + self.num_radar_rays
-        self.obs_dim = base_obs + (self.obstacle_gat_k * self.obstacle_gat_feat_dim
-                                   if self.use_obstacle_gat else 0)
+        self.obs_dim = base_obs
+        if self.use_nearest_building_obs:
+            self.obs_dim += self.nearest_building_k * self.nearest_building_feat_dim
+        if self.use_target_prediction_obs:
+            self.obs_dim += self.future_prediction_steps * 3
         self.observation_space = {a: gym.spaces.Box(low=-1.0, high=1.0, shape=(self.obs_dim,), dtype=np.float32)
                                   for a in self.agents}
         # state: pursuer pos(3N)+vel(3N)+yaw(N)+target(6)+guides(3N)
@@ -198,9 +225,16 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
         self.target_trail = deque(maxlen=100)
 
         self.episode_sub_rewards = {
-            a: {"r_near": 0.0, "r_safe": 0.0, "r_pos": 0.0, "r_gap": 0.0, "r_finish": 0.0}
+            a: {name: 0.0 for name in (
+                "r_near", "r_safe", "r_safe_dense", "r_collision",
+                "r_safe_obstacle", "r_safe_teammate", "r_safe_effort",
+                "r_safe_altitude", "r_safe_boundary",
+                "r_collision_building", "r_collision_boundary", "r_collision_uav",
+                "r_pos", "r_gap", "r_finish", "r_capture", "r_closure", "r_pincer",
+            )}
             for a in self.agents
         }
+        self._previous_collision_sources = {a: set() for a in self.agents}
         self.debug_rf = 0.0
         self.apollonius_escape = {}
         self.apollonius_margin_ema = None
@@ -217,8 +251,8 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
             (0, 3.0, 5.0, 0.2, 20.0, "empty", 2.5, 0.2, 0.2, 3.0, 0.3, 0.0),
             (1, 4.0, 7.0, 0.3, 40.0, "empty", 2.2, 0.4, 0.4, 3.0, 0.35, 0.25),
             (2, 4.0, 9.0, 0.4, 60.0, "open", 2.0, 0.6, 0.8, 3.0, 0.4, 0.5),
-            (3, 4.0, 10.0, 0.5, 80.0, "medium", 2.0, 0.8, 1.0, 3.0, 0.45, 0.75),
-            (4, 4.0, 12.0, 0.5, 100.0, "medium", 2.0, 0.8, 1.0, 3.5, 0.5, 1.0),
+            (3, 4.0, 10.0, 0.5, 80.0, "medium", 2.0, 0.4, 0.5, 3.0, 0.45, 0.75),
+            (4, 4.0, 12.0, 0.5, 100.0, "medium", 2.0, 0.4, 0.5, 3.5, 0.5, 1.0),
         ]
         sched = []
         for (lvl, tmin, tmax, tacc, off, bmode, wn, wp, wg, wf, mix, zsc) in base:
@@ -249,9 +283,9 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
         self.reward_weights = {
             "w_near": float(getattr(config, "w_near", 2.0)),
             "w_safe": float(getattr(config, "w_safe", 1.0)),
-            "w_pos": float(getattr(config, "w_pos", 1.2)),
-            "w_gap": float(getattr(config, "w_gap", 1.5)),
-            "w_finish": float(getattr(config, "w_finish", 2.0)),
+            "w_pos": float(getattr(config, "w_pos", 0.4)),
+            "w_gap": float(getattr(config, "w_gap", 0.5)),
+            "w_finish": float(getattr(config, "w_finish", 3.0)),
         }
         self.reward_mix = {"guide_progress": 0.6, "team_progress": 0.4}
         self.curriculum_config = {}
@@ -277,7 +311,7 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
         self.reward_mix = copy.deepcopy(self.curriculum_config["reward_mix"])
         self.target_pitch_max = self.pitch_max * float(self.curriculum_config.get("z_escape_scale", 1.0))
         if reload_buildings and hasattr(self, "buildings"):
-            self.buildings = np.array(self._generate_city_blocks(), dtype=np.float32)
+            self.buildings = self._as_building_array(self._generate_city_blocks())
         return self.curriculum_level
 
     def update_curriculum(self, success_rate, global_step):
@@ -310,7 +344,21 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
             "target_pitch_max": float(getattr(self, "target_pitch_max", self.pitch_max)),
             "separation_weight": float(self.separation_weight),
             "separation_distance": float(self.separation_distance),
+            "evader_center_pull": float(self.evader_center_pull),
+            "pincer_weight": float(self.pincer_weight),
+            "close_k": int(self.close_k),
             "terminate_on_collision": bool(self.terminate_on_collision),
+            "terminate_on_boundary_collision": bool(self.terminate_on_boundary_collision),
+            "terminate_on_building_collision": bool(self.terminate_on_building_collision),
+            "use_nearest_building_obs": bool(self.use_nearest_building_obs),
+            "nearest_building_k": int(self.nearest_building_k),
+            "use_target_prediction_obs": bool(self.use_target_prediction_obs),
+            "future_prediction_steps": int(self.future_prediction_steps),
+            "building_collision_penalty": float(self.building_collision_penalty),
+            "boundary_collision_penalty": float(self.boundary_collision_penalty),
+            "boundary_warning_distance": float(self.boundary_warning_distance),
+            "safe_dense_scale": float(self.safe_dense_scale),
+            "capture_bonus": float(self.capture_bonus),
             "spawn_safety_enabled": bool(self.spawn_safety_enabled),
             "spawn_clearance": float(self.spawn_clearance),
             "spawn_adjusted_count": int(np.count_nonzero(self.spawn_offsets > 1e-6)),
@@ -323,7 +371,7 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
     def _load_blocks(self, mode):
         """Load and validate one obstacle map; only 'empty' may omit an asset."""
         if mode == "empty":
-            return []
+            return np.zeros((0, 5), dtype=np.float32).tolist()
         config_file = os.path.join(self.buildings_dir, f"buildings_{mode}.json")
         if not os.path.isfile(config_file):
             raise FileNotFoundError(
@@ -338,32 +386,60 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
         except (TypeError, ValueError) as exc:
             raise ValueError(f"Invalid obstacle footprints in {config_file}: {exc}") from exc
         if array.size == 0:
-            raise ValueError(f"Empty obstacle map is invalid for mode={mode!r}: {config_file}")
-        valid_shape = array.ndim == 2 and array.shape[1] == 4
+            return np.zeros((0, 5), dtype=np.float32).tolist()
+        if array.ndim == 1:
+            array = array.reshape(1, -1)
+        if array.ndim == 2 and array.shape[1] == 4:
+            heights = np.full((array.shape[0], 1), self.z_max, dtype=np.float32)
+            array = np.concatenate([array, heights], axis=1)
+        valid_shape = array.ndim == 2 and array.shape[1] == 5
         valid_values = np.all(np.isfinite(array))
         valid_extents = valid_shape and np.all(array[:, 0] < array[:, 1]) and np.all(array[:, 2] < array[:, 3])
-        valid_bounds = valid_shape and np.all(array >= 0.0) and np.all(array <= self.map_size)
+        valid_xy_bounds = valid_shape and np.all(array[:, :4] >= 0.0) and np.all(array[:, :4] <= self.map_size)
+        valid_heights = valid_shape and np.all(array[:, 4] >= self.z_min) and np.all(array[:, 4] <= self.z_max)
+        valid_bounds = valid_xy_bounds and valid_heights
         if not (valid_shape and valid_values and valid_extents and valid_bounds):
-            raise ValueError(f"Invalid obstacle footprints in {config_file}: shape={array.shape}")
+            raise ValueError(f"Invalid obstacle prisms in {config_file}: shape={array.shape}")
         return array.tolist()
 
     def _generate_city_blocks(self):
         return self._load_blocks(getattr(self, "building_mode", "medium"))
+
+    def _as_building_array(self, blocks):
+        array = np.asarray(blocks, dtype=np.float32)
+        if array.size == 0:
+            return np.zeros((0, 5), dtype=np.float32)
+        if array.ndim == 1:
+            array = array.reshape(1, -1)
+        if array.shape[1] == 4:
+            heights = np.full((array.shape[0], 1), self.z_max, dtype=np.float32)
+            array = np.concatenate([array, heights], axis=1)
+        return array.astype(np.float32)
+
+    def _building_top(self, building):
+        return float(building[4]) if len(building) >= 5 else self.z_max
+
+    def _point_hits_building(self, pos, radius, building):
+        xmin, xmax, ymin, ymax = building[:4]
+        ztop = self._building_top(building)
+        return ((xmin - radius < pos[0] < xmax + radius) and
+                (ymin - radius < pos[1] < ymax + radius) and
+                (pos[2] <= ztop + radius))
 
     # ============================================================
     # Geometry / motion helpers
     # ============================================================
     def _is_in_building(self, pos, radius):
         for b in self.buildings:
-            xmin, xmax, ymin, ymax = b
-            if (xmin - radius < pos[0] < xmax + radius) and (ymin - radius < pos[1] < ymax + radius):
+            if self._point_hits_building(pos, radius, b):
                 return True
         return False
 
     def _spawn_clearance_xy(self, pos):
         x, y = float(pos[0]), float(pos[1])
         best = min(x, self.map_size - x, y, self.map_size - y)
-        for xmin, xmax, ymin, ymax in self.buildings:
+        for b in self.buildings:
+            xmin, xmax, ymin, ymax = b[:4]
             dx = max(float(xmin) - x, 0.0, x - float(xmax))
             dy = max(float(ymin) - y, 0.0, y - float(ymax))
             if float(xmin) <= x <= float(xmax) and float(ymin) <= y <= float(ymax):
@@ -495,14 +571,14 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
             next_pos[1] = self.map_size - radius; hit = True
         next_pos[2] = np.clip(next_pos[2], self.z_min, self.z_max)
         for b in self.buildings:
-            xmin, xmax, ymin, ymax = b
-            if (xmin - radius < next_pos[0] < xmax + radius) and (ymin - radius < next_pos[1] < ymax + radius):
+            xmin, xmax, ymin, ymax = b[:4]
+            if self._point_hits_building(next_pos, radius, b):
                 hit = True
                 px = np.array([next_pos[0], pos[1], next_pos[2]], dtype=np.float32)
-                if not ((xmin - radius < px[0] < xmax + radius) and (ymin - radius < px[1] < ymax + radius)):
+                if not self._point_hits_building(px, radius, b):
                     next_pos = px; break
                 py = np.array([pos[0], next_pos[1], next_pos[2]], dtype=np.float32)
-                if not ((xmin - radius < py[0] < xmax + radius) and (ymin - radius < py[1] < ymax + radius)):
+                if not self._point_hits_building(py, radius, b):
                     next_pos = py; break
                 next_pos = np.array([pos[0], pos[1], next_pos[2]], dtype=np.float32); break
         return next_pos, hit
@@ -524,16 +600,16 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
             next_pos[1] = self.map_size - radius; hit = True
         # z floor/ceiling: clip only (altitude limit, not a crash)
         next_pos[2] = np.clip(next_pos[2], self.z_min, self.z_max)
-        # building footprints (xy), full height -> slide like 2D
+        # Variable-height building prisms; high enough vehicles can fly over.
         for b in self.buildings:
-            xmin, xmax, ymin, ymax = b
-            if (xmin - radius < next_pos[0] < xmax + radius) and (ymin - radius < next_pos[1] < ymax + radius):
+            xmin, xmax, ymin, ymax = b[:4]
+            if self._point_hits_building(next_pos, radius, b):
                 hit = True
                 px = np.array([next_pos[0], pos[1], next_pos[2]], dtype=np.float32)
-                if not ((xmin - radius < px[0] < xmax + radius) and (ymin - radius < px[1] < ymax + radius)):
+                if not self._point_hits_building(px, radius, b):
                     next_pos = px; break
                 py = np.array([pos[0], next_pos[1], next_pos[2]], dtype=np.float32)
-                if not ((xmin - radius < py[0] < xmax + radius) and (ymin - radius < py[1] < ymax + radius)):
+                if not self._point_hits_building(py, radius, b):
                     next_pos = py; break
                 next_pos = np.array([pos[0], pos[1], next_pos[2]], dtype=np.float32); break
         return next_pos, hit
@@ -555,8 +631,8 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
             sources.append("boundary:y_min")
         if candidate[1] > self.map_size - radius:
             sources.append("boundary:y_max")
-        for index, (xmin, xmax, ymin, ymax) in enumerate(self.buildings):
-            if xmin - radius < candidate[0] < xmax + radius and ymin - radius < candidate[1] < ymax + radius:
+        for index, b in enumerate(self.buildings):
+            if self._point_hits_building(candidate, radius, b):
                 sources.append(f"building:{index}")
         return sources
 
@@ -567,10 +643,13 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
                 self.radar_range, self.map_size, self.z_min, self.z_max, self.buildings)
 
     def _nearest_obstacle_features(self, pos, k):
-        """(k, 4) features of the k nearest building footprints from `pos`:
-        [rel_dx/map, rel_dy/map, clip(dist/sense,0,1), valid_flag]. Zero-padded
-        when fewer than k buildings (valid_flag stays 0)."""
-        feats = np.zeros((k, 4), dtype=np.float32)
+        """(k, 6) nearest building features:
+        [rel_dx, rel_dy, rel_top_z, height_norm, dist_xy, valid].
+
+        rel_dx/rel_dy point to the nearest point on the rectangular footprint.
+        rel_top_z lets the policy infer whether flying over the building is viable.
+        """
+        feats = np.zeros((k, self.nearest_building_feat_dim), dtype=np.float32)
         if len(self.buildings) == 0:
             return feats
         bx = np.clip(pos[0], self.buildings[:, 0], self.buildings[:, 1])
@@ -580,8 +659,26 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
         dists = np.hypot(dvx, dvy)
         order = np.argsort(dists)[:k]
         for i, idx in enumerate(order):
+            height = self._building_top(self.buildings[idx])
             feats[i] = [dvx[idx] / self.map_size, dvy[idx] / self.map_size,
+                        (height - pos[2]) / max(self.z_max - self.z_min, 1e-6),
+                        (height - self.z_min) / max(self.z_max - self.z_min, 1e-6),
                         np.clip(dists[idx] / self.obstacle_sense, 0.0, 1.0), 1.0]
+        return feats
+
+    def _predict_target_future(self, origin):
+        feats = np.zeros((self.future_prediction_steps, 3), dtype=np.float32)
+        if self.future_prediction_steps <= 0:
+            return feats
+        vel = self._velocity_from_yaw_pitch_speed(
+            self.target_yaw, self.target_pitch, self.target_speed)
+        pred = self.target_position.astype(np.float32).copy()
+        for step in range(self.future_prediction_steps):
+            pred = pred + vel
+            pred[0] = np.clip(pred[0], self.target_radius, self.map_size - self.target_radius)
+            pred[1] = np.clip(pred[1], self.target_radius, self.map_size - self.target_radius)
+            pred[2] = np.clip(pred[2], self.z_min, self.z_max)
+            feats[step] = (pred - origin) / self.map_size
         return feats
 
     def _compute_r_f(self, target_pos=None, target_speed=None):
@@ -759,7 +856,8 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
                 dist = float(np.linalg.norm(vec))
                 ideal = vec / max(dist, 1e-6)
                 ang = float(np.arccos(np.clip(np.dot(vdir, ideal), -1.0, 1.0)))
-                los = 0.0 if g3.footprint_los(upos, tp, self.buildings) else 1500.0
+                los = 0.0 if g3.segment_los(upos, tp, self.buildings,
+                                            self.z_min, self.z_max) else 1500.0
                 cons = 0.8 * float(np.linalg.norm(tp - prev)) if prev is not None else 0.0
                 tt = float(np.linalg.norm(tp - target)) / max(self.target_speed, 1e-6)
                 ut = dist / max(self.uav_max_speed, 1e-6)
@@ -795,8 +893,10 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
             ntspd = np.array([self.target_speed / self.target_max_speed * 2 - 1], np.float32)
             radar = (self._radar_cache[i] * 2 - 1).astype(np.float32)
             extra = []
-            if self.use_obstacle_gat:
-                extra = [self._nearest_obstacle_features(pos, self.obstacle_gat_k).flatten()]
+            if self.use_nearest_building_obs:
+                extra.append(self._nearest_obstacle_features(pos, self.nearest_building_k).flatten())
+            if self.use_target_prediction_obs:
+                extra.append(self._predict_target_future(pos).flatten())
             obs[ag] = np.concatenate([norm_pos, heading, nspd, rel_guide, rel_target,
                                       rel_mates, t_head, ntspd, radar] + extra).astype(np.float32)
         return obs
@@ -824,6 +924,7 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
             for k in self.episode_sub_rewards[a]:
                 self.episode_sub_rewards[a][k] = 0.0
             self.uav_trails[a].clear()
+        self._previous_collision_sources = {a: set() for a in self.agents}
         self.target_trail.clear()
         self.apollonius_escape = {}
         self.apollonius_margin_ema = None
@@ -958,16 +1059,18 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
         if len(self.buildings) > 0:
             xmins, xmaxs = self.buildings[:, 0], self.buildings[:, 1]
             ymins, ymaxs = self.buildings[:, 2], self.buildings[:, 3]
+            tops = self.buildings[:, 4]
             cx = np.clip(tx, xmins, xmaxs)
             cy = np.clip(ty, ymins, ymaxs)
             vx, vy = tx - cx, ty - cy
             dists = np.hypot(vx, vy)
-            m = (dists < 20.0) & (dists > 0.1)
+            active = tz <= tops + self.target_radius + 20.0
+            m = active & (dists < 20.0) & (dists > 0.1)
             if np.any(m):
                 s = 40.0 / (dists[m] ** 1.5)
                 rep[0] += float(np.sum((vx[m] / dists[m]) * s))
                 rep[1] += float(np.sum((vy[m] / dists[m]) * s))
-            if np.any(dists <= 0.1):
+            if np.any(active & (dists <= 0.1)):
                 rep[:2] += np.random.randn(2).astype(np.float32) * 100.0
 
         # Restoring pull toward the centre of the airspace.
@@ -1146,44 +1249,83 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
             pincer_term = self.pincer_weight * self._pincer_bonus(
                 esa, np.sort(self.last_distances), np.sort(cur_dists), max_rel_speed)
 
+        collision_penalties = {}
+        collision_event_terms = {}
+        for a in self.agents:
+            sources = {str(src) for src in collision_sources.get(a, [])}
+            new_sources = sources - self._previous_collision_sources[a]
+            self._previous_collision_sources[a] = sources
+            event_terms = {
+                "r_collision_building": (
+                    -self.building_collision_penalty
+                    if any(src.startswith("building:") for src in new_sources) else 0.0
+                ),
+                "r_collision_boundary": (
+                    -self.boundary_collision_penalty
+                    if any(src.startswith("boundary:") for src in new_sources) else 0.0
+                ),
+                "r_collision_uav": (
+                    -self.uav_collision_penalty
+                    if any(src.startswith("uav:") for src in new_sources) else 0.0
+                ),
+            }
+            collision_event_terms[a] = event_terms
+            collision_penalties[a] = sum(event_terms.values())
+
         for i, a in enumerate(self.agents):
             dist = float(cur_dists[i])
             g_new = float(np.linalg.norm(self.uav_positions[i] - self.current_guide_points[a]))
             g_old = float(np.linalg.norm(old_positions[i] - self.current_guide_points[a]))
             r_guide = float(np.clip((g_old - g_new) / max_rel_speed, -1.0, 1.0))
 
-            if hit_flags[i]:
-                r_near = 0.0
-                r_safe = -15.0
-            else:
-                r_near = (self.reward_mix["guide_progress"] * r_guide
-                          + self.reward_mix["team_progress"] * r_team)
-                radar_pen = ((radar_min[i] - self.radar_range) / self.radar_range) ** 2
-                r_obs = -0.5 * self.obs_avoid_weight * radar_pen
-                r_turn = -float(np.clip(actions_dict[a][1], -1.0, 1.0) ** 2)
-                r_pitch = -float(np.clip(actions_dict[a][2], -1.0, 1.0) ** 2)
-                r_mate = 0.0
-                for j in range(self.num_agents):
-                    if i == j:
-                        continue
-                    dmate = float(np.linalg.norm(self.uav_positions[i] - self.uav_positions[j]))
-                    if dmate < 10.0:
-                        r_mate -= (10.0 - dmate) / 10.0
-                r_separation = self._teammate_separation_penalty(i)
-                z = float(self.uav_positions[i, 2])
-                thr = 30.0
-                r_zlimit = 0.0
-                if z - self.z_min < thr:
-                    r_zlimit -= (thr - (z - self.z_min)) / thr
-                if self.z_max - z < thr:
-                    r_zlimit -= (thr - (self.z_max - z)) / thr
-                r_safe = (r_obs + 0.5 * r_mate + 0.2 * r_turn + 0.2 * r_pitch
-                          + 0.5 * r_zlimit + self.separation_weight * r_separation)
+            r_near = (self.reward_mix["guide_progress"] * r_guide
+                      + self.reward_mix["team_progress"] * r_team)
+            radar_pen = ((radar_min[i] - self.radar_range) / self.radar_range) ** 2
+            r_obs = -0.5 * self.obs_avoid_weight * radar_pen
+            action = np.asarray(actions_dict[a], dtype=np.float32).reshape(-1)
+            accel_effort = float(np.mean(np.clip(action[:3], -1.0, 1.0) ** 2))
+            yaw_effort = float(np.clip(action[3], -1.0, 1.0) ** 2) if action.size > 3 else 0.0
+            r_accel = -accel_effort
+            r_yaw_rate = -yaw_effort
+            r_mate = 0.0
+            for j in range(self.num_agents):
+                if i == j:
+                    continue
+                dmate = float(np.linalg.norm(self.uav_positions[i] - self.uav_positions[j]))
+                if dmate < 10.0:
+                    r_mate -= (10.0 - dmate) / 10.0
+            r_separation = self._teammate_separation_penalty(i)
+            z = float(self.uav_positions[i, 2])
+            thr = 30.0
+            r_zlimit = 0.0
+            if z - self.z_min < thr:
+                r_zlimit -= (thr - (z - self.z_min)) / thr
+            if self.z_max - z < thr:
+                r_zlimit -= (thr - (self.z_max - z)) / thr
+            xy_clearance = min(
+                float(self.uav_positions[i, 0]) - self.uav_radius,
+                self.map_size - self.uav_radius - float(self.uav_positions[i, 0]),
+                float(self.uav_positions[i, 1]) - self.uav_radius,
+                self.map_size - self.uav_radius - float(self.uav_positions[i, 1]),
+            )
+            boundary_fraction = np.clip(
+                (self.boundary_warning_distance - xy_clearance) /
+                max(self.boundary_warning_distance, 1e-6), 0.0, 1.0)
+            r_xy_boundary = -float(boundary_fraction ** 2)
+            safe_dense_terms = {
+                "r_safe_obstacle": r_obs,
+                "r_safe_teammate": 0.5 * r_mate + self.separation_weight * r_separation,
+                "r_safe_effort": 0.2 * (r_accel + r_yaw_rate),
+                "r_safe_altitude": 0.5 * r_zlimit,
+                "r_safe_boundary": 0.5 * r_xy_boundary,
+            }
+            safe_dense = self.safe_dense_scale * sum(safe_dense_terms.values())
+            safe_collision = collision_penalties[a]
+            r_safe = safe_dense + safe_collision
 
+            r_capture = self.capture_bonus if is_caught else 0.0
             r_finish = 0.0
-            if is_caught:
-                r_finish = 80.0
-            elif dist < self.catch_radius * 3:
+            if not is_caught and dist < self.catch_radius * 3:
                 r_finish = (self.catch_radius * 3 - dist) / (self.catch_radius * 2)
             # closure is carried on the finish channel at the same w_finish weighting as
             # the validated method. Split disable gates keep the full reward byte-identical
@@ -1192,26 +1334,68 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
             fin_part = 0.0 if "r_finish" in self.reward_disable else r_finish
             clo_part = 0.0 if "r_closure" in self.reward_disable else closure_term
             pin_part = 0.0 if "r_pincer" in self.reward_disable else pincer_term
+            capture_part = (0.0 if {"r_capture", "r_finish"} & self.reward_disable
+                            else r_capture)
 
             wr_near = 0.0 if "r_near" in self.reward_disable else w["w_near"] * r_near
-            wr_safe = 0.0 if "r_safe" in self.reward_disable else w["w_safe"] * r_safe
+            wr_safe_dense = (0.0 if "r_safe" in self.reward_disable
+                             else w["w_safe"] * safe_dense)
+            wr_safe_collision = (0.0 if "r_safe" in self.reward_disable
+                                 else w["w_safe"] * safe_collision)
+            wr_safe = wr_safe_dense + wr_safe_collision
+            wr_safe_components = {
+                name: (0.0 if "r_safe" in self.reward_disable
+                       else w["w_safe"] * self.safe_dense_scale * value)
+                for name, value in safe_dense_terms.items()
+            }
+            wr_collision_components = {
+                name: (0.0 if "r_safe" in self.reward_disable
+                       else w["w_safe"] * value)
+                for name, value in collision_event_terms[a].items()
+            }
             wr_pos = 0.0 if "r_pos" in self.reward_disable else w["w_pos"] * r_pos_global
             wr_gap = 0.0 if "r_gap" in self.reward_disable else w["w_gap"] * r_gap_global
-            wr_finish = w["w_finish"] * (fin_part + clo_part + pin_part)
+            wr_capture = capture_part
+            wr_closure = w["w_finish"] * clo_part
+            wr_pincer = w["w_finish"] * pin_part
+            wr_finish_distance = w["w_finish"] * fin_part
+            wr_finish = wr_capture + wr_finish_distance + wr_closure + wr_pincer
             rewards_dict[a] = wr_near + wr_safe + wr_pos + wr_gap + wr_finish
             sr = self.episode_sub_rewards[a]
             sr["r_near"] += wr_near
             sr["r_safe"] += wr_safe
+            sr["r_safe_dense"] += wr_safe_dense
+            sr["r_collision"] += wr_safe_collision
+            for name, value in wr_safe_components.items():
+                sr[name] += value
+            for name, value in wr_collision_components.items():
+                sr[name] += value
             sr["r_pos"] += wr_pos
             sr["r_gap"] += wr_gap
             sr["r_finish"] += wr_finish
+            sr["r_capture"] += wr_capture
+            sr["r_closure"] += wr_closure
+            sr["r_pincer"] += wr_pincer
 
         self.last_distances = cur_dists.copy()
         for k, v in rewards_dict.items():
             self.individual_episode_reward[k] += v
 
+        building_crash = any(any(str(src).startswith("building:")
+                                 for src in collision_sources.get(a, []))
+                             for a in self.agents)
+        boundary_crash = any(
+            any(str(src).startswith("boundary:") for src in collision_sources.get(a, []))
+            for a in self.agents)
+        uav_crash = any(
+            any(str(src).startswith("uav:") for src in collision_sources.get(a, []))
+            for a in self.agents)
+        hard_crash = boundary_crash or uav_crash
         is_crashed = any(hit_flags)
-        terminate_for_crash = bool(is_crashed and self.terminate_on_collision)
+        terminate_for_crash = bool(
+            (boundary_crash and self.terminate_on_boundary_collision) or
+            (uav_crash and self.terminate_on_collision) or
+            (building_crash and self.terminate_on_building_collision))
         terminated = {a: bool(is_caught or terminate_for_crash) for a in self.agents}
         truncated = (self._episode_step >= self.max_episode_steps) if not terminated[self.agents[0]] else False
         info = {
@@ -1220,6 +1404,10 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
             "episode_sub_rewards": copy.deepcopy(self.episode_sub_rewards),
             "is_success": bool(is_caught),
             "is_collision": bool(is_crashed),
+            "is_boundary_collision": bool(boundary_crash),
+            "is_uav_collision": bool(uav_crash),
+            "is_building_collision": bool(building_crash),
+            "is_hard_collision": bool(hard_crash),
         }
         info.update({
             "collision_agents": [agent for agent in self.agents if agent in collision_sources],
@@ -1252,10 +1440,11 @@ class UAVPursuitApollonius3DEnv(RawMultiAgentEnv):
         ax.set_zlabel("Z (m)")
         ax.set_title("3D Multi-UAV Cooperative Pursuit")
 
-        # buildings as full-height prisms
+        # buildings as variable-height prisms
         for b in self.buildings:
-            xmin, xmax, ymin, ymax = b
-            dx, dy, dz = xmax - xmin, ymax - ymin, self.z_max - self.z_min
+            xmin, xmax, ymin, ymax = b[:4]
+            top = self._building_top(b)
+            dx, dy, dz = xmax - xmin, ymax - ymin, max(top - self.z_min, 1e-6)
             ax.bar3d(xmin, ymin, self.z_min, dx, dy, dz,
                      color="gray", alpha=0.25, shade=True)
 

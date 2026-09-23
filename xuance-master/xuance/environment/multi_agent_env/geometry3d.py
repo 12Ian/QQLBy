@@ -1,8 +1,8 @@
 """3D geometry helpers for the obstacle-aware UAV pursuit environment.
 
-All obstacles are full-height vertical prisms: their footprint is an axis-aligned
-box ``[xmin, xmax, ymin, ymax]`` extruded across the whole flight layer, so a 3D
-line-of-sight reduces to the 2D footprint check on the (x, y) projection.
+Obstacles are vertical prisms. They may be specified either as legacy full-height
+footprints ``[xmin, xmax, ymin, ymax]`` or as variable-height buildings
+``[xmin, xmax, ymin, ymax, height]``.
 """
 import numpy as np
 
@@ -33,11 +33,14 @@ def _slab(o, comp, lo, hi):
     return np.minimum(t1, t2), np.maximum(t1, t2)
 
 
+def _building_top(b, z_max):
+    return float(b[4]) if len(b) >= 5 else float(z_max)
+
+
 def ray_free_distance(origin, dirs, map_size, z_min, z_max, buildings):
     """Distance from ``origin`` along each unit direction until it leaves the
     world box ``[0,map_size]^2 x [z_min,z_max]`` or first enters a building
-    footprint. ``buildings`` is an (M,4) array of full-height xy AABBs
-    ``[xmin,xmax,ymin,ymax]``. Returns (K,) float32 distances."""
+    prism. Returns (K,) float32 distances."""
     origin = np.asarray(origin, np.float64)
     d = np.asarray(dirs, np.float64)
 
@@ -52,16 +55,48 @@ def ray_free_distance(origin, dirs, map_size, z_min, z_max, buildings):
         for m in range(b.shape[0]):
             en_x, ex_x = _slab(origin[0], d[:, 0], b[m, 0], b[m, 1])
             en_y, ex_y = _slab(origin[1], d[:, 1], b[m, 2], b[m, 3])
-            t_enter = np.maximum(en_x, en_y)
-            t_exit = np.minimum(ex_x, ex_y)
+            en_z, ex_z = _slab(origin[2], d[:, 2], z_min, _building_top(b[m], z_max))
+            t_enter = np.maximum(np.maximum(en_x, en_y), en_z)
+            t_exit = np.minimum(np.minimum(ex_x, ex_y), ex_z)
             hit = (t_exit >= 0) & (t_enter <= t_exit) & (t_enter > 0)
             best = np.where(hit, np.minimum(best, t_enter), best)
     return best.astype(np.float32)
 
 
+def segment_los(p1, p2, buildings, z_min=0.0, z_max=np.inf):
+    """True if segment p1->p2 hits no building prism.
+
+    When p1/p2 are 2D points this falls back to legacy footprint LOS, which is
+    still used by planar detour helpers.
+    """
+    if buildings is None or len(buildings) == 0:
+        return True
+    p1 = np.asarray(p1, np.float64)
+    p2 = np.asarray(p2, np.float64)
+    if p1.shape[0] < 3 or p2.shape[0] < 3:
+        return footprint_los(p1, p2, buildings)
+    d = p2 - p1
+    for b in buildings:
+        xmin, xmax, ymin, ymax = b[:4]
+        ztop = _building_top(b, z_max)
+        t_enter, t_exit = 0.0, 1.0
+        for axis, lo, hi in ((0, xmin, xmax), (1, ymin, ymax), (2, z_min, ztop)):
+            if abs(d[axis]) < 1e-12:
+                if p1[axis] < lo or p1[axis] > hi:
+                    t_enter, t_exit = 1.0, 0.0
+                    break
+                continue
+            ta = (lo - p1[axis]) / d[axis]
+            tb = (hi - p1[axis]) / d[axis]
+            t_enter = max(t_enter, min(ta, tb))
+            t_exit = min(t_exit, max(ta, tb))
+        if t_enter <= t_exit and t_exit >= 0.0 and t_enter <= 1.0:
+            return False
+    return True
+
+
 def footprint_los(p1, p2, buildings):
-    """True if the xy projection of segment p1->p2 hits no building footprint.
-    Buildings are full-height prisms, so this is exact 3D LOS for them."""
+    """True if the xy projection of segment p1->p2 hits no building footprint."""
     if buildings is None or len(buildings) == 0:
         return True
     p1 = np.asarray(p1, np.float64)
@@ -70,7 +105,7 @@ def footprint_los(p1, p2, buildings):
     min_x, max_x = min(p1[0], p2[0]), max(p1[0], p2[0])
     min_y, max_y = min(p1[1], p2[1]), max(p1[1], p2[1])
     for b in buildings:
-        xmin, xmax, ymin, ymax = b
+        xmin, xmax, ymin, ymax = b[:4]
         if max_x < xmin or min_x > xmax or max_y < ymin or min_y > ymax:
             continue
         t_enter, t_exit = 0.0, 1.0
@@ -132,8 +167,7 @@ def radar_distances(origin, yaw, pitch, radar_range, map_size, z_min, z_max,
 
 def footprint_los_batch(origin, points, buildings):
     """Vectorized footprint LOS from one origin to K points (xy projection).
-    Returns bool[K]; True = unobstructed. Buildings are full-height xy AABBs.
-    Matches the scalar ``footprint_los`` element-wise."""
+    Returns bool[K]; True = unobstructed. Matches ``footprint_los``."""
     pts = np.asarray(points, np.float64)
     K = pts.shape[0]
     vis = np.ones(K, dtype=bool)
@@ -148,7 +182,7 @@ def footprint_los_batch(origin, points, buildings):
     x_par = np.abs(dx) < eps
     y_par = np.abs(dy) < eps
     for b in buildings:
-        xmin, xmax, ymin, ymax = b
+        xmin, xmax, ymin, ymax = b[:4]
         t_enter = np.zeros(K)
         t_exit = np.ones(K)
         # x slab
@@ -172,6 +206,20 @@ def footprint_los_batch(origin, points, buildings):
     return vis
 
 
+def segment_los_batch(origin, points, buildings, z_min=0.0, z_max=np.inf):
+    """Vectorized 3D segment LOS from one origin to K points."""
+    pts = np.asarray(points, np.float64)
+    vis = np.ones(pts.shape[0], dtype=bool)
+    if buildings is None or len(buildings) == 0:
+        return vis
+    o = np.asarray(origin, np.float64)
+    if o.shape[0] < 3 or pts.shape[1] < 3:
+        return footprint_los_batch(origin, points, buildings)
+    for k, point in enumerate(pts):
+        vis[k] = segment_los(o, point, buildings, z_min, z_max)
+    return vis
+
+
 # --- detour-aware travel distance -------------------------------------------------
 #
 # The visibility criterion was binary: if a building blocked a pursuer's line of sight to a
@@ -190,7 +238,7 @@ def footprint_los_batch(origin, points, buildings):
 # field already evaluates 200 directions x 12 probes x N pursuers per step.
 
 def _corners(b, inflate):
-    xmin, xmax, ymin, ymax = b
+    xmin, xmax, ymin, ymax = b[:4]
     return np.array([[xmin - inflate, ymin - inflate], [xmax + inflate, ymin - inflate],
                      [xmax + inflate, ymax + inflate], [xmin - inflate, ymax + inflate]], np.float64)
 

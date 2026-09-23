@@ -10,7 +10,12 @@ This increment uses straight-line pursuer distances. The visibility-constrained
 variant (occluded pursuers' blockade voided) is a later increment.
 """
 import numpy as np
-from .geometry3d import solid_angle_per_point, footprint_los_batch, detour_distance_batch
+from .geometry3d import (
+    solid_angle_per_point,
+    footprint_los_batch,
+    segment_los_batch,
+    detour_distance_batch,
+)
 
 
 def compute_escape_field_3d(target_pos, target_speed, uav_positions,
@@ -59,7 +64,7 @@ def compute_escape_field_3d(target_pos, target_speed, uav_positions,
         dd = np.linalg.norm(pts[None, :, :] - U[:, None, :], axis=2) / vu
         if criterion_mode == "visibility" and buildings is not None and len(buildings) > 0:
             for ui in range(U.shape[0]):
-                occluded = ~footprint_los_batch(U[ui], pts, buildings)
+                occluded = ~segment_los_batch(U[ui], pts, buildings)
                 if occluded.any():
                     dd[ui, occluded] = np.inf   # occluded pursuer's blockade voided
         elif criterion_mode == "detour" and buildings is not None and len(buildings) > 0:
