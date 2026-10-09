@@ -76,7 +76,9 @@ Trajectory Prediction/
 
 ### 当前实现状态
 
-第一阶段已经落在较紧凑的 `src/trajectory_prediction/` 中：`simulator.py` 负责独立的一对一三维场景与标签，`data.py` 负责轨迹级划分和窗口，`intention.py` 是九类 BiLSTM，`metrics.py` 包含 ADE/FDE 与 CV/CA，`cli.py` 提供生成、训练、评估入口。配置分为意图实验与轨迹实验两份；`tests/test_core.py` 检查速度/过载、视场采样、时间索引和窗口边界。上面目录树里的图编码、候选、裁剪、解码、教师损失、cov 适配器及滚动推理仍是后续模块，不应将当前 CV/CA 结果视为论文完整预测方法的结果。
+当前实现落在较紧凑的 `src/trajectory_prediction/` 中：`simulator.py` 负责独立的一对一三维场景与标签，`data.py` 负责轨迹级划分和窗口，`intention.py` 是九类 BiLSTM，`metrics.py` 包含 ADE/FDE 与 CV/CA。`prediction.py` 已实现双层时空交互注意力、九种物理候选、可行性/Top-K 裁剪与 GRU 增量解码；`prediction_train.py` 负责冻结意图网络、训练预测器和在独立数据目录上比较模型与 CV/CA；`cli.py` 提供统一命令。配置分为意图实验与轨迹实验两份。`tests/` 检查运动约束、视场采样、时间索引、窗口边界、候选与梯度。
+
+这一阶段的图先对**已观测到的**双方历史状态编码，候选在图上下文之后由九种 6g 速度法向机动生成；硬裁剪目前只检查地面高度，保留直飞回退。论文没有公布候选构造及完整阈值，这些选择均是复现假设。`online.py` 已支持在每个更新时刻用新观测重算意图与 6 s 预测，并保存逐次误差。完整的交会/地形裁剪、能量/风险/时效教师头与损失、cov 适配器仍未实现；目前的模型指标不可称为论文完整方法的复现指标。
 
 ## 4. 各模块职责与接口
 

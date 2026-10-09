@@ -102,22 +102,39 @@ def scale_intention(target: np.ndarray, defender: np.ndarray,
 def prediction_windows(paths: list[Path], dt: float = 0.1,
                        observation_seconds: float = 8.0,
                        prediction_seconds: float = 6.0,
-                       stride_seconds: float = 1.0):
+                       stride_seconds: float = 1.0,
+                       intention_seconds: float | None = None,
+                       intention_sample_seconds: float = 0.5):
     """Yield only information available at the final observed time and future truth."""
     obs_steps = int(round(observation_seconds / dt))
     pred_steps = int(round(prediction_seconds / dt))
     stride_steps = int(round(stride_seconds / dt))
     if min(obs_steps, pred_steps, stride_steps) < 1:
         raise ValueError("Window and stride lengths must be positive")
+    intention_offsets = None
+    if intention_seconds is not None:
+        factor = int(round(intention_sample_seconds / dt))
+        samples = int(round(intention_seconds / intention_sample_seconds))
+        if (factor < 1 or samples < 2 or
+                not np.isclose(factor * dt, intention_sample_seconds)):
+            raise ValueError("Intention sampling must align with the track step")
+        intention_offsets = np.arange(samples - 1, -1, -1) * factor
     for path in paths:
         with np.load(path, allow_pickle=False) as track:
             target = track["target"]
             defender = track["defender"]
-            for end in range(obs_steps - 1, len(target) - pred_steps, stride_steps):
-                yield {
+            first_end = max(obs_steps - 1, int(intention_offsets[0])
+                            if intention_offsets is not None else 0)
+            for end in range(first_end, len(target) - pred_steps, stride_steps):
+                window = {
                     "target_history": target[end - obs_steps + 1:end + 1, :6].copy(),
                     "defender_history": defender[end - obs_steps + 1:end + 1, :6].copy(),
                     "target_acceleration": target[end, 6:9].copy(),
                     "future_xyz": target[end + 1:end + 1 + pred_steps, :3].copy(),
                     "track_id": path.stem,
                 }
+                if intention_offsets is not None:
+                    indices = end - intention_offsets
+                    window["intention_target_history"] = target[indices, :6].copy()
+                    window["intention_defender_state"] = defender[end, :6].copy()
+                yield window

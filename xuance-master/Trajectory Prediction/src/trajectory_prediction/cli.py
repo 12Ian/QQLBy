@@ -1,4 +1,4 @@
-"""Small reproducible commands for data generation and the first two baselines."""
+"""Reproducible data, intention, prediction, and baseline commands."""
 
 import argparse
 import copy
@@ -17,6 +17,8 @@ from .data import (fit_intention_scaler, intention_windows, prediction_windows,
                    scale_intention, split_prediction_tracks, split_tracks, track_files)
 from .intention import IntentionBiLSTM
 from .metrics import constant_acceleration, constant_velocity, displacement_errors
+from .online import rolling_evaluation
+from .prediction_train import evaluate_prediction, train_prediction
 from .simulator import INTENT_NAMES, ScenarioConfig, simulate_track
 
 
@@ -145,6 +147,30 @@ def _eval_baselines(args) -> None:
     print(json.dumps(result, indent=2))
 
 
+def _train_prediction(args) -> None:
+    config = yaml.safe_load(Path(args.config).read_text(encoding="utf-8"))
+    result = train_prediction(Path(args.data), Path(args.intention_checkpoint),
+                              Path(args.output), args.epochs, args.batch_size,
+                              args.lr, args.seed, args.device, config)
+    print(f"best_weighted_error_m={result['best_weighted_error_m']:.2f}; "
+          f"saved to {args.output}")
+
+
+def _eval_prediction(args) -> None:
+    result = evaluate_prediction(Path(args.data), Path(args.intention_checkpoint),
+                                 Path(args.prediction_checkpoint), Path(args.output),
+                                 args.batch_size, args.device)
+    print(json.dumps(result, indent=2))
+
+
+def _rollout(args) -> None:
+    result = rolling_evaluation(Path(args.track), Path(args.intention_checkpoint),
+                                Path(args.prediction_checkpoint), Path(args.output),
+                                args.update_seconds, args.device)
+    print(f"forecasts={result['forecasts']} ADE={result['ADE_m']:.2f}m "
+          f"FDE={result['FDE_m']:.2f}m; saved to {args.output}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
@@ -169,11 +195,40 @@ def main() -> None:
     baseline.add_argument("--dt", type=float, default=0.1)
     baseline.add_argument("--seed", type=int, default=1)
     baseline.set_defaults(run=_eval_baselines)
+    prediction = commands.add_parser("train-prediction", help="Train graph/candidate/GRU predictor")
+    prediction.add_argument("--data", required=True)
+    prediction.add_argument("--intention-checkpoint", required=True)
+    prediction.add_argument("--config", default="configs/prediction.yaml")
+    prediction.add_argument("--output", default="outputs/prediction")
+    prediction.add_argument("--epochs", type=int, default=200)
+    prediction.add_argument("--batch-size", type=int, default=256)
+    prediction.add_argument("--lr", type=float, default=1e-3)
+    prediction.add_argument("--seed", type=int, default=1)
+    prediction.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
+    prediction.set_defaults(run=_train_prediction)
+    evaluation = commands.add_parser("eval-prediction", help="Evaluate on independent generated tracks")
+    evaluation.add_argument("--data", required=True)
+    evaluation.add_argument("--intention-checkpoint", required=True)
+    evaluation.add_argument("--prediction-checkpoint", required=True)
+    evaluation.add_argument("--output", default="outputs/prediction_test")
+    evaluation.add_argument("--batch-size", type=int, default=256)
+    evaluation.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
+    evaluation.set_defaults(run=_eval_prediction)
+    rollout = commands.add_parser("rollout", help="Refresh forecast as new states arrive")
+    rollout.add_argument("--track", required=True)
+    rollout.add_argument("--intention-checkpoint", required=True)
+    rollout.add_argument("--prediction-checkpoint", required=True)
+    rollout.add_argument("--output", default="outputs/rolling_test")
+    rollout.add_argument("--update-seconds", type=float, default=0.5)
+    rollout.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
+    rollout.set_defaults(run=_rollout)
     args = parser.parse_args()
     if args.command == "generate" and args.tracks < 3:
         parser.error("Need at least three tracks")
-    if args.command == "train-intention" and args.epochs < 1:
+    if args.command in ("train-intention", "train-prediction") and args.epochs < 1:
         parser.error("Need at least one training epoch")
+    if hasattr(args, "batch_size") and args.batch_size < 1:
+        parser.error("Batch size must be positive")
     args.run(args)
 
 

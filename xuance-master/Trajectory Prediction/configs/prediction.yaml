@@ -1,0 +1,14 @@
+# Published architecture/loss settings where stated; candidate settings are
+# explicit reproduction choices because the paper omits their construction.
+model:
+  width: 256
+  graph_steps: 16       # observed 80 steps compressed to graph nodes (choice)
+  future_steps: 60
+  top_k: 8
+  temperature: 0.1
+  dt: 0.1
+  candidate_acceleration_g: 6.0  # choice; paper target limit is 9g
+  min_altitude_m: 0.0              # choice; no terrain map in generated scene
+loss:
+  ade_weight: 0.4
+  fde_weight: 0.6

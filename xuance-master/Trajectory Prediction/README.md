@@ -1,10 +1,12 @@
-# Trajectory Prediction: runnable first stage
+# Trajectory Prediction: runnable reproduction framework
 
-This folder implements the first reproducible stage of Yu et al. (2026): a
-paper-scale 3-D engagement generator, track-level data splits, nine-class
-BiLSTM intention recognition, and constant-velocity/constant-acceleration
-prediction baselines. The full module plan and the paper's unresolved details
-are in [REPRODUCTION_FRAMEWORK.md](REPRODUCTION_FRAMEWORK.md).
+This folder implements a paper-scale 3-D engagement generator, track-level
+data splits, nine-class BiLSTM intention recognition, CV/CA baselines, and an
+initial intention-conditioned trajectory predictor. The predictor uses a
+two-layer target/defender interaction graph, nine physical maneuver candidates,
+feasibility masking with Top-K selection, and a GRU displacement decoder. The
+full module plan and the paper's unresolved details are in
+[REPRODUCTION_FRAMEWORK.md](REPRODUCTION_FRAMEWORK.md).
 
 Run from this directory on the server with the existing `rl_env` environment:
 
@@ -15,12 +17,17 @@ $PY -m trajectory_prediction.cli generate --config configs/paper_intention_scene
 $PY -m trajectory_prediction.cli train-intention --data outputs/intention_tracks --epochs 70 --seed 1
 $PY -m trajectory_prediction.cli generate --config configs/paper_scene.yaml --output outputs/prediction_tracks --tracks 100 --seed 100001
 $PY -m trajectory_prediction.cli eval-baselines --data outputs/prediction_tracks --seed 1
+$PY -m trajectory_prediction.cli train-prediction --data outputs/prediction_tracks --intention-checkpoint outputs/intention/intention_best.pt --output outputs/prediction --epochs 200 --seed 1
+$PY -m trajectory_prediction.cli generate --config configs/paper_scene.yaml --output outputs/independent_test_tracks --tracks 100 --seed 200001
+$PY -m trajectory_prediction.cli eval-prediction --data outputs/independent_test_tracks --intention-checkpoint outputs/intention/intention_best.pt --prediction-checkpoint outputs/prediction/prediction_best.pt --output outputs/prediction_test
+$PY -m trajectory_prediction.cli rollout --track outputs/independent_test_tracks/track_000000.npz --intention-checkpoint outputs/intention/intention_best.pt --prediction-checkpoint outputs/prediction/prediction_best.pt --output outputs/rolling_test --update-seconds 0.5
 ```
 
 These 100-track commands are a functional example, not the paper's roughly
 50,000-window scale. With the current explicit window strides and 24 s tracks,
-each track yields six intention windows and eleven prediction windows. Use
-roughly 8,334 intention tracks and 4,546 prediction tracks for that scale;
+each track yields six intention windows, eleven CV/CA windows, and nine model
+windows (the model also requires a 10 s intention prefix). Use roughly 8,334
+intention tracks and 5,556 model prediction tracks for that scale;
 choose fresh output directories and record the exact counts from the run.
 For a small smoke run, use at least three tracks and one epoch. Generated
 datasets and checkpoints are stored under `outputs/` and ignored by Git.
@@ -43,8 +50,21 @@ datasets and checkpoints are stored under `outputs/` and ignored by Git.
   80/20 train/evaluation split of prediction tracks.
 - Stored acceleration at time `t` describes the completed interval ending at
   `t`; the prediction baseline does not read an upcoming command.
+- The predictor receives frozen BiLSTM intention probabilities computed from
+  the preceding 10 s. It uses only observed states at inference. A separate
+  generated directory is required for the final `eval-prediction` command;
+  that command reports model, CV, and CA on exactly the same windows.
+- `rollout` refreshes the intention posterior and 6 s forecast every 0.5 s
+  from an independent full track. It saves each forecast, the matching truth,
+  candidate weights, and per-update ADE/FDE; truth is used only for scoring.
+- Candidate generation uses nine 6g constant-speed maneuvers, a ground-plane
+  feasibility mask, and Top-K 8 with straight flight always retained. These
+  are declared implementation choices where the paper omits exact parameters.
+  Their values and the `0.4 ADE + 0.6 FDE` weights are stored in
+  `configs/prediction.yaml`; the model is trained with AdamW.
 
 The current cov environment is a separate low-speed, multi-pursuer scenario.
-Its adapter and the paper's graph/cropper/teacher-loss predictor are subsequent
-modules described in the framework document; they are not claimed as present in
-this first executable stage.
+Its adapter, the paper's full engagement/terrain cropper and factor-specific
+teacher losses remain subsequent modules. The available
+graph/candidate model is an explicit implementation of the paper's method
+structure, not a claim to reproduce the unpublished candidate and mask rules.
