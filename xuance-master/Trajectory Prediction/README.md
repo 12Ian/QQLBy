@@ -5,7 +5,10 @@ data splits, nine-class BiLSTM intention recognition, CV/CA baselines, and an
 initial intention-conditioned trajectory predictor. The predictor uses a
 two-layer target/defender interaction graph, nine physical maneuver candidates,
 feasibility masking with Top-K selection, and a GRU displacement decoder. The
-full module plan and the paper's unresolved details are in
+training objective now adds six candidate-attention heads partitioned into
+energy, interception-risk, and task-timeliness groups. Teacher scores supervise
+these heads and the soft cropper during training only. The full module plan and
+the paper's unresolved details are in
 [REPRODUCTION_FRAMEWORK.md](REPRODUCTION_FRAMEWORK.md).
 
 Run from this directory on the server with the existing `rl_env` environment:
@@ -22,6 +25,10 @@ $PY -m trajectory_prediction.cli generate --config configs/paper_scene.yaml --ou
 $PY -m trajectory_prediction.cli eval-prediction --data outputs/independent_test_tracks --intention-checkpoint outputs/intention/intention_best.pt --prediction-checkpoint outputs/prediction/prediction_best.pt --output outputs/prediction_test
 $PY -m trajectory_prediction.cli rollout --track outputs/independent_test_tracks/track_000000.npz --intention-checkpoint outputs/intention/intention_best.pt --prediction-checkpoint outputs/prediction/prediction_best.pt --output outputs/rolling_test --update-seconds 0.5
 ```
+
+For the geometric-loss ablation, run `train-prediction` again with
+`--disable-teacher` and a different `--output` directory. The resolved setting
+is saved with the checkpoint.
 
 These 100-track commands are a functional example, not the paper's roughly
 50,000-window scale. With the current explicit window strides and 24 s tracks,
@@ -58,13 +65,23 @@ datasets and checkpoints are stored under `outputs/` and ignored by Git.
   from an independent full track. It saves each forecast, the matching truth,
   candidate weights, and per-update ADE/FDE; truth is used only for scoring.
 - Candidate generation uses nine 6g constant-speed maneuvers, a ground-plane
-  feasibility mask, and Top-K 8 with straight flight always retained. These
+  feasibility mask, an FOV/threat-gated escape-rate bias, and Top-K 8 with
+  straight flight always retained. These
   are declared implementation choices where the paper omits exact parameters.
   Their values and the `0.4 ADE + 0.6 FDE` weights are stored in
   `configs/prediction.yaml`; the model is trained with AdamW.
+- Teacher energy scores use overload, jerk, and braking terms; risk scores use
+  defender separation, range rate, and a reachable-radius proxy; timeliness
+  scores use a mission corridor. The missing mission corridor is explicitly
+  represented by straight flight from the last observed target state, while
+  defender future motion uses observed constant velocity. Risk-head attention
+  is trained to identify threats; cropper desirability subtracts risk. The
+  teacher targets never use future truth, and are not computed at inference.
+- Earlier `prediction_best.pt` files from before the factor-head addition have
+  incompatible model weights; rerun `train-prediction` for this version.
 
 The current cov environment is a separate low-speed, multi-pursuer scenario.
-Its adapter, the paper's full engagement/terrain cropper and factor-specific
-teacher losses remain subsequent modules. The available
+Its adapter, the paper's full terrain map/corridor specification and exact
+edgewise teacher supervision remain subsequent modules. The available
 graph/candidate model is an explicit implementation of the paper's method
 structure, not a claim to reproduce the unpublished candidate and mask rules.

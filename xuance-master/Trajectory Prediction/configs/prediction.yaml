@@ -9,6 +9,32 @@ model:
   dt: 0.1
   candidate_acceleration_g: 6.0  # choice; paper target limit is 9g
   min_altitude_m: 0.0              # choice; no terrain map in generated scene
+  escape_rate_weight: 0.1          # choice; soft engagement cropper
+  escape_rate_scale_mps: 200.0     # choice
+  threat_range_m: 3000.0          # choice; initial range is not passed to model
+  threat_gate_scale_m: 500.0       # choice
 loss:
   ade_weight: 0.4
   fde_weight: 0.6
+teacher:
+  enabled: true
+  temperature: 0.1
+  energy_kappa: 4.0
+  jerk_reference_mps3: 500.0       # choice: paper does not specify normalization
+  risk_kappa: 4.0
+  risk_time_lambda: 4.0
+  defender_acceleration_g: 15.0
+  distance_scale_m: 1000.0          # choice
+  closure_scale_mps: 200.0          # choice
+  reachability_scale_m: 1000.0      # choice
+  task_kappa: 4.0
+  corridor_radial_m: 500.0          # straight-path mission proxy, choice
+  corridor_normal_m: 500.0          # straight-path mission proxy, choice
+  goal_scale_m: 1000.0              # choice
+  entropy_min: 1.2                  # choice; natural-log entropy
+  entropy_weight: 0.01             # choice
+  separation_weight: 0.1           # paper lambda_sep
+  cropper_weight: 0.1              # choice
+  energy_desirability_weight: 0.25 # choice
+  risk_desirability_weight: 0.50   # choice, risk is subtracted for selection
+  task_desirability_weight: 0.25   # choice

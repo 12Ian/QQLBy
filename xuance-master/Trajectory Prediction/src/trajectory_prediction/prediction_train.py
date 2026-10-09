@@ -13,6 +13,7 @@ from .data import prediction_windows, scale_intention, split_prediction_tracks, 
 from .intention import IntentionBiLSTM
 from .metrics import constant_acceleration, constant_velocity, displacement_errors
 from .prediction import TrajectoryPredictor
+from .teachers import TeacherObjective
 
 
 def _load_intention(checkpoint_path: Path, device: torch.device):
@@ -103,32 +104,48 @@ def train_prediction(data: Path, intention_checkpoint: Path, output: Path,
     if ade_weight < 0 or fde_weight < 0 or not np.isclose(ade_weight + fde_weight, 1.0):
         raise ValueError("ADE and FDE weights must be nonnegative and sum to one")
     model = TrajectoryPredictor(**model_config).to(device)
-    optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
+    objective = TeacherObjective(config["teacher"], ade_weight, fde_weight).to(device)
+    optimizer = torch.optim.AdamW(list(model.parameters()) + list(objective.parameters()),
+                                  lr=learning_rate)
     best = float("inf")
     best_state = None
+    best_objective_state = None
     history = []
     for epoch in range(1, epochs + 1):
         model.train()
+        objective.train()
+        epoch_loss = 0.0
+        epoch_samples = 0
+        epoch_parts: dict[str, float] = {}
         for target, defender, probabilities, truth, _ in loaders["train"]:
-            prediction = model(target.to(device), defender.to(device),
-                               probabilities.to(device))["future_xyz"]
-            ade, fde = _errors(prediction, truth.to(device))
-            loss = (ade_weight * ade.mean() + fde_weight * fde.mean()) / 1000.0
+            target, defender, truth = target.to(device), defender.to(device), truth.to(device)
+            prediction = model(target, defender, probabilities.to(device))
+            loss, parts = objective(prediction, target, defender, truth)
             optimizer.zero_grad(set_to_none=True)
             loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+            torch.nn.utils.clip_grad_norm_(list(model.parameters()) +
+                                           list(objective.parameters()), 1.0)
             optimizer.step()
+            epoch_loss += float(loss.detach()) * len(target)
+            epoch_samples += len(target)
+            for name, value in parts.items():
+                epoch_parts[name] = epoch_parts.get(name, 0.0) + value * len(target)
         validation = _score(model, loaders["eval"], device)
         selection = ade_weight * validation["ADE_m"] + fde_weight * validation["FDE_m"]
-        history.append({"epoch": epoch, **validation})
+        history.append({"epoch": epoch, "train_loss": epoch_loss / epoch_samples,
+                        "train_components": {name: value / epoch_samples
+                                             for name, value in epoch_parts.items()},
+                        **validation})
         print(f"epoch={epoch} val_ADE={validation['ADE_m']:.2f}m "
               f"val_FDE={validation['FDE_m']:.2f}m", flush=True)
         if selection < best:
             best = selection
             best_state = copy.deepcopy(model.state_dict())
+            best_objective_state = copy.deepcopy(objective.state_dict())
     output.mkdir(parents=True, exist_ok=True)
     intention_hash = hashlib.sha256(intention_checkpoint.read_bytes()).hexdigest()
     torch.save({"model": best_state, "model_config": model_config,
+                "teacher_objective": best_objective_state,
                 "experiment_config": config,
                 "intention_checkpoint_sha256": intention_hash,
                 "train_data": str(data.resolve()), "seed": seed},

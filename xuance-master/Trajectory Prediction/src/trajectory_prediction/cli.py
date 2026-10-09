@@ -149,6 +149,8 @@ def _eval_baselines(args) -> None:
 
 def _train_prediction(args) -> None:
     config = yaml.safe_load(Path(args.config).read_text(encoding="utf-8"))
+    if args.disable_teacher:
+        config["teacher"]["enabled"] = False
     result = train_prediction(Path(args.data), Path(args.intention_checkpoint),
                               Path(args.output), args.epochs, args.batch_size,
                               args.lr, args.seed, args.device, config)
@@ -199,6 +201,8 @@ def main() -> None:
     prediction.add_argument("--data", required=True)
     prediction.add_argument("--intention-checkpoint", required=True)
     prediction.add_argument("--config", default="configs/prediction.yaml")
+    prediction.add_argument("--disable-teacher", action="store_true",
+                            help="ADE/FDE-only ablation with the same architecture")
     prediction.add_argument("--output", default="outputs/prediction")
     prediction.add_argument("--epochs", type=int, default=200)
     prediction.add_argument("--batch-size", type=int, default=256)

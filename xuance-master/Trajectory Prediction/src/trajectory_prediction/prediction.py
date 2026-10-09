@@ -93,10 +93,16 @@ class TrajectoryPredictor(nn.Module):
                  future_steps: int = 60, top_k: int = 8,
                  temperature: float = 0.1, dt: float = 0.1,
                  candidate_acceleration_g: float = 6.0,
-                 min_altitude_m: float = 0.0):
+                 min_altitude_m: float = 0.0,
+                 escape_rate_weight: float = 0.1,
+                 escape_rate_scale_mps: float = 200.0,
+                 threat_range_m: float = 3000.0,
+                 threat_gate_scale_m: float = 500.0):
         super().__init__()
         if (not 1 <= top_k <= 9 or temperature <= 0 or dt <= 0 or
-                candidate_acceleration_g < 0):
+                not 0 <= candidate_acceleration_g <= 9 or
+                escape_rate_weight < 0 or escape_rate_scale_mps <= 0 or
+                threat_range_m <= 0 or threat_gate_scale_m <= 0):
             raise ValueError("Invalid candidate or time configuration")
         self.graph_steps = graph_steps
         self.future_steps = future_steps
@@ -105,13 +111,20 @@ class TrajectoryPredictor(nn.Module):
         self.dt = dt
         self.candidate_acceleration_g = candidate_acceleration_g
         self.min_altitude_m = min_altitude_m
+        self.escape_rate_weight = escape_rate_weight
+        self.escape_rate_scale_mps = escape_rate_scale_mps
+        self.threat_range_m = threat_range_m
+        self.threat_gate_scale_m = threat_gate_scale_m
         self.state_embedding = nn.Linear(6, width)
         self.agent_embedding = nn.Embedding(2, width)
         self.blocks = nn.ModuleList([InteractionBlock(width) for _ in range(2)])
         self.context = nn.Sequential(nn.Linear(3 * width + 9 + 8, width),
                                      nn.ReLU(), nn.LayerNorm(width))
-        self.candidate_score = nn.Sequential(nn.Linear(width + 8, width),
-                                             nn.ReLU(), nn.Linear(width, 1))
+        self.candidate_embedding = nn.Sequential(nn.Linear(width + 8, width),
+                                                 nn.ReLU())
+        # Six candidate heads form three fixed two-head groups: E, R, T.
+        self.candidate_heads = nn.Linear(width, 6)
+        self.candidate_score = nn.Linear(width, 1)
         self.decoder = nn.GRUCell(4, width)
         self.delta_correction = nn.Linear(width, 3)
         nn.init.zeros_(self.delta_correction.weight)
@@ -157,8 +170,21 @@ class TrajectoryPredictor(nn.Module):
         candidate_features = torch.cat((final_displacement, separation,
                                         intention_prob.unsqueeze(-1),
                                         separation.norm(dim=-1, keepdim=True)), dim=-1)
-        scores = self.candidate_score(torch.cat((
-            context[:, None, :].expand(-1, 9, -1), candidate_features), dim=-1)).squeeze(-1)
+        candidate_hidden = self.candidate_embedding(torch.cat((
+            context[:, None, :].expand(-1, 9, -1), candidate_features), dim=-1))
+        head_logits = self.candidate_heads(candidate_hidden).transpose(1, 2)
+        scores = self.candidate_score(candidate_hidden).squeeze(-1)
+        current_relative = defender_history[:, -1, :3] - origin
+        current_range = current_relative.norm(dim=-1).clamp_min(1e-6)
+        visible_cosine = ((current_relative * target_history[:, -1, 3:]).sum(dim=-1) /
+                          (current_range * target_history[:, -1, 3:].norm(dim=-1).clamp_min(1e-6)))
+        visibility_gate = torch.sigmoid(10.0 * (visible_cosine - 0.5))
+        threat_gate = torch.sigmoid((self.threat_range_m - current_range) /
+                                    self.threat_gate_scale_m) * visibility_gate
+        escape_rate = ((candidates[:, :, -1] - defender_final[:, None, :]).norm(dim=-1) -
+                       current_range[:, None]) / (self.future_steps * self.dt)
+        scores = (scores + self.escape_rate_weight * threat_gate[:, None] *
+                  torch.tanh(escape_rate / self.escape_rate_scale_mps))
         feasible = (candidates[:, :, :, 2] >= self.min_altitude_m).all(dim=-1)
         feasible[:, 0] = True  # Straight-flight fallback if all maneuvers fail.
         scores = scores.masked_fill(~feasible, -1e4)
@@ -169,6 +195,10 @@ class TrajectoryPredictor(nn.Module):
                                  True)
         keep &= feasible
         weights = (scores / self.temperature).masked_fill(~keep, -1e4).softmax(dim=-1)
+        soft_weights = (scores / self.temperature).masked_fill(
+            ~feasible, -1e4).softmax(dim=-1)
+        head_weights = (head_logits / self.temperature).masked_fill(
+            ~keep[:, None, :], -1e4).softmax(dim=-1)
         candidate_deltas = torch.cat((candidates[:, :, :1] - origin[:, None, None, :],
                                       candidates[:, :, 1:] - candidates[:, :, :-1]), dim=2)
         mean_deltas = (candidate_deltas * weights[:, :, None, None]).sum(dim=1)
@@ -182,5 +212,8 @@ class TrajectoryPredictor(nn.Module):
             deltas.append(mean_deltas[:, step] + self.delta_correction(hidden))
         future = origin[:, None, :] + torch.stack(deltas, dim=1).cumsum(dim=1)
         return {"future_xyz": future, "candidate_weights": weights,
+                "candidate_soft_weights": soft_weights,
+                "candidate_head_weights": head_weights,
                 "candidate_valid": feasible, "candidate_kept": keep,
-                "candidate_xyz": candidates}
+                "candidate_xyz": candidates, "escape_rate_mps": escape_rate,
+                "engagement_gate": threat_gate}
