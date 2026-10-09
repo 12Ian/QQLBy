@@ -18,6 +18,7 @@ from .data import (fit_intention_scaler, intention_windows, prediction_windows,
 from .intention import IntentionBiLSTM
 from .metrics import constant_acceleration, constant_velocity, displacement_errors
 from .online import rolling_evaluation
+from .probe_cov_map import probe_cov_map
 from .prediction_train import evaluate_prediction, train_prediction
 from .simulator import INTENT_NAMES, ScenarioConfig, simulate_track
 
@@ -173,6 +174,14 @@ def _rollout(args) -> None:
           f"FDE={result['FDE_m']:.2f}m; saved to {args.output}")
 
 
+def _probe_cov_map(args) -> None:
+    result = probe_cov_map(Path(args.cov_config), Path(args.buildings_dir),
+                           Path(args.prediction_config), Path(args.output), args.device,
+                           args.live_resets, args.seed)
+    print(f"cov mode={result['map']['mode']} buildings={result['map']['buildings']} "
+          f"valid_candidates={result['valid_count']}/9; saved to {args.output}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
@@ -226,6 +235,18 @@ def main() -> None:
     rollout.add_argument("--update-seconds", type=float, default=0.5)
     rollout.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     rollout.set_defaults(run=_rollout)
+    repo_root = Path(__file__).resolve().parents[3]
+    cov_probe = commands.add_parser("probe-cov-map", help="Test candidate masking on the cov map")
+    cov_probe.add_argument("--cov-config", default=str(
+        repo_root / "xuance/configs/maddpg/uav_pursuit_coverage_3d.yaml"))
+    cov_probe.add_argument("--buildings-dir", default=str(
+        repo_root / "xuance/environment/multi_agent_env/buildings"))
+    cov_probe.add_argument("--prediction-config", default="configs/prediction.yaml")
+    cov_probe.add_argument("--output", default="outputs/cov_map_probe")
+    cov_probe.add_argument("--device", default="cpu")
+    cov_probe.add_argument("--live-resets", type=int, default=10)
+    cov_probe.add_argument("--seed", type=int, default=1)
+    cov_probe.set_defaults(run=_probe_cov_map)
     args = parser.parse_args()
     if args.command == "generate" and args.tracks < 3:
         parser.error("Need at least three tracks")

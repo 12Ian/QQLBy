@@ -24,6 +24,7 @@ $PY -m trajectory_prediction.cli train-prediction --data outputs/prediction_trac
 $PY -m trajectory_prediction.cli generate --config configs/paper_scene.yaml --output outputs/independent_test_tracks --tracks 100 --seed 200001
 $PY -m trajectory_prediction.cli eval-prediction --data outputs/independent_test_tracks --intention-checkpoint outputs/intention/intention_best.pt --prediction-checkpoint outputs/prediction/prediction_best.pt --output outputs/prediction_test
 $PY -m trajectory_prediction.cli rollout --track outputs/independent_test_tracks/track_000000.npz --intention-checkpoint outputs/intention/intention_best.pt --prediction-checkpoint outputs/prediction/prediction_best.pt --output outputs/rolling_test --update-seconds 0.5
+$PY -m trajectory_prediction.cli probe-cov-map --output outputs/cov_map_probe --live-resets 20
 ```
 
 For the geometric-loss ablation, run `train-prediction` again with
@@ -65,9 +66,10 @@ datasets and checkpoints are stored under `outputs/` and ignored by Git.
   from an independent full track. It saves each forecast, the matching truth,
   candidate weights, and per-update ADE/FDE; truth is used only for scoring.
 - Candidate generation uses nine 6g constant-speed maneuvers, a ground-plane
-  feasibility mask, an FOV/threat-gated escape-rate bias, and Top-K 8 with
-  straight flight always retained. These
-  are declared implementation choices where the paper omits exact parameters.
+  feasibility mask, an FOV/threat-gated escape-rate bias, and Top-K 8. Straight
+  flight is retained when feasible; if every candidate is blocked, it serves
+  as a flagged numerical fallback. These are declared implementation choices
+  where the paper omits exact parameters.
   Their values and the `0.4 ADE + 0.6 FDE` weights are stored in
   `configs/prediction.yaml`; the model is trained with AdamW.
 - Teacher energy scores use overload, jerk, and braking terms; risk scores use
@@ -81,7 +83,23 @@ datasets and checkpoints are stored under `outputs/` and ignored by Git.
   incompatible model weights; rerun `train-prediction` for this version.
 
 The current cov environment is a separate low-speed, multi-pursuer scenario.
-Its adapter, the paper's full terrain map/corridor specification and exact
-edgewise teacher supervision remain subsequent modules. The available
+`cov_map.py` reads its configured building prisms and can snapshot a live
+`UAVPursuitCoverage3DEnv` after reset; passing the map to the predictor masks
+candidates that leave its 1000 m square, cross the 50–350 m altitude limits,
+or enter a building with the target radius included. The `probe-cov-map`
+command uses the actual cov `open` map and target acceleration, writes a JSON
+report and top/side-view PNG, then samples real environment resets. In a
+controlled approach to the first building, 3/9 candidates remain valid; 20
+seeded resets of the sparse `open` map yielded 9/9 valid candidates at their
+initial states. The probe also feeds 80 actual cov states to the map-conditioned
+predictor; to match its 0.1 s history it overrides the cov decision interval to
+0.1 s and uses zero acceleration actions. This is a **map-geometry test with
+untrained predictor weights**,
+not a trajectory accuracy comparison. Applying the map to paper-scale tracks
+raises an error because those positions lie outside cov's coordinate bounds.
+
+Cov trajectory collection and scale-matched model training, the paper's
+mission corridor specification, and exact edgewise teacher supervision remain
+subsequent modules. The available
 graph/candidate model is an explicit implementation of the paper's method
 structure, not a claim to reproduce the unpublished candidate and mask rules.

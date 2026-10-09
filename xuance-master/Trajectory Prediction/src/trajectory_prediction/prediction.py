@@ -11,6 +11,8 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
+from .cov_map import CovMap
+
 
 class InteractionBlock(nn.Module):
     """Typed same-time target/defender attention, then per-agent temporal attention."""
@@ -132,11 +134,15 @@ class TrajectoryPredictor(nn.Module):
 
     def forward(self, target_history: torch.Tensor,
                 defender_history: torch.Tensor,
-                intention_prob: torch.Tensor) -> dict[str, torch.Tensor]:
+                intention_prob: torch.Tensor,
+                cov_map: CovMap | None = None) -> dict[str, torch.Tensor]:
         if target_history.shape != defender_history.shape or target_history.shape[-1] != 6:
             raise ValueError("Expected matched target/defender histories [B,T,6]")
         if intention_prob.shape != (len(target_history), 9):
             raise ValueError("Expected intention probabilities [B,9]")
+        if cov_map is not None:
+            cov_map.assert_starts_inside(target_history[:, -1, :3],
+                                         defender_history[:, -1, :3])
         indices = torch.linspace(0, target_history.shape[1] - 1,
                                  self.graph_steps, device=target_history.device).long()
         origin = target_history[:, -1, :3]
@@ -186,17 +192,21 @@ class TrajectoryPredictor(nn.Module):
         scores = (scores + self.escape_rate_weight * threat_gate[:, None] *
                   torch.tanh(escape_rate / self.escape_rate_scale_mps))
         feasible = (candidates[:, :, :, 2] >= self.min_altitude_m).all(dim=-1)
-        feasible[:, 0] = True  # Straight-flight fallback if all maneuvers fail.
-        scores = scores.masked_fill(~feasible, -1e4)
+        if cov_map is not None:
+            feasible &= cov_map.candidate_valid(candidates)
+        fallback = ~feasible.any(dim=-1)
+        selectable = feasible.clone()
+        selectable[fallback, 0] = True  # Numerical fallback, reported as infeasible.
+        scores = scores.masked_fill(~selectable, -1e4)
         keep = torch.zeros_like(feasible)
-        keep[:, 0] = True  # Preserve the CV candidate as an explicit fallback.
+        keep[:, 0] = selectable[:, 0]
         if self.top_k > 1:
             keep[:, 1:].scatter_(1, scores[:, 1:].topk(self.top_k - 1, dim=-1).indices,
                                  True)
-        keep &= feasible
+        keep &= selectable
         weights = (scores / self.temperature).masked_fill(~keep, -1e4).softmax(dim=-1)
         soft_weights = (scores / self.temperature).masked_fill(
-            ~feasible, -1e4).softmax(dim=-1)
+            ~selectable, -1e4).softmax(dim=-1)
         head_weights = (head_logits / self.temperature).masked_fill(
             ~keep[:, None, :], -1e4).softmax(dim=-1)
         candidate_deltas = torch.cat((candidates[:, :, :1] - origin[:, None, None, :],
@@ -215,5 +225,6 @@ class TrajectoryPredictor(nn.Module):
                 "candidate_soft_weights": soft_weights,
                 "candidate_head_weights": head_weights,
                 "candidate_valid": feasible, "candidate_kept": keep,
+                "candidate_fallback": fallback,
                 "candidate_xyz": candidates, "escape_rate_mps": escape_rate,
                 "engagement_gate": threat_gate}
