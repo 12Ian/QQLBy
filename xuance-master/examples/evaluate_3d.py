@@ -11,10 +11,10 @@ import numpy as np
 import matplotlib
 matplotlib.use("Agg")
 from xuance import get_runner
-from xuance.environment.multi_agent_env.uav_pursuit_apollonius_3d import UAVPursuitApollonius3DEnv
-from xuance.environment.multi_agent_env import geometry3d as g3
-from xuance.environment.multi_agent_env import apollonius3d as ap3
-from xuance.environment.multi_agent_env.eval_metrics import summarize_eval
+from xuance.environment.multi_agent_env.uav_pursuit_coverage_3d import UAVPursuitCoverage3DEnv
+from xuance.environment.multi_agent_env.Apollonius import geometry3d as g3
+from xuance.environment.multi_agent_env.Apollonius import apollonius3d as ap3
+from xuance.environment.multi_agent_env.Apollonius.eval_metrics import summarize_eval
 
 
 def sha256_file(path):
@@ -36,17 +36,17 @@ def escape_angle(env, mode):
 
 
 def greedy_actions(env):
+    """按目标方向生成三维加速度基线动作。"""
     acts = {}
-    for i, a in enumerate(env.agents):
-        gp = env.current_guide_points[a]
-        vec = gp - env.uav_positions[i]
-        yaw_d = math.atan2(vec[1], vec[0])
-        pit_d = math.atan2(vec[2], math.hypot(vec[0], vec[1]) + 1e-6)
-        dyaw = (yaw_d - env.uav_yaws[i] + math.pi) % (2 * math.pi) - math.pi
-        dpit = pit_d - env.uav_pitches[i]
-        acts[a] = np.array([1.0,
-                            np.clip(dyaw / env.max_yaw_rate, -1, 1),
-                            np.clip(dpit / env.max_pitch_rate, -1, 1)], np.float32)
+    for i, agent in enumerate(env.agents):
+        displacement = env.target_position - env.uav_positions[i]
+        distance = float(np.linalg.norm(displacement))
+        direction = displacement / max(distance, 1e-6)
+        desired_velocity = direction * env.uav_max_speed
+        desired_acceleration = (desired_velocity - env.uav_velocities[i]) / max(
+            env.decision_dt, 1e-6)
+        acts[agent] = np.clip(desired_acceleration / max(env.max_accel, 1e-6),
+                              -1.0, 1.0).astype(np.float32)
     return acts
 
 
@@ -55,9 +55,6 @@ def main():
     ap.add_argument("--policy", default="model", choices=["model", "random", "greedy"])
     ap.add_argument("--level", type=int, default=4)
     ap.add_argument("--k", type=int, default=50)
-    ap.add_argument("--cbf-safety", action="store_true")
-    ap.add_argument("--cbf-margin", type=float, default=None)
-    ap.add_argument("--cbf-eta", type=float, default=None)
     ap.add_argument("--evader-center-pull", type=float, default=None,
                     help="APF pull toward airspace centre; keeps captures off the walls")
     ap.add_argument("--seed", type=int, default=0)
@@ -65,17 +62,24 @@ def main():
     ap.add_argument("--algo", default="maddpg")   # must match the trained model's algorithm
     ap.add_argument("--out", default=None)
     # match the trained model's architecture/env (GAT / criterion / building mode)
-    ap.add_argument("--use-obstacle-gat", action="store_true")
+    ap.add_argument("--use-obstacle-gat", action=argparse.BooleanOptionalAction, default=True)
+    ap.add_argument("--obstacle-gat-k", type=int, default=5)
     ap.add_argument("--use-graph-module", action="store_true")
     ap.add_argument("--criterion", default="euclidean", choices=["euclidean", "visibility", "detour"])
     ap.add_argument("--building-mode", default=None)   # if set, curriculum off + fixed density
     ap.add_argument("--target-max-speed", type=float, default=None)
     ap.add_argument("--target-min-speed", type=float, default=None)
+    ap.add_argument("--pincer-weight", type=float, default=None)
     ap.add_argument("--num-agents", type=int, default=None)  # MUST match trained model's N
     ap.add_argument("--surround-spawn", action="store_true")  # match trained model's spawn
     ap.add_argument("--spawn-radius", type=float, default=None)
     ap.add_argument("--spawn-safety", choices=["on", "off"], default="on")
-    ap.add_argument("--collision-mode", choices=["hard", "soft"], default="hard")
+    ap.add_argument("--collision-mode", choices=["hard", "soft"], default="hard",
+                    help="whether teammate UAV collisions terminate; boundary hits continue by default")
+    ap.add_argument("--terminate-on-boundary-collision", action="store_true",
+                    help="end an episode when a pursuer hits the arena boundary")
+    ap.add_argument("--boundary-collision-penalty", type=float, default=None)
+    ap.add_argument("--boundary-warning-distance", type=float, default=None)
     ap.add_argument("--trace-out", default=None)
     ap.add_argument("--closure-weight", type=float, default=None)
     ap.add_argument("--w-pos", type=float, default=None)
@@ -87,18 +91,23 @@ def main():
     ap.add_argument("--device", default="cuda:0")
     args = ap.parse_args()
 
-    p = argparse.Namespace(algo=args.algo, env="uav_pursuit_apollonius_3d",
-                           env_id="apollonius_3d", device=args.device)
+    p = argparse.Namespace(algo=args.algo, env="uav_pursuit_coverage_3d",
+                           env_id="coverage_3d", device=args.device)
     p.parallels = 1
     p.seed = args.seed
     p.spawn_safety_enabled = args.spawn_safety == "on"
     p.terminate_on_collision = args.collision_mode == "hard"
+    p.terminate_on_boundary_collision = args.terminate_on_boundary_collision
     for name in ("closure_weight", "w_pos", "w_gap",
-                 "separation_weight", "separation_distance"):
+                 "separation_weight", "separation_distance", "pincer_weight",
+                 "boundary_collision_penalty", "boundary_warning_distance"):
         value = getattr(args, name)
         if value is not None:
             setattr(p, name, value)
     p.use_obstacle_gat = args.use_obstacle_gat
+    if args.obstacle_gat_k is not None:
+        p.obstacle_gat_k = args.obstacle_gat_k
+        p.nearest_building_k = args.obstacle_gat_k
     p.use_graph_module = args.use_graph_module
     p.criterion_mode = args.criterion
     if args.building_mode:
@@ -108,45 +117,39 @@ def main():
         p.target_max_speed = args.target_max_speed
     if args.target_min_speed is not None:
         p.target_min_speed = args.target_min_speed
+    if args.evader_center_pull is not None:
+        p.evader_center_pull = args.evader_center_pull
     if args.num_agents is not None:
-        if args.cbf_safety:
-            p.cbf_enabled = True
-        if args.cbf_margin is not None:
-            p.cbf_margin = args.cbf_margin
-        if args.cbf_eta is not None:
-            p.cbf_eta = args.cbf_eta
-        if args.evader_center_pull is not None:
-            p.evader_center_pull = args.evader_center_pull
         p.num_agents = args.num_agents
     if args.surround_spawn:
         p.surround_spawn = True
     if args.spawn_radius is not None:
         p.spawn_radius = args.spawn_radius
-    # Seed the GLOBAL numpy RNG that drives env.reset (target spawn, uav yaws, evader
+    # Seed the GLOBAL numpy RNG that drives env.reset (target spawn, initial velocity, evader
     # noise). Without this every eval point would see a different irreproducible set of
     # episodes; seeding makes all sweep/anchor points share the SAME episode draws (paired).
     np.random.seed(args.seed)
     runner = None
     try:
-        runner = get_runner(algo=args.algo, env="uav_pursuit_apollonius_3d",
-                            env_id="apollonius_3d", parser_args=p)
+        runner = get_runner(algo=args.algo, env="uav_pursuit_coverage_3d",
+                            env_id="coverage_3d", parser_args=p)
         cfg = runner.config
         agent = None
         resolved_model_path = None
         if args.policy == "model":
             agent = runner.agent
             mp = args.model_path or os.path.join(
-                os.getcwd(), "results", "maddpg", "apollonius_3d",
+                os.getcwd(), "outputs", "results", "maddpg", "coverage_3d",
                 "best_model", "best_model.pth")
             resolved_model_path = os.path.abspath(mp)
             agent.load_model(resolved_model_path)
 
         np.random.seed(args.seed)
-        env = UAVPursuitApollonius3DEnv(cfg)
+        env = UAVPursuitCoverage3DEnv(cfg)
         if getattr(env, "curriculum_enabled", False):
             env.set_curriculum_level(args.level)
         rng = np.random.default_rng(args.seed)
-        source_path = os.path.abspath(sys.modules[UAVPursuitApollonius3DEnv.__module__].__file__)
+        source_path = os.path.abspath(sys.modules[UAVPursuitCoverage3DEnv.__module__].__file__)
         environment_sha256 = sha256_file(source_path)
         evaluator_sha256 = sha256_file(os.path.abspath(__file__))
         model_sha256 = sha256_file(resolved_model_path) if resolved_model_path else None
@@ -161,8 +164,7 @@ def main():
             spawn_info = info.get("infos", {})
             initial_positions = env.uav_positions.astype(float).tolist()
             initial_target_position = env.target_position.astype(float).tolist()
-            initial_uav_yaws = env.uav_yaws.astype(float).tolist()
-            initial_uav_pitches = env.uav_pitches.astype(float).tolist()
+            initial_uav_velocities = env.uav_velocities.astype(float).tolist()
             episode_return = 0.0
             collided = False
             first_collision_step = None
@@ -198,8 +200,7 @@ def main():
                 "episode_return": episode_return,
                 "initial_positions": initial_positions,
                 "initial_target_position": initial_target_position,
-                "initial_uav_yaws": initial_uav_yaws,
-                "initial_uav_pitches": initial_uav_pitches,
+                "initial_uav_velocities": initial_uav_velocities,
                 "spawn_offsets": list(spawn_info.get("spawn_offsets", [])),
                 "spawn_adjusted_count": int(spawn_info.get("spawn_adjusted_count", 0)),
                 "spawn_max_offset": float(spawn_info.get("spawn_max_offset", 0.0)),
@@ -246,8 +247,13 @@ def main():
                 "num_agents": env.num_agents,
                 "target_min_speed": float(env.target_min_speed),
                 "target_max_speed": float(env.target_max_speed),
+                "evader_center_pull": float(env.evader_center_pull),
+                "pincer_weight": float(env.pincer_weight),
                 "criterion": args.criterion,
                 "terminate_on_collision": bool(env.terminate_on_collision),
+                "terminate_on_boundary_collision": bool(env.terminate_on_boundary_collision),
+                "boundary_collision_penalty": float(env.boundary_collision_penalty),
+                "boundary_warning_distance": float(env.boundary_warning_distance),
                 "spawn_safety_enabled": bool(env.spawn_safety_enabled),
                 "spawn_safety_margin": float(env.spawn_safety_margin),
                 "spawn_search_resolution": float(env.spawn_search_resolution),

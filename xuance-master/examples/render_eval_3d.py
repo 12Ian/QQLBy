@@ -15,32 +15,32 @@ import matplotlib
 matplotlib.use("Agg")
 
 from xuance import get_runner
-from xuance.environment.multi_agent_env.uav_pursuit_apollonius_3d import UAVPursuitApollonius3DEnv
+from xuance.environment.multi_agent_env.uav_pursuit_coverage_3d import UAVPursuitCoverage3DEnv
 
 
 def main():
     K = int(sys.argv[1]) if len(sys.argv) > 1 else 30
-    p = argparse.Namespace(algo="maddpg", env="uav_pursuit_apollonius_3d",
-                           env_id="apollonius_3d", device="cuda:0")
+    p = argparse.Namespace(algo="maddpg", env="uav_pursuit_coverage_3d",
+                           env_id="coverage_3d", device="cuda:0")
     p.parallels = 1            # minimal: we only need the policy, not training
-    runner = get_runner(algo="maddpg", env="uav_pursuit_apollonius_3d",
-                        env_id="apollonius_3d", parser_args=p)
+    runner = get_runner(algo="maddpg", env="uav_pursuit_coverage_3d",
+                        env_id="coverage_3d", parser_args=p)
     agent = runner.agent
 
-    best_file = os.path.join(os.getcwd(), "results", "maddpg", "apollonius_3d",
+    best_file = os.path.join(os.getcwd(), "outputs", "results", "maddpg", "coverage_3d",
                              "best_model", "best_model.pth")
     agent.load_model(best_file)   # load_model accepts a direct .pth file path
     print("loaded best model from", best_file)
 
     cfg = runner.config
-    env = UAVPursuitApollonius3DEnv(cfg)
+    env = UAVPursuitCoverage3DEnv(cfg)
     level = int(getattr(cfg, "test_curriculum_level", 4))
     if getattr(env, "curriculum_enabled", False):
         env.set_curriculum_level(level)
     print("eval curriculum level:", env.curriculum_level,
           "building_mode:", env.building_mode, "n_buildings:", len(env.buildings))
 
-    out_dir = os.path.join(os.getcwd(), "results", "maddpg", "apollonius_3d")
+    out_dir = os.path.join(os.getcwd(), "outputs", "results", "maddpg", "coverage_3d")
     successes, steps_list = 0, []
     saved_success = False
 

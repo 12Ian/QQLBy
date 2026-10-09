@@ -35,9 +35,9 @@ if not _torch.cuda.is_available():
 
 # ----- lightweight env + policy (reused, identical to evaluate_3d.py) -----
 from xuance import get_runner
-from xuance.environment.multi_agent_env.uav_pursuit_apollonius_3d import UAVPursuitApollonius3DEnv
-from xuance.environment.multi_agent_env import geometry3d as g3
-from xuance.environment.multi_agent_env import apollonius3d as ap3
+from xuance.environment.multi_agent_env.uav_pursuit_coverage_3d import UAVPursuitCoverage3DEnv
+from xuance.environment.multi_agent_env.Apollonius import geometry3d as g3
+from xuance.environment.multi_agent_env.Apollonius import apollonius3d as ap3
 
 
 def escape_solid_angle(env, mode):
@@ -70,8 +70,8 @@ class AirSimPursuitBridge:
         #      <-> AirSim NED (x North, y East, z Down; up = negative z). ----
         self.origin = np.array(args.origin, np.float32)   # env point mapped to NED (0,0,0). [TUNE]
         # ---- build the policy exactly like evaluate_3d.py ----
-        p = argparse.Namespace(algo=args.algo, env="uav_pursuit_apollonius_3d",
-                               env_id="apollonius_3d", device="cpu")
+        p = argparse.Namespace(algo=args.algo, env="uav_pursuit_coverage_3d",
+                               env_id="coverage_3d", device="cpu")
         p.parallels = 1
         p.use_obstacle_gat = args.use_obstacle_gat
         p.use_graph_module = args.use_graph_module
@@ -87,13 +87,13 @@ class AirSimPursuitBridge:
             p.surround_spawn = True
             if getattr(args, "spawn_radius", None) is not None:
                 p.spawn_radius = args.spawn_radius
-        self.runner = get_runner(algo=args.algo, env="uav_pursuit_apollonius_3d",
-                                 env_id="apollonius_3d", parser_args=p)
+        self.runner = get_runner(algo=args.algo, env="uav_pursuit_coverage_3d",
+                                 env_id="coverage_3d", parser_args=p)
         self.agent = self.runner.agent
         self.agent.load_model(args.model_path)
         # ---- env instance = obs builder + APF evader + capture judge ----
-        self.env = UAVPursuitApollonius3DEnv(self.runner.config)
-        self.env.reset()                       # seeds buildings, guide state, target spawn
+        self.env = UAVPursuitCoverage3DEnv(self.runner.config)
+        self.env.reset()                       # 初始化建筑地图、逃逸覆盖状态和目标出生位置
         self.pursuer_names = [f"Pursuer{i}" for i in range(self.N)]
         self.evader_name = "Evader0"
         self.trails = {n: [] for n in self.pursuer_names + [self.evader_name]}
@@ -184,7 +184,7 @@ class AirSimPursuitBridge:
         self.env.target_pitch = math.asin(np.clip(tvel[2] / max(tspd, 1e-6), -1, 1)) if tspd > 1e-3 else self.env.target_pitch
         # recompute the derived caches _get_obs() depends on
         self.env._update_radar_cache()
-        self.env.current_guide_points = self.env._assign_target_points()
+        self.env._update_escape_field()
 
     # ---------- one control step ----------
     def pursuer_desired_velocities(self):

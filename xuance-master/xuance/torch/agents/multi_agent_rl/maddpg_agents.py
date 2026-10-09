@@ -1,4 +1,5 @@
 import torch
+import numpy as np
 from argparse import Namespace
 from gymnasium.spaces import Space
 from xuance.common import List, Optional, MultiAgentBaseCallback
@@ -32,6 +33,18 @@ class MADDPG_Agents(IDDPG_Agents):
             config, envs, num_agents, agent_keys, state_space, observation_space, action_space, callback
         )
 
+    def action(self, obs_dict, **kwargs):
+        result = super().action(obs_dict=obs_dict, **kwargs)
+        if getattr(self.config, "project_action_to_unit_ball", False):
+            for observations, actions in zip(obs_dict, result["actions"]):
+                for key in self.agent_keys:
+                    if observations[key][-1] < 0.5:
+                        actions[key] = np.zeros_like(actions[key])
+                        continue
+                    vector = np.asarray(actions[key], dtype=np.float32)
+                    actions[key] = vector / max(1.0, float(np.linalg.norm(vector)))
+        return result
+
     def _build_policy(self) -> Module:
         """
         Build representation(s) and policy(ies) for agent(s)
@@ -48,7 +61,8 @@ class MADDPG_Agents(IDDPG_Agents):
         A_representation = self._build_representation(self.config.representation, self.observation_space, self.config)
         critic_in = [sum(self.observation_space[k].shape) + sum(self.action_space[k].shape) for k in self.agent_keys]
         space_critic_in = {k: (sum(critic_in), ) for k in self.agent_keys}
-        C_representation = self._build_representation(self.config.representation, space_critic_in, self.config)
+        critic_name = getattr(self.config, "critic_representation", self.config.representation)
+        C_representation = self._build_representation(critic_name, space_critic_in, self.config)
 
         # build policies
         if self.config.policy == "MADDPG_Policy":

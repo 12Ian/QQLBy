@@ -40,6 +40,13 @@ def worker(remote, parent_remote, env_fn_wrappers, env_seed: int = None):
             elif cmd == 'get_groups_info':
                 env_info = envs[0].groups_info
                 remote.send(CloudpickleWrapper(env_info))
+            elif cmd == 'env_method':
+                method_name, args, kwargs = data
+                result = []
+                for env in envs:
+                    target = env.env if hasattr(env, 'env') else env
+                    result.append(getattr(target, method_name)(*args, **kwargs))
+                remote.send(result)
             else:
                 raise NotImplementedError
     except KeyboardInterrupt:
@@ -118,6 +125,15 @@ class SubprocVecMultiAgentEnv(VecEnv):
         self.buf_state = [info[e]['state'] for e in range(self.num_envs)]
         self.buf_avail_actions = [info[e]['avail_actions'] for e in range(self.num_envs)]
         return list(obs), list(info)
+
+    def env_method(self, method_name, *args, **kwargs):
+        """在每个子进程环境中调用同名方法，供课程评估设置级别。"""
+        self._assert_not_closed()
+        if self.waiting:
+            raise RuntimeError('Cannot call env_method while a step is pending')
+        for remote in self.remotes:
+            remote.send(('env_method', (method_name, args, kwargs)))
+        return flatten_list([remote.recv() for remote in self.remotes])
 
     def step_async(self, actions):
         self._assert_not_closed()

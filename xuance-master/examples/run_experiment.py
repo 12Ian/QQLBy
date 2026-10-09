@@ -1,65 +1,89 @@
-"""Launch a named benchmark training run with config overrides into an isolated
-env_id (distinct results/models/logs dirs). Guard with __main__."""
+"""按指定参数启动独立的多智能体追捕训练任务。"""
 import argparse
 import os
 from xuance import get_runner
 
 
 def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--name", required=True)
-    ap.add_argument("--algo", default="maddpg")   # maddpg | mappo | masac | matd3 ...
-    ap.add_argument("--env", default="uav_pursuit_apollonius_3d")  # ..._multitarget_3d for Ch4
-    ap.add_argument("--num-targets", type=int, default=None)       # Ch4 multi-target
-    ap.add_argument("--no-dynamic-alloc", action="store_true")     # Ch4 allocation ablation
-    ap.add_argument("--apollonius-alloc", action="store_true")     # Ch4: Apollonius-based allocation
-    ap.add_argument("--criterion", default="euclidean", choices=["euclidean", "visibility", "detour"])
-    ap.add_argument("--use-obstacle-gat", action="store_true")
-    ap.add_argument("--use-graph-module", action="store_true")
-    ap.add_argument("--reward-disable", default="")     # comma-separated
-    ap.add_argument("--num-agents", type=int, default=6)
-    ap.add_argument("--building-mode", default=None)     # None -> curriculum default
-    ap.add_argument("--randomize-density", default="")   # comma-separated densities (domain randomization)
+    ap = argparse.ArgumentParser(
+        description="启动一组新的多智能体无人机追捕训练，并将结果保存到独立目录。")
+    ap.add_argument("--name", required=True,
+                    help="本次实验名称；用于区分日志、模型和结果目录（必填）")
+    ap.add_argument("--algo", default="maddpg",
+                    help="强化学习算法，例如 maddpg、mappo、masac、matd3（默认：maddpg）")
+    ap.add_argument("--env", default="uav_pursuit_coverage_3d",
+                    help="环境名称；单目标默认 coverage_3d，可指定多目标环境")
+    ap.add_argument("--num-targets", type=int, default=None,
+                    help="多目标环境中的逃逸机数量（默认：使用算法配置）")
+    ap.add_argument("--no-dynamic-alloc", action="store_true",
+                    help="关闭多目标任务中的动态目标分配")
+    ap.add_argument("--apollonius-alloc", action="store_true",
+                    help="启用基于 Apollonius 几何的目标分配")
+    ap.add_argument("--criterion", default="euclidean", choices=["euclidean", "visibility", "detour"],
+                    help="追捕距离判据：euclidean 欧氏距离、visibility 可见路径、detour 绕障距离（默认：euclidean）")
+    ap.add_argument("--use-obstacle-gat", action="store_true",
+                    help="启用建筑物注意力网络（默认：关闭）")
+    ap.add_argument("--obstacle-gat-k", type=int, default=None,
+                    help="提供给建筑物注意力网络的最近建筑物数量（默认：使用算法配置）")
+    ap.add_argument("--use-graph-module", action="store_true",
+                    help="启用追捕机之间的图通信网络（默认：关闭）")
+    ap.add_argument("--reward-disable", default="",
+                    help="要关闭的奖励项名称，多个名称用英文逗号分隔（默认：不关闭）")
+    ap.add_argument("--num-agents", type=int, default=6,
+                    help="追捕无人机数量（默认：6）")
+    ap.add_argument("--building-mode", default=None,
+                    help="建筑环境类型；指定后关闭课程切换（默认：由课程配置决定）")
+    ap.add_argument("--randomize-density", default="",
+                    help="建筑密度随机化选项，多个值用英文逗号分隔；指定后关闭课程切换")
     ap.add_argument("--strict-capture", action="store_true",
-                    help="score a target captured only on physical reach, matching Ch3")
+                    help="仅在无人机实际到达目标时判定捕获，使用严格物理捕获标准")
     ap.add_argument("--evader-center-pull", type=float, default=None,
-                    help="APF pull toward airspace centre; keeps captures off the walls")
-    ap.add_argument("--seed", type=int, default=1)
-    ap.add_argument("--steps", type=int, default=10000000)
-    ap.add_argument("--parallels", type=int, default=16)
-    ap.add_argument("--eval-interval", type=int, default=None)
-    ap.add_argument("--test-episode", type=int, default=None)
-    ap.add_argument("--target-max-speed", type=float, default=None)
-    ap.add_argument("--target-min-speed", type=float, default=None)
-    ap.add_argument("--closure-weight", type=float, default=None)
-    ap.add_argument("--pincer-weight", type=float, default=None)  # 2nd-nearest closure (faster-evader)
-    ap.add_argument("--close-k", type=int, default=None)          # layered encirclement: inner closers
-    ap.add_argument("--obs-avoid-weight", type=float, default=None)  # earlier obstacle avoidance
-    ap.add_argument("--no-guide-collapse", action="store_true")  # ablation: disable closure design
-    ap.add_argument("--w-pos", type=float, default=None)
-    ap.add_argument("--w-gap", type=float, default=None)
-    ap.add_argument("--w-finish", type=float, default=None)
-    ap.add_argument("--load-from", default=None)  # pretrained .pth for curriculum warmup (e.g. empty->medium)
-    ap.add_argument("--surround-spawn", action="store_true")  # pursuers spawn AROUND the evader
-    ap.add_argument("--spawn-radius", type=float, default=None)
+                    help="逃逸机朝空域中心移动的引导强度（默认：使用环境配置）")
+    ap.add_argument("--seed", type=int, default=1,
+                    help="随机种子（默认：1）")
+    ap.add_argument("--steps", type=int, default=10000000,
+                    help="训练总环境步数（默认：10000000）")
+    ap.add_argument("--parallels", type=int, default=16,
+                    help="并行运行的环境数量（默认：16）")
+    ap.add_argument("--eval-interval", type=int, default=100000,
+                    help="每训练多少步进行一次测试（默认：使用算法配置）")
+    ap.add_argument("--test-episode", type=int, default=100,
+                    help="每次测试运行的回合数（默认：使用算法配置）")
+    ap.add_argument("--target-max-speed", type=float, default=None,
+                    help="逃逸机最大速度，单位 m/s（默认：使用环境配置）")
+    ap.add_argument("--target-min-speed", type=float, default=None,
+                    help="逃逸机最小速度，单位 m/s（默认：使用环境配置）")
+    ap.add_argument("--obs-avoid-weight", type=float, default=None,
+                    help="障碍物规避奖励权重（默认：使用环境配置）")
+    ap.add_argument("--w-cov", type=float, default=None, help="未来持续覆盖权重")
+    ap.add_argument("--w-prep", dest="w_prep", type=float,
+                    default=None, help="安全路线覆盖准备度权重")
+    ap.add_argument("--w-hold", type=float, default=None, help="真实持续捕获进展权重")
+    ap.add_argument("--w-safe", type=float, default=None, help="安全惩罚权重")
+    ap.add_argument("--w-terminal", type=float, default=None, help="真实捕获终端奖励")
+    ap.add_argument("--load-from", default=None,
+                    help="用于继续训练或预热的模型检查点 .pth 路径（默认：不加载）")
+    ap.add_argument("--surround-spawn", action="store_true",
+                    help="让追捕机在逃逸机周围出生（默认：关闭）")
+    ap.add_argument("--spawn-radius", type=float, default=None,
+                    help="环绕出生时的初始半径，单位 m（默认：使用环境配置）")
     ap.add_argument("--separation-weight", type=float, default=None,
-                    help="early teammate-separation shaping weight (N=4 stability profile)")
+                    help="追捕机之间的分散奖励权重（默认：使用环境配置）")
     ap.add_argument("--separation-distance", type=float, default=None,
-                    help="distance in metres at which teammate separation shaping starts")
+                    help="开始计算追捕机分散奖励的距离，单位 m（默认：使用环境配置）")
     ap.add_argument("--soft-collisions", action="store_true",
-                    help="penalize obstacle hits but keep the training episode alive")
-    ap.add_argument("--start-noise", type=float, default=None)
-    ap.add_argument("--end-noise", type=float, default=None)
+                    help="碰撞建筑物时施加惩罚，但继续当前回合（默认：关闭）")
+    ap.add_argument("--start-noise", type=float, default=None,
+                    help="训练初期的探索噪声强度（默认：使用算法配置）")
+    ap.add_argument("--end-noise", type=float, default=None,
+                    help="训练结束阶段的探索噪声强度（默认：使用算法配置）")
     ap.add_argument("--policy-only-load", action="store_true",
-                    help="load policy/targets from a checkpoint but keep fresh optimizer state")
-    ap.add_argument("--cbf-safety", action="store_true",
-                    help="control-barrier-function safety filter on the policy action (Cheng+ AAAI-19)")
-    ap.add_argument("--cbf-eta", type=float, default=None)
-    ap.add_argument("--cbf-margin", type=float, default=None)
-    ap.add_argument("--device", default="cuda:0")
+                    help="仅加载策略网络参数并重新初始化优化器；需同时指定 --load-from")
+    ap.add_argument("--device", default="cuda:0",
+                    help="模型运行设备，例如 cuda:0 或 cpu（默认：cuda:0）")
     args = ap.parse_args()
 
-    env_id = f"apollonius_3d_{args.name}"
+    env_id = f"coverage_3d_{args.name}" if args.env == "uav_pursuit_coverage_3d" else f"apollonius_3d_{args.name}"
     p = argparse.Namespace(algo=args.algo, env=args.env,
                            env_id=env_id, device=args.device)
     if args.num_targets is not None:
@@ -70,6 +94,9 @@ def main():
         p.dynamic_alloc = False
     p.criterion_mode = args.criterion
     p.use_obstacle_gat = args.use_obstacle_gat
+    if args.obstacle_gat_k is not None:
+        p.obstacle_gat_k = args.obstacle_gat_k
+        p.nearest_building_k = args.obstacle_gat_k
     p.use_graph_module = args.use_graph_module
     if args.strict_capture:
         p.strict_capture = True
@@ -95,22 +122,12 @@ def main():
         p.target_max_speed = args.target_max_speed
     if args.target_min_speed is not None:
         p.target_min_speed = args.target_min_speed
-    if args.closure_weight is not None:
-        p.closure_weight = args.closure_weight
-    if args.pincer_weight is not None:
-        p.pincer_weight = args.pincer_weight
-    if args.close_k is not None:
-        p.close_k = args.close_k
     if args.obs_avoid_weight is not None:
         p.obs_avoid_weight = args.obs_avoid_weight
-    if args.no_guide_collapse:
-        p.guide_collapse = False
-    if args.w_pos is not None:
-        p.w_pos = args.w_pos
-    if args.w_gap is not None:
-        p.w_gap = args.w_gap
-    if args.w_finish is not None:
-        p.w_finish = args.w_finish
+    for weight_name in ("w_cov", "w_prep", "w_hold", "w_safe", "w_terminal"):
+        value = getattr(args, weight_name)
+        if value is not None:
+            setattr(p, weight_name, value)
     if args.surround_spawn:
         p.surround_spawn = True
     if args.spawn_radius is not None:
@@ -119,12 +136,6 @@ def main():
         p.separation_weight = args.separation_weight
     if args.separation_distance is not None:
         p.separation_distance = args.separation_distance
-    if args.cbf_safety:
-        p.cbf_enabled = True
-    if args.cbf_eta is not None:
-        p.cbf_eta = args.cbf_eta
-    if args.cbf_margin is not None:
-        p.cbf_margin = args.cbf_margin
     if args.soft_collisions:
         p.terminate_on_collision = False
     if args.start_noise is not None:

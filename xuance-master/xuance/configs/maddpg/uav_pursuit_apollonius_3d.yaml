@@ -13,6 +13,17 @@ runner: "MARL"  # Runner
 num_agents: 6
 z_min: 50.0
 z_max: 350.0
+# Quadrotor translation: speed may fall to zero; only the initial speed is 1 m/s.
+uav_initial_speed: 1.0
+uav_max_speed: 11.0
+max_accel: 1.0
+acceleration_lag: 0.5
+uav_jerk_max: 2.0
+target_jerk_max: 1.0
+target_velocity_response: 1.0
+max_yaw_rate: 0.7853981633974483
+decision_dt: 1.0
+physics_dt: 0.1
 episode_length: 400
 escape_num_dirs: 200
 curriculum_enabled: True
@@ -20,6 +31,20 @@ criterion_mode: euclidean   # euclidean | visibility (visibility voids occluded 
 spawn_safety_enabled: True
 spawn_safety_margin: 1.5
 spawn_search_resolution: 1.0
+evader_center_pull: 1.5
+pincer_weight: 4.0
+close_k: 2
+w_near: 2.0
+w_pos: 0.4
+w_gap: 0.5
+w_finish: 3.0
+boundary_collision_penalty: 200.0
+boundary_warning_distance: 100.0
+safe_dense_scale: 0.1  # scale continuous safety shaping; collision events are separate
+capture_bonus: 500.0   # per pursuer, separate from closure/pincer shaping
+terminate_on_boundary_collision: False
+terminate_on_collision: True  # teammate collision only; boundary contact is recoverable
+terminate_on_building_collision: False
 
 representation_hidden_size: []  # the units for each hidden layer
 actor_hidden_size: [512, 512]

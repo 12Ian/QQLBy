@@ -3,7 +3,7 @@
 import numpy as np
 import matplotlib
 matplotlib.use("Agg")
-from xuance.environment.multi_agent_env.uav_pursuit_apollonius_3d import UAVPursuitApollonius3DEnv
+from xuance.environment.multi_agent_env.uav_pursuit_coverage_3d import UAVPursuitCoverage3DEnv
 
 
 class Cfg:
@@ -13,7 +13,7 @@ class Cfg:
 
 def step_rew(disable):
     np.random.seed(11)
-    e = UAVPursuitApollonius3DEnv(Cfg(num_agents=6, building_mode="medium",
+    e = UAVPursuitCoverage3DEnv(Cfg(num_agents=6, building_mode="medium",
                                       curriculum_enabled=False, closure_weight=8.0,
                                       reward_disable=disable))
     e.reset()

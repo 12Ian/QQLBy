@@ -13,8 +13,9 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from tensorboard.backend.event_processing.event_accumulator import EventAccumulator
 
-LOG = "logs/maddpg"
-OUT = "p3_results"
+LOG = "outputs/logs/maddpg"
+OUT = "outputs/results/p3_results"
+os.makedirs(OUT, exist_ok=True)
 AGENTS = ["uav_0", "uav_1", "uav_2", "uav_3", "uav_4", "uav_5"]
 
 

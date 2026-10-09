@@ -1,0 +1,122 @@
+agent: "MADDPG"  # the learning algorithms_marl
+env_name: "uav_pursuit_coverage_3d"  # Name of the environment.
+env_id: "coverage_3d"
+env_seed: 1  # The random seed of the environment.
+continuous_action: True  # Continuous action space or not.
+learner: "MADDPG_Learner"
+policy: "MADDPG_Policy"
+representation: "Basic_Identical"
+vectorize: "SubprocVecMultiAgentEnv"
+runner: "MARL"  # Runner
+
+# ---- 3D environment params (read by the env via getattr) ----
+num_agents: 4
+z_min: 50.0
+z_max: 350.0
+# Quadrotor translation: speed may fall to zero; only the initial speed is 1 m/s.
+uav_initial_speed: 1.0
+uav_max_speed: 11.0
+max_accel: 3.0
+acceleration_lag: 0.5
+uav_jerk_max: 6.0
+target_jerk_max: 8.0
+target_velocity_response: 1.0
+target_min_speed: 3.0
+target_max_speed: 5.0
+target_accel: 1.0
+decision_dt: 1.0
+physics_dt: 0.1
+episode_length: 400
+capture_radius: 15.0
+direct_intercept_radius: 5.0
+capture_hold_required: 2.0
+escape_num_dirs: 200
+use_nearest_building_obs: True
+nearest_building_k: 5
+use_target_prediction_obs: True
+future_prediction_steps: 5
+preparation_time_scale: 12.0
+closure_time_scale: 30.0
+match_distance: 40.0
+match_distance_width: 10.0
+match_speed_scale: 3.0
+building_mode: open
+spawn_offset: 20.0
+randomize_building_layout: False
+curriculum_enabled: False
+curriculum_auto_advance_by_steps: False
+curriculum_min_steps_per_level: 300000
+curriculum_max_level: 4
+criterion_mode: euclidean   # euclidean | visibility (visibility voids occluded pursuers)
+spawn_safety_enabled: True
+spawn_safety_margin: 1.5
+spawn_search_resolution: 1.0
+spawn_vertical_radius: 70.0
+spawn_boundary_margin: 30.0
+evader_center_pull: 1.5
+evader_sense: 60.0
+# 固定 easy 场景：接近和速度匹配按实际进展计奖，时间成本促使尽早完成捕获。
+w_prep: 15.0
+w_cov: 4.0
+w_close: 60.0
+w_match: 8.0
+w_hold: 1.0
+w_step: 0.1
+w_safe: 1.0
+w_terminal: 240.0
+w_direct_terminal: 300.0
+building_collision_penalty: 80.0
+boundary_collision_penalty: 100.0
+uav_collision_penalty: 80.0
+collision_contact_penalty_per_second: 20.0
+boundary_warning_distance: 100.0
+terminate_on_boundary_collision: False
+uav_collision_enabled: True
+separation_weight: 0.5
+separation_distance: 20.0
+terminate_on_collision: False  # 机间接触为软约束，回合继续。
+terminate_on_building_collision: False
+
+representation_hidden_size: []  # the units for each hidden layer
+actor_hidden_size: [512, 512]
+critic_hidden_size: [512, 512]
+activation: 'leaky_relu'
+activation_action: 'tanh'
+use_parameter_sharing: True
+use_actions_mask: False
+render: false
+seed: 1
+parallels: 16
+buffer_size: 1000000
+batch_size: 1024
+learning_rate_actor: 0.0001  # learning rate for actor
+learning_rate_critic: 0.001  # learning rate for critic
+gamma: 0.99  # discount factor
+tau: 0.001  # soft update for target networks
+
+start_noise: 1.0
+end_noise: 0.01
+sigma: 0.1  # random noise for continuous actions
+start_training: 10  # start training after n steps
+running_steps: 10000000
+training_frequency: 25
+
+# obstacle-target GAT (increment 2b). Defaults OFF so the euclidean baseline
+# stays clean for ablation; smoke/method runs enable via parser override.
+use_graph_module: False       # GAT-T (agent coordination) - existing GraphCommLayer
+graph_hidden_dim: 128
+graph_alpha: 0.2
+use_obstacle_gat: True        # GAT-O (per-pursuer obstacle attention)
+obstacle_gat_k: 5
+obstacle_gat_feat_dim: 6
+obstacle_gat_hidden: 32
+obstacle_gat_heads: 2
+
+use_grad_clip: True
+grad_clip_norm: 0.5
+
+eval_interval: 100000
+test_episode: 100
+
+log_dir: "outputs/logs/maddpg/"
+model_dir: "outputs/models/maddpg/"

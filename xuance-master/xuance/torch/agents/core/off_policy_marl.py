@@ -431,6 +431,26 @@ class OffPolicyMARLAgents(MARLAgents):
                                     if metric_key not in episode_info:
                                         episode_info[metric_key] = {}
                                     episode_info[metric_key][f"env-{i}"] = reward_value
+                    if "initial_encounter_time" in info[i]:
+                        crlg_metrics = {
+                            "initial_encounter_time_s": info[i]["initial_encounter_time"],
+                            "final_encounter_time_s": info[i]["encounter_time"],
+                            "encounter_time_change_s": (info[i]["encounter_time"] -
+                                                        info[i]["initial_encounter_time"]),
+                            "terminal_min_miss_m": min(info[i]["terminal_miss_m"]),
+                            "closest_approach_m": min(info[i]["closest_approach_m"]),
+                            "final_coverage": info[i]["coverage_probability"],
+                            "active_agents": info[i]["active_agents"],
+                            "invalid_episode": float(info[i]["invalid_episode"]),
+                            "max_steps": float(info[i]["termination_reason"] == "max_steps"),
+                            "terminal_phase_locked": float(info[i]["terminal_phase_locked"]),
+                        }
+                        for name, value in crlg_metrics.items():
+                            key = f"Train-CRLG/{name}/rank_{self.rank}"
+                            if self.use_wandb:
+                                episode_info[f"{key}/env-{i}"] = value
+                            else:
+                                episode_info[key] = {f"env-{i}": value}
                     # =====================================================================
 
                     self.log_infos(episode_info, self.current_step)
@@ -497,7 +517,28 @@ class OffPolicyMARLAgents(MARLAgents):
 
         test_sub_scores_list = []
         test_wins_list = []
-        test_curriculum_infos = []
+        test_collision_flags = [False] * num_envs
+        test_building_collision_flags = [False] * num_envs
+        test_boundary_collision_flags = [False] * num_envs
+        test_uav_conflict_flags = [False] * num_envs
+        test_collision_flags_list = []
+        test_building_collision_flags_list = []
+        test_boundary_collision_flags_list = []
+        test_uav_conflict_flags_list = []
+        test_timeout_list = []
+        test_episode_steps = []
+        test_min_uav_gaps = []
+        test_coverage_means = []
+        test_coverage_maxima = []
+        test_preparation_means = []
+        test_route_times = []
+        test_target_distances = []
+        test_target_wall_contacts = []
+        test_building_contact_seconds = []
+        test_boundary_contact_seconds = []
+        test_uav_contact_seconds = []
+        test_capture_direct = []
+        test_capture_sustained = []
 
         obs_dict, info = envs.reset()
         state = envs.buf_state.copy() if self.use_global_state else None
@@ -524,6 +565,21 @@ class OffPolicyMARLAgents(MARLAgents):
             rnn_hidden, actions_dict = policy_out["hidden_state"], policy_out["actions"]
 
             next_obs_dict, rewards_dict, terminated_dict, truncated, info = envs.step(actions_dict)
+            if test_mode:
+                for i in range(num_envs):
+                    step_info = info[i]
+                    test_collision_flags[i] |= bool(step_info.get("is_collision", False))
+                    test_building_collision_flags[i] |= bool(
+                        step_info.get("is_building_collision", False))
+                    sources = [
+                        str(source)
+                        for agent_sources in step_info.get("collision_sources", {}).values()
+                        for source in agent_sources
+                    ]
+                    test_boundary_collision_flags[i] |= any(
+                        source.startswith("boundary:") for source in sources)
+                    test_uav_conflict_flags[i] |= (
+                        int(step_info.get("episode_uav_conflicts", 0)) > 0)
             next_state = envs.buf_state.copy() if self.use_global_state else None
             next_avail_actions = envs.buf_avail_actions if self.use_actions_mask else None
 
@@ -614,9 +670,37 @@ class OffPolicyMARLAgents(MARLAgents):
                             test_sub_scores_list.append(info[i]["episode_sub_rewards"])
 
                         test_wins_list.append(1.0 if is_win else 0.0)
-
-                        if "infos" in info[i] and isinstance(info[i]["infos"], dict):
-                            test_curriculum_infos.append(info[i]["infos"])
+                        test_collision_flags_list.append(float(test_collision_flags[i]))
+                        test_building_collision_flags_list.append(
+                            float(test_building_collision_flags[i]))
+                        test_boundary_collision_flags_list.append(
+                            float(test_boundary_collision_flags[i]))
+                        test_uav_conflict_flags_list.append(float(test_uav_conflict_flags[i]))
+                        test_timeout_list.append(float(bool(truncated[i])))
+                        test_episode_steps.append(float(info[i].get("episode_step", 0)))
+                        test_min_uav_gaps.append(float(
+                            info[i].get("episode_min_uav_gap", np.nan)))
+                        diagnostics = info[i].get("infos", {})
+                        test_coverage_means.append(float(diagnostics.get("coverage_mean_episode", np.nan)))
+                        test_coverage_maxima.append(float(diagnostics.get("coverage_max_episode", np.nan)))
+                        test_preparation_means.append(float(
+                            diagnostics.get("preparation_mean_episode", np.nan)))
+                        test_route_times.append(float(
+                            diagnostics.get("safe_route_time_mean_episode", np.nan)))
+                        test_target_distances.append(float(diagnostics.get("min_target_distance_episode", np.nan)))
+                        test_target_wall_contacts.append(float(diagnostics.get("target_wall_contacts_episode", np.nan)))
+                        test_building_contact_seconds.append(float(
+                            diagnostics.get("building_contact_seconds_episode", np.nan)))
+                        test_boundary_contact_seconds.append(float(
+                            diagnostics.get("boundary_contact_seconds_episode", np.nan)))
+                        test_uav_contact_seconds.append(float(
+                            diagnostics.get("uav_contact_seconds_episode", np.nan)))
+                        test_capture_direct.append(float(info[i].get("capture_type") == "direct"))
+                        test_capture_sustained.append(float(info[i].get("capture_type") == "sustained"))
+                        test_collision_flags[i] = False
+                        test_building_collision_flags[i] = False
+                        test_boundary_collision_flags[i] = False
+                        test_uav_conflict_flags[i] = False
 
                     else:
                         self.current_episode[i] += 1
@@ -700,36 +784,35 @@ class OffPolicyMARLAgents(MARLAgents):
 
             if len(test_wins_list) > 0:
                 test_info[f"Test-Results/Win-Rate{tag_suffix}"] = np.mean(test_wins_list)
-
-            if len(test_curriculum_infos) > 0:
-                numeric_keys = [
-                    "curriculum_level",
-                    "spawn_offset",
-                    "target_min_speed",
-                    "target_max_speed",
-                    "target_accel",
-                    "target_speed_current",
-                    "target_speed_max_episode",
-                    "building_count",
-                ]
-
-                for key in numeric_keys:
-                    values = [c[key] for c in test_curriculum_infos if key in c]
-                    if len(values) > 0:
-                        test_info[f"Test-Curriculum/{key}{tag_suffix}"] = float(np.mean(values))
-
-                building_modes = [
-                    c.get("building_mode") for c in test_curriculum_infos
-                    if "building_mode" in c
-                ]
-                if len(building_modes) > 0:
-                    mode_id = {
-                        "empty": 0.0,
-                        "easy": 1.0,
-                        "medium": 2.0,
-                        "hard": 3.0,
-                    }.get(str(building_modes[-1]), -1.0)
-                    test_info[f"Test-Curriculum/building_mode_id{tag_suffix}"] = mode_id
+                test_info[f"Test-Results/Collision-Rate{tag_suffix}"] = np.mean(
+                    test_collision_flags_list)
+                test_info[f"Test-Results/Building-Collision-Rate{tag_suffix}"] = np.mean(
+                    test_building_collision_flags_list)
+                test_info[f"Test-Results/Boundary-Collision-Rate{tag_suffix}"] = np.mean(
+                    test_boundary_collision_flags_list)
+                test_info[f"Test-Results/UAV-Conflict-Rate{tag_suffix}"] = np.mean(
+                    test_uav_conflict_flags_list)
+                test_info[f"Test-Results/Timeout-Rate{tag_suffix}"] = np.mean(test_timeout_list)
+                test_info[f"Test-Results/Episode-Steps{tag_suffix}"] = np.mean(test_episode_steps)
+                finite_gaps = [gap for gap in test_min_uav_gaps if np.isfinite(gap)]
+                if finite_gaps:
+                    test_info[f"Test-Results/Min-UAV-Gap{tag_suffix}"] = np.mean(finite_gaps)
+                for label, values in (
+                    ("Coverage-Mean", test_coverage_means),
+                    ("Coverage-Max", test_coverage_maxima),
+                    ("Preparation-Mean", test_preparation_means),
+                    ("Safe-Route-Time-Mean", test_route_times),
+                    ("Min-Target-Distance", test_target_distances),
+                    ("Target-Wall-Contacts", test_target_wall_contacts),
+                    ("Building-Contact-Seconds", test_building_contact_seconds),
+                    ("Boundary-Contact-Seconds", test_boundary_contact_seconds),
+                    ("UAV-Contact-Seconds", test_uav_contact_seconds),
+                    ("Direct-Capture-Rate", test_capture_direct),
+                    ("Sustained-Capture-Rate", test_capture_sustained),
+                ):
+                    finite = [value for value in values if np.isfinite(value)]
+                    if finite:
+                        test_info[f"Test-Results/{label}{tag_suffix}"] = np.mean(finite)
 
             if len(test_sub_scores_list) > 0:
                 for agent_name in self.agent_keys:
@@ -787,6 +870,15 @@ class OffPolicyMARLAgents(MARLAgents):
         curriculum levels and log separate TensorBoard tags:
         Test-Results/Win-Rate-Level-0 ... Level-4.
         """
+        if not bool(getattr(self.config, "curriculum_enabled", False)):
+            return self.run_episodes(
+                n_episodes=test_episodes,
+                run_envs=test_envs,
+                test_mode=True,
+                close_envs=close_envs,
+                curriculum_level=None,
+            )
+
         eval_all_levels = bool(getattr(self.config, "curriculum_eval_all_levels", False))
 
         if eval_all_levels:

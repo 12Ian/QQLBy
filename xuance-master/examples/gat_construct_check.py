@@ -9,13 +9,13 @@ from xuance import get_runner
 
 
 def main():
-    p = argparse.Namespace(algo="maddpg", env="uav_pursuit_apollonius_3d",
-                           env_id="apollonius_3d", device="cuda:0")
+    p = argparse.Namespace(algo="maddpg", env="uav_pursuit_coverage_3d",
+                           env_id="coverage_3d", device="cuda:0")
     p.parallels = 1
     p.use_obstacle_gat = True
     p.use_graph_module = True
-    runner = get_runner(algo="maddpg", env="uav_pursuit_apollonius_3d",
-                        env_id="apollonius_3d", parser_args=p)
+    runner = get_runner(algo="maddpg", env="uav_pursuit_coverage_3d",
+                        env_id="coverage_3d", parser_args=p)
     agent = runner.agent
     has_gat = any("obstacle_gat" in n for n, _ in agent.policy.named_parameters())
     has_graph = any("graph_comm" in n for n, _ in agent.policy.named_parameters())

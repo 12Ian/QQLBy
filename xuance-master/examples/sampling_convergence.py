@@ -16,7 +16,7 @@ how often the n-direction field agrees with the reference on the ENCIRCLED decis
 
 Usage (server):
   python xuance-master/examples/sampling_convergence.py --policy greedy --num-agents 3 \
-      --building-mode medium --target-max-speed 10 --k 15 --out p3_results/sampling_conv.json
+      --building-mode medium --target-max-speed 10 --k 15 --out outputs/results/p3_results/sampling_conv.json
 """
 import os
 import sys
@@ -26,9 +26,9 @@ import argparse
 import numpy as np
 
 from xuance import get_runner
-from xuance.environment.multi_agent_env.uav_pursuit_apollonius_3d import UAVPursuitApollonius3DEnv
-from xuance.environment.multi_agent_env import geometry3d as g3
-from xuance.environment.multi_agent_env import apollonius3d as ap3
+from xuance.environment.multi_agent_env.uav_pursuit_coverage_3d import UAVPursuitCoverage3DEnv
+from xuance.environment.multi_agent_env.Apollonius import geometry3d as g3
+from xuance.environment.multi_agent_env.Apollonius import apollonius3d as ap3
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from evaluate_3d import greedy_actions          # noqa: E402  (module guards main())
@@ -67,8 +67,8 @@ def main():
     args = ap.parse_args()
 
     levels = [int(x) for x in args.levels.split(",") if x.strip()]
-    p = argparse.Namespace(algo=args.algo, env="uav_pursuit_apollonius_3d",
-                           env_id="apollonius_3d", device=args.device)
+    p = argparse.Namespace(algo=args.algo, env="uav_pursuit_coverage_3d",
+                           env_id="coverage_3d", device=args.device)
     p.parallels = 1
     p.seed = args.seed
     p.curriculum_enabled = False
@@ -81,8 +81,8 @@ def main():
         p.surround_spawn = True
 
     np.random.seed(args.seed)
-    runner = get_runner(algo=args.algo, env="uav_pursuit_apollonius_3d",
-                        env_id="apollonius_3d", parser_args=p)
+    runner = get_runner(algo=args.algo, env="uav_pursuit_coverage_3d",
+                        env_id="coverage_3d", parser_args=p)
     cfg = runner.config
     agent = None
     if args.policy == "model":
@@ -90,7 +90,7 @@ def main():
         agent.load_model(os.path.abspath(args.model_path))
 
     np.random.seed(args.seed)
-    env = UAVPursuitApollonius3DEnv(cfg)
+    env = UAVPursuitCoverage3DEnv(cfg)
     dirsets = {n: g3.fibonacci_sphere(n) for n in levels + [args.reference]}
     rng = np.random.default_rng(args.seed)
 

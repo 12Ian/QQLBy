@@ -30,6 +30,19 @@ __all__ = [
 ]
 
 
+def _output_dir(configured, category):
+    """把旧配置中的结果目录统一映射到 outputs 下。"""
+    path = os.path.normpath(str(configured))
+    if os.path.isabs(path):
+        return path
+    parts = path.replace("\\", "/").split("/")
+    if parts[0] == "outputs":
+        return path
+    if parts[0] in {"logs", "models", "results", "runs"}:
+        parts = parts[1:]
+    return os.path.join("outputs", category, *parts)
+
+
 def get_runner(
         algo,
         env,
@@ -96,11 +109,11 @@ def get_runner(
             else:
                 agents_name_string.append(args[i_alg].agent)
             args[i_alg].agent_name = algo[i_alg]
-            relative_log_dir = getattr(args[i_alg], "log_dir", f"logs/{algo}")
-            relative_model_dir = getattr(args[i_alg], "model_dir", f"logs/{algo}")
-            args[i_alg].log_dir = os.path.join(relative_log_dir, args[i_alg].env_id, f"side_{i_alg}")
-            args[i_alg].model_dir = os.path.join(relative_model_dir, args[i_alg].env_id, f"side_{i_alg}")
-            args[i_alg].result_dir = os.path.join(f"results/{algo}", args[i_alg].env_id, f"side_{i_alg}")
+            relative_log_dir = getattr(args[i_alg], "log_dir", f"logs/{algo[i_alg]}")
+            relative_model_dir = getattr(args[i_alg], "model_dir", f"models/{algo[i_alg]}")
+            args[i_alg].log_dir = os.path.join(_output_dir(relative_log_dir, "logs"), args[i_alg].env_id, f"side_{i_alg}")
+            args[i_alg].model_dir = os.path.join(_output_dir(relative_model_dir, "models"), args[i_alg].env_id, f"side_{i_alg}")
+            args[i_alg].result_dir = os.path.join("outputs", "results", str(algo[i_alg]), args[i_alg].env_id, f"side_{i_alg}")
 
         if rank == 0:
             print("Algorithm:", *agents_name_string)
@@ -119,10 +132,10 @@ def get_runner(
     else:
         args.agent_name = algo
         relative_log_dir = getattr(args, "log_dir", f"logs/{algo}")
-        relative_model_dir = getattr(args, "model_dir", f"logs/{algo}")
-        args.log_dir = os.path.join(relative_log_dir, args.env_id)
-        args.model_dir = os.path.join(relative_model_dir, args.env_id)
-        args.result_dir = os.path.join(f"results/{algo}", args.env_id)
+        relative_model_dir = getattr(args, "model_dir", f"models/{algo}")
+        args.log_dir = os.path.join(_output_dir(relative_log_dir, "logs"), args.env_id)
+        args.model_dir = os.path.join(_output_dir(relative_model_dir, "models"), args.env_id)
+        args.result_dir = os.path.join("outputs", "results", str(algo), args.env_id)
         if rank == 0:
             print("Algorithm:", args.agent)
             print("Environment:", args.env_name)

@@ -4,7 +4,12 @@ from xuance.environment.utils import RawEnvironment, RawMultiAgentEnv
 from xuance.environment.utils import space2shape, combined_shape
 from xuance.environment.vector_envs import DummyVecEnv, DummyVecEnv_Atari, DummyVecMultiAgentEnv
 from xuance.environment.vector_envs import SubprocVecEnv, SubprocVecEnv_Atari, SubprocVecMultiAgentEnv
-from xuance.environment.single_agent_env import REGISTRY_ENV
+try:
+    from xuance.environment.single_agent_env import REGISTRY_ENV
+except ModuleNotFoundError as error:
+    if error.name != "xuance.environment.single_agent_env":
+        raise
+    REGISTRY_ENV = {}
 from xuance.environment.multi_agent_env import REGISTRY_MULTI_AGENT_ENV
 from xuance.environment.vector_envs import REGISTRY_VEC_ENV
 

@@ -124,7 +124,21 @@ class RunnerMARL(RunnerBase):
         best_scores_info = {"mean": np.mean(test_scores),
                             "std": np.std(test_scores),
                             "step": self.agent.current_step}
+        curriculum_stage = int(getattr(self.config, "curriculum_start_level", 0))
         for i_epoch in range(num_epoch):
+            if bool(getattr(self.config, "curriculum_auto_advance_by_steps", False)):
+                interval = int(getattr(self.config, "curriculum_min_steps_per_level", 300000))
+                max_level = int(getattr(self.config, "curriculum_max_level", 4))
+                if interval <= 0:
+                    raise ValueError("curriculum_min_steps_per_level must be positive")
+                next_stage = min(max_level, int(self.agent.current_step) // interval)
+                if next_stage != curriculum_stage:
+                    requested = self.agent.train_envs.env_method(
+                        "schedule_curriculum_level", next_stage)
+                    self.rprint(f"[curriculum] step={self.agent.current_step} "
+                                f"level {curriculum_stage} -> {next_stage}; "
+                                f"apply on reset in {len(requested)} environments")
+                    curriculum_stage = next_stage
             self.rprint("Epoch: %d/%d:" % (i_epoch, num_epoch))
             self.agent.train(train_steps=eval_interval)
             if self.rank == 0:
