@@ -103,3 +103,6 @@ mission corridor specification, and exact edgewise teacher supervision remain
 subsequent modules. The available
 graph/candidate model is an explicit implementation of the paper's method
 structure, not a claim to reproduce the unpublished candidate and mask rules.
+
+The concrete cov data and evaluation plan is in
+[NEXT_STEPS_COV.md](NEXT_STEPS_COV.md).
