@@ -1,0 +1,19 @@
+# Values explicitly stated by Yu et al. (2026) are listed here. Defender
+# guidance, primitive duration and blending are documented reproduction choices.
+scenario:
+  dt: 0.1
+  duration: 24.0
+  initial_range_min: 4000.0
+  initial_range_max: 8000.0
+  target_speed_min: 250.0
+  target_speed_max: 350.0
+  defender_speed_min: 380.0
+  defender_speed_max: 450.0
+  target_accel_max: 88.29
+  defender_accel_max: 147.15
+  fov_half_angle_deg: 60.0
+  initial_visible_fraction: 1.0
+  maneuver_min_seconds: 2.0
+  maneuver_max_seconds: 5.0
+  evasion_trigger_fraction: 0.6666666666666666
+  evasion_weight: 0.7
