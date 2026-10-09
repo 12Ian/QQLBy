@@ -8,7 +8,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
 from xuance import get_runner
-from xuance.environment.multi_agent_env.uav_pursuit_apollonius_3d import UAVPursuitApollonius3DEnv
+from xuance.environment.multi_agent_env.uav_pursuit_coverage_3d import UAVPursuitCoverage3DEnv
 
 COLORS = ["#FF8C00", "#1CA64C", "#00A6D6", "#8E44AD", "#E84393", "#2E86DE",
           "#8c564b", "#e377c2"]
@@ -65,23 +65,23 @@ def main():
     ap.add_argument("--target-max-speed", type=float, default=6.0)
     ap.add_argument("--seed", type=int, default=7)
     ap.add_argument("--max-episodes", type=int, default=10)
-    ap.add_argument("--out", default="p3_results/pursuit")
+    ap.add_argument("--out", default="outputs/results/p3_results/pursuit")
     ap.add_argument("--fps", type=int, default=12)
     a = ap.parse_args()
 
     np.random.seed(a.seed)
-    p = argparse.Namespace(algo="maddpg", env="uav_pursuit_apollonius_3d",
-                           env_id="apollonius_3d", device="cuda:0")
+    p = argparse.Namespace(algo="maddpg", env="uav_pursuit_coverage_3d",
+                           env_id="coverage_3d", device="cuda:0")
     p.num_agents = a.num_agents
     p.seed = a.seed
     p.curriculum_enabled = False
     p.building_mode = a.building_mode
     p.target_max_speed = a.target_max_speed
-    runner = get_runner(algo="maddpg", env="uav_pursuit_apollonius_3d",
-                        env_id="apollonius_3d", parser_args=p)
+    runner = get_runner(algo="maddpg", env="uav_pursuit_coverage_3d",
+                        env_id="coverage_3d", parser_args=p)
     agent = runner.agent
     agent.load_model(a.model_path)
-    env = UAVPursuitApollonius3DEnv(runner.config)
+    env = UAVPursuitCoverage3DEnv(runner.config)
 
     frames, chosen = None, None
     for ep in range(a.max_episodes):

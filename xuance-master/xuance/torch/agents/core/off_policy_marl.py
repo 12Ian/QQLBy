@@ -431,6 +431,26 @@ class OffPolicyMARLAgents(MARLAgents):
                                     if metric_key not in episode_info:
                                         episode_info[metric_key] = {}
                                     episode_info[metric_key][f"env-{i}"] = reward_value
+                    if "initial_encounter_time" in info[i]:
+                        crlg_metrics = {
+                            "initial_encounter_time_s": info[i]["initial_encounter_time"],
+                            "final_encounter_time_s": info[i]["encounter_time"],
+                            "encounter_time_change_s": (info[i]["encounter_time"] -
+                                                        info[i]["initial_encounter_time"]),
+                            "terminal_min_miss_m": min(info[i]["terminal_miss_m"]),
+                            "closest_approach_m": min(info[i]["closest_approach_m"]),
+                            "final_coverage": info[i]["coverage_probability"],
+                            "active_agents": info[i]["active_agents"],
+                            "invalid_episode": float(info[i]["invalid_episode"]),
+                            "max_steps": float(info[i]["termination_reason"] == "max_steps"),
+                            "terminal_phase_locked": float(info[i]["terminal_phase_locked"]),
+                        }
+                        for name, value in crlg_metrics.items():
+                            key = f"Train-CRLG/{name}/rank_{self.rank}"
+                            if self.use_wandb:
+                                episode_info[f"{key}/env-{i}"] = value
+                            else:
+                                episode_info[key] = {f"env-{i}": value}
                     # =====================================================================
 
                     self.log_infos(episode_info, self.current_step)
@@ -508,6 +528,17 @@ class OffPolicyMARLAgents(MARLAgents):
         test_timeout_list = []
         test_episode_steps = []
         test_min_uav_gaps = []
+        test_coverage_means = []
+        test_coverage_maxima = []
+        test_preparation_means = []
+        test_route_times = []
+        test_target_distances = []
+        test_target_wall_contacts = []
+        test_building_contact_seconds = []
+        test_boundary_contact_seconds = []
+        test_uav_contact_seconds = []
+        test_capture_direct = []
+        test_capture_sustained = []
 
         obs_dict, info = envs.reset()
         state = envs.buf_state.copy() if self.use_global_state else None
@@ -649,6 +680,23 @@ class OffPolicyMARLAgents(MARLAgents):
                         test_episode_steps.append(float(info[i].get("episode_step", 0)))
                         test_min_uav_gaps.append(float(
                             info[i].get("episode_min_uav_gap", np.nan)))
+                        diagnostics = info[i].get("infos", {})
+                        test_coverage_means.append(float(diagnostics.get("coverage_mean_episode", np.nan)))
+                        test_coverage_maxima.append(float(diagnostics.get("coverage_max_episode", np.nan)))
+                        test_preparation_means.append(float(
+                            diagnostics.get("preparation_mean_episode", np.nan)))
+                        test_route_times.append(float(
+                            diagnostics.get("safe_route_time_mean_episode", np.nan)))
+                        test_target_distances.append(float(diagnostics.get("min_target_distance_episode", np.nan)))
+                        test_target_wall_contacts.append(float(diagnostics.get("target_wall_contacts_episode", np.nan)))
+                        test_building_contact_seconds.append(float(
+                            diagnostics.get("building_contact_seconds_episode", np.nan)))
+                        test_boundary_contact_seconds.append(float(
+                            diagnostics.get("boundary_contact_seconds_episode", np.nan)))
+                        test_uav_contact_seconds.append(float(
+                            diagnostics.get("uav_contact_seconds_episode", np.nan)))
+                        test_capture_direct.append(float(info[i].get("capture_type") == "direct"))
+                        test_capture_sustained.append(float(info[i].get("capture_type") == "sustained"))
                         test_collision_flags[i] = False
                         test_building_collision_flags[i] = False
                         test_boundary_collision_flags[i] = False
@@ -749,6 +797,22 @@ class OffPolicyMARLAgents(MARLAgents):
                 finite_gaps = [gap for gap in test_min_uav_gaps if np.isfinite(gap)]
                 if finite_gaps:
                     test_info[f"Test-Results/Min-UAV-Gap{tag_suffix}"] = np.mean(finite_gaps)
+                for label, values in (
+                    ("Coverage-Mean", test_coverage_means),
+                    ("Coverage-Max", test_coverage_maxima),
+                    ("Preparation-Mean", test_preparation_means),
+                    ("Safe-Route-Time-Mean", test_route_times),
+                    ("Min-Target-Distance", test_target_distances),
+                    ("Target-Wall-Contacts", test_target_wall_contacts),
+                    ("Building-Contact-Seconds", test_building_contact_seconds),
+                    ("Boundary-Contact-Seconds", test_boundary_contact_seconds),
+                    ("UAV-Contact-Seconds", test_uav_contact_seconds),
+                    ("Direct-Capture-Rate", test_capture_direct),
+                    ("Sustained-Capture-Rate", test_capture_sustained),
+                ):
+                    finite = [value for value in values if np.isfinite(value)]
+                    if finite:
+                        test_info[f"Test-Results/{label}{tag_suffix}"] = np.mean(finite)
 
             if len(test_sub_scores_list) > 0:
                 for agent_name in self.agent_keys:
@@ -806,6 +870,15 @@ class OffPolicyMARLAgents(MARLAgents):
         curriculum levels and log separate TensorBoard tags:
         Test-Results/Win-Rate-Level-0 ... Level-4.
         """
+        if not bool(getattr(self.config, "curriculum_enabled", False)):
+            return self.run_episodes(
+                n_episodes=test_episodes,
+                run_envs=test_envs,
+                test_mode=True,
+                close_envs=close_envs,
+                curriculum_level=None,
+            )
+
         eval_all_levels = bool(getattr(self.config, "curriculum_eval_all_levels", False))
 
         if eval_all_levels:

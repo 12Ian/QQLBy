@@ -6,7 +6,7 @@ from copy import deepcopy
 from argparse import Namespace
 from gymnasium import spaces
 from xuance.common import Optional, DummyOffPolicyBuffer, BaseCallback
-from xuance.environment.single_agent_env import Gym_Env
+from typing import Any as Gym_Env
 from xuance.torch import Module
 from xuance.torch.utils import NormalizeFunctions, ActivationFunctions
 from xuance.torch.policies import REGISTRY_Policy

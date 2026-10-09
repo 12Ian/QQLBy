@@ -1,6 +1,6 @@
 import torch
 from argparse import Namespace
-from xuance.environment.single_agent_env import Gym_Env
+from typing import Any as Gym_Env
 from xuance.common import Optional, BaseCallback
 from xuance.torch import Module
 from xuance.torch.utils import NormalizeFunctions, ActivationFunctions

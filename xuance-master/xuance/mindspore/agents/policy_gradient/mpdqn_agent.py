@@ -1,6 +1,6 @@
 from argparse import Namespace
 from xuance.common import Optional, BaseCallback
-from xuance.environment.single_agent_env import Gym_Env
+from typing import Any as Gym_Env
 from xuance.mindspore import Module
 from xuance.mindspore.utils import NormalizeFunctions, ActivationFunctions, InitializeFunctions
 from xuance.mindspore.policies import REGISTRY_Policy

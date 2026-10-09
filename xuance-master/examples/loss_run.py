@@ -16,11 +16,11 @@ def main():
     ap.add_argument("--steps", type=int, default=1500000)
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--num-agents", type=int, default=6)
-    ap.add_argument("--out", default="p3_results/loss_full.csv")
+    ap.add_argument("--out", default="outputs/results/p3_results/loss_full.csv")
     a = ap.parse_args()
 
-    env_id = f"apollonius_3d_{a.name}"
-    p = argparse.Namespace(algo="maddpg", env="uav_pursuit_apollonius_3d",
+    env_id = f"coverage_3d_{a.name}"
+    p = argparse.Namespace(algo="maddpg", env="uav_pursuit_coverage_3d",
                            env_id=env_id, device="cuda:0")
     p.num_agents = a.num_agents
     p.seed = a.seed
@@ -35,7 +35,7 @@ def main():
     p.eval_interval = a.steps        # only one eval at the end -> minimal overhead
     p.test_episode = 5
 
-    runner = get_runner(algo="maddpg", env="uav_pursuit_apollonius_3d",
+    runner = get_runner(algo="maddpg", env="uav_pursuit_coverage_3d",
                         env_id=env_id, parser_args=p)
     agent = runner.agent
     learner = agent.learner

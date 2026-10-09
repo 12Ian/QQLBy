@@ -19,7 +19,7 @@ import argparse
 import numpy as np
 
 from xuance import get_runner
-from xuance.environment.multi_agent_env.uav_pursuit_apollonius_3d import UAVPursuitApollonius3DEnv
+from xuance.environment.multi_agent_env.uav_pursuit_coverage_3d import UAVPursuitCoverage3DEnv
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -29,7 +29,7 @@ def run_density(agent, cfg_proto, density, k, seed, surround, num_agents, vmax, 
     p = argparse.Namespace(**vars(cfg_proto))
     p.building_mode = density
     np.random.seed(seed)
-    env = UAVPursuitApollonius3DEnv(p)
+    env = UAVPursuitCoverage3DEnv(p)
 
     succ = coll = to = 0
     ep_min_gaps = []
@@ -93,8 +93,8 @@ def main():
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
 
-    p = argparse.Namespace(algo=args.algo, env="uav_pursuit_apollonius_3d",
-                           env_id="apollonius_3d", device=args.device)
+    p = argparse.Namespace(algo=args.algo, env="uav_pursuit_coverage_3d",
+                           env_id="coverage_3d", device=args.device)
     p.parallels = 1
     p.seed = args.seed
     p.curriculum_enabled = False
@@ -106,8 +106,8 @@ def main():
         p.surround_spawn = True
 
     np.random.seed(args.seed)
-    runner = get_runner(algo=args.algo, env="uav_pursuit_apollonius_3d",
-                        env_id="apollonius_3d", parser_args=p)
+    runner = get_runner(algo=args.algo, env="uav_pursuit_coverage_3d",
+                        env_id="coverage_3d", parser_args=p)
     agent = runner.agent
     agent.load_model(os.path.abspath(args.model_path))
     cfg = runner.config

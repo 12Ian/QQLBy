@@ -12,9 +12,9 @@ import matplotlib
 matplotlib.use("Agg")
 
 from xuance import get_runner
-from xuance.environment.multi_agent_env.uav_pursuit_apollonius_3d import UAVPursuitApollonius3DEnv
-from xuance.environment.multi_agent_env import geometry3d as g3
-from xuance.environment.multi_agent_env import apollonius3d as ap3
+from xuance.environment.multi_agent_env.uav_pursuit_coverage_3d import UAVPursuitCoverage3DEnv
+from xuance.environment.multi_agent_env.Apollonius import geometry3d as g3
+from xuance.environment.multi_agent_env.Apollonius import apollonius3d as ap3
 
 
 def escape_angle(env, mode):
@@ -31,17 +31,17 @@ def escape_angle(env, mode):
 def main():
     K = int(sys.argv[1]) if len(sys.argv) > 1 else 30
     eps = 0.1 * 4 * np.pi
-    p = argparse.Namespace(algo="maddpg", env="uav_pursuit_apollonius_3d",
-                           env_id="apollonius_3d", device="cuda:0")
+    p = argparse.Namespace(algo="maddpg", env="uav_pursuit_coverage_3d",
+                           env_id="coverage_3d", device="cuda:0")
     p.parallels = 1
-    runner = get_runner(algo="maddpg", env="uav_pursuit_apollonius_3d",
-                        env_id="apollonius_3d", parser_args=p)
+    runner = get_runner(algo="maddpg", env="uav_pursuit_coverage_3d",
+                        env_id="coverage_3d", parser_args=p)
     agent = runner.agent
-    best = os.path.join(os.getcwd(), "results", "maddpg", "apollonius_3d",
+    best = os.path.join(os.getcwd(), "outputs", "results", "maddpg", "coverage_3d",
                         "best_model", "best_model.pth")
     agent.load_model(best)
     cfg = runner.config
-    env = UAVPursuitApollonius3DEnv(cfg)
+    env = UAVPursuitCoverage3DEnv(cfg)
     if getattr(env, "curriculum_enabled", False):
         env.set_curriculum_level(int(getattr(cfg, "test_curriculum_level", 4)))
 

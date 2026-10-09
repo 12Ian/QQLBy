@@ -37,6 +37,13 @@ class MADDPG_Learner(LearnerMAS):
         self.gamma = config.gamma
         self.tau = config.tau
         self.mse_loss = nn.MSELoss()
+        self.mask_joint_actions = bool(getattr(config, "mask_joint_actions", False))
+        self.project_action_to_unit_ball = bool(getattr(config, "project_action_to_unit_ball", False))
+
+    def _project_action(self, action):
+        if not self.project_action_to_unit_ball:
+            return action
+        return action / torch.linalg.vector_norm(action, dim=-1, keepdim=True).clamp_min(1.0)
 
     def update(self, sample):
         self.iterations += 1
@@ -65,7 +72,12 @@ class MADDPG_Learner(LearnerMAS):
             bs = batch_size
             obs_joint = self.get_joint_input(obs, (batch_size, -1))
             next_obs_joint = self.get_joint_input(obs_next, (batch_size, -1))
-            actions_joint = self.get_joint_input(actions, (batch_size, -1))
+            if self.mask_joint_actions:
+                masked_actions = {k: self._project_action(actions[k]) * agent_mask[k].reshape(batch_size, 1)
+                                  for k in self.agent_keys}
+                actions_joint = self.get_joint_input(masked_actions, (batch_size, -1))
+            else:
+                actions_joint = self.get_joint_input(actions, (batch_size, -1))
 
         info = self.callback.on_update_start(self.iterations, method="update",
                                              policy=self.policy, sample_Tensor=sample_Tensor, bs=bs,
@@ -80,13 +92,20 @@ class MADDPG_Learner(LearnerMAS):
             key = self.model_keys[0]
             actions_next_joint = actions_next[key].reshape(batch_size, self.n_agents, -1).reshape(batch_size, -1)
         else:
-            actions_next_joint = self.get_joint_input(actions_next, (batch_size, -1))
+            if self.mask_joint_actions:
+                next_masked = {k: self._project_action(actions_next[k]) * obs_next[k][:, -1:].detach()
+                               for k in self.agent_keys}
+                actions_next_joint = self.get_joint_input(next_masked, (batch_size, -1))
+            else:
+                actions_next_joint = self.get_joint_input(actions_next, (batch_size, -1))
         _, q_eval = self.policy.Qpolicy(joint_observation=obs_joint, joint_actions=actions_joint, agent_ids=IDs)
         _, q_next = self.policy.Qtarget(joint_observation=next_obs_joint, joint_actions=actions_next_joint,
                                         agent_ids=IDs)
 
         for key in self.model_keys:
             mask_values = agent_mask[key]
+            if self.mask_joint_actions and mask_values.sum().item() == 0:
+                continue
             # update critic
             q_eval_a = q_eval[key].reshape(bs)
             q_next_i = q_next[key].reshape(bs)
@@ -105,7 +124,11 @@ class MADDPG_Learner(LearnerMAS):
             if self.use_parameter_sharing:
                 act_eval = actions_eval[key].reshape(batch_size, self.n_agents, -1).reshape(batch_size, -1)
             else:
-                a_joint = {k: actions_eval[k] if k == key else actions[k] for k in self.agent_keys}
+                a_joint = {k: self._project_action(actions_eval[k] if k == key else actions[k]) *
+                           agent_mask[k].reshape(batch_size, 1)
+                           if self.mask_joint_actions else
+                           (actions_eval[k] if k == key else actions[k])
+                           for k in self.agent_keys}
                 act_eval = self.get_joint_input(a_joint, (batch_size, -1))
             _, q_policy = self.policy.Qpolicy(joint_observation=obs_joint, joint_actions=act_eval,
                                               agent_ids=IDs, agent_key=key)

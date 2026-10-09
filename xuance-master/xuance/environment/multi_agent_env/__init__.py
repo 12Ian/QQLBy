@@ -1,90 +1,102 @@
 from xuance.environment.utils import EnvironmentDict
 from xuance.common import Optional
-from xuance.environment.multi_agent_env.mpe import MPE_Env
+from xuance.environment.multi_agent_env.Apollonius.mpe import MPE_Env
 
 REGISTRY_MULTI_AGENT_ENV: Optional[EnvironmentDict] = {
     "mpe": MPE_Env,
 }
 
 try:
-    from xuance.environment.multi_agent_env.drones import Drones_MultiAgentEnv
+    from xuance.environment.multi_agent_env.Apollonius.drones import Drones_MultiAgentEnv
     REGISTRY_MULTI_AGENT_ENV['Drones'] = Drones_MultiAgentEnv
 except Exception as error:
     REGISTRY_MULTI_AGENT_ENV["Drones"] = str(error)
 
 try:
-    from xuance.environment.multi_agent_env.football import GFootball_Env
+    from xuance.environment.multi_agent_env.Apollonius.football import GFootball_Env
     REGISTRY_MULTI_AGENT_ENV['Football'] = GFootball_Env
 except Exception as error:
     REGISTRY_MULTI_AGENT_ENV["Football"] = str(error)
 
 try:
-    from xuance.environment.multi_agent_env.robotic_warehouse import RoboticWarehouseEnv
+    from xuance.environment.multi_agent_env.Apollonius.robotic_warehouse import RoboticWarehouseEnv
     REGISTRY_MULTI_AGENT_ENV['RoboticWarehouse'] = RoboticWarehouseEnv
 except Exception as error:
     REGISTRY_MULTI_AGENT_ENV["RoboticWarehouse"] = str(error)
 
 try:
-    from xuance.environment.multi_agent_env.starcraft2 import StarCraft2_Env
+    from xuance.environment.multi_agent_env.Apollonius.starcraft2 import StarCraft2_Env
     REGISTRY_MULTI_AGENT_ENV['StarCraft2'] = StarCraft2_Env
 except Exception as error:
     REGISTRY_MULTI_AGENT_ENV["StarCraft2"] = str(error)
 
 try:
-    from xuance.environment.multi_agent_env.atari import AtariMultiAgentEnv
+    from xuance.environment.multi_agent_env.Apollonius.atari import AtariMultiAgentEnv
     REGISTRY_MULTI_AGENT_ENV['atari'] = AtariMultiAgentEnv
 except Exception as error:
     REGISTRY_MULTI_AGENT_ENV["atari"] = str(error)
 
 try:
-    from xuance.environment.multi_agent_env.uav_pursuit_cel_maddpg import UAVPursuitCelMaddpgEnv
+    from xuance.environment.multi_agent_env.Apollonius.uav_pursuit_cel_maddpg import UAVPursuitCelMaddpgEnv
     REGISTRY_MULTI_AGENT_ENV['uav_pursuit_cel_maddpg'] = UAVPursuitCelMaddpgEnv
 except Exception as error:
     REGISTRY_MULTI_AGENT_ENV["uav_pursuit_cel_maddpg"] = str(error)
 
 try:
-    from xuance.environment.multi_agent_env.uav_pursuit_apollonius_obs import UAVPursuitApolloniusObsEnv
+    from xuance.environment.multi_agent_env.Apollonius.uav_pursuit_apollonius_obs import UAVPursuitApolloniusObsEnv
     REGISTRY_MULTI_AGENT_ENV['uav_pursuit_apollonius_obs'] = UAVPursuitApolloniusObsEnv
 except Exception as error:
     REGISTRY_MULTI_AGENT_ENV["uav_pursuit_apollonius_obs"] = str(error)
 
 try:
-    from xuance.environment.multi_agent_env.uav_pursuit_apollonius_obs_2 import UAVPursuitApolloniusObs2Env
+    from xuance.environment.multi_agent_env.Apollonius.uav_pursuit_apollonius_obs_2 import UAVPursuitApolloniusObs2Env
     REGISTRY_MULTI_AGENT_ENV['uav_pursuit_apollonius_obs_2'] = UAVPursuitApolloniusObs2Env
 except Exception as error:
     REGISTRY_MULTI_AGENT_ENV["uav_pursuit_apollonius_obs_2"] = str(error)
 
 try:
-    from xuance.environment.multi_agent_env.uav_pursuit_apollonius_obs_3 import UAVPursuitApolloniusObs3Env
+    from xuance.environment.multi_agent_env.Apollonius.uav_pursuit_apollonius_obs_3 import UAVPursuitApolloniusObs3Env
     REGISTRY_MULTI_AGENT_ENV['uav_pursuit_apollonius_obs_3'] = UAVPursuitApolloniusObs3Env
 except Exception as error:
     REGISTRY_MULTI_AGENT_ENV["uav_pursuit_apollonius_obs_3"] = str(error)
     
 
 try:
-    from xuance.environment.multi_agent_env.uav_pursuit_apollonius_obs_4 import UAVPursuitApolloniusObs4Env
+    from xuance.environment.multi_agent_env.Apollonius.uav_pursuit_apollonius_obs_4 import UAVPursuitApolloniusObs4Env
     REGISTRY_MULTI_AGENT_ENV['uav_pursuit_apollonius_obs_4'] = UAVPursuitApolloniusObs4Env
 except Exception as error:
     REGISTRY_MULTI_AGENT_ENV["uav_pursuit_apollonius_obs_4"] = str(error)
 
 try:
-    from xuance.environment.multi_agent_env.uav_pursuit_apollonius_obs_5 import UAVPursuitApolloniusObs5Env
+    from xuance.environment.multi_agent_env.Apollonius.uav_pursuit_apollonius_obs_5 import UAVPursuitApolloniusObs5Env
     REGISTRY_MULTI_AGENT_ENV['uav_pursuit_apollonius_obs_5'] = UAVPursuitApolloniusObs5Env
 except Exception as error:
     REGISTRY_MULTI_AGENT_ENV["uav_pursuit_apollonius_obs_5"] = str(error)
 
 try:
-    from xuance.environment.multi_agent_env.uav_pursuit_apollonius_3d import UAVPursuitApollonius3DEnv
+    from xuance.environment.multi_agent_env.Apollonius.uav_pursuit_apollonius_3d import UAVPursuitApollonius3DEnv
     REGISTRY_MULTI_AGENT_ENV['uav_pursuit_apollonius_3d'] = UAVPursuitApollonius3DEnv
 except Exception as error:
     REGISTRY_MULTI_AGENT_ENV["uav_pursuit_apollonius_3d"] = str(error)
 
 try:
-    from xuance.environment.multi_agent_env.uav_pursuit_apollonius_multitarget_3d import UAVPursuitApolloniusMultiTarget3DEnv
+    from xuance.environment.multi_agent_env.Apollonius.uav_pursuit_apollonius_multitarget_3d import UAVPursuitApolloniusMultiTarget3DEnv
     REGISTRY_MULTI_AGENT_ENV['uav_pursuit_apollonius_multitarget_3d'] = UAVPursuitApolloniusMultiTarget3DEnv
 except Exception as error:
     REGISTRY_MULTI_AGENT_ENV["uav_pursuit_apollonius_multitarget_3d"] = str(error)
 
+try:
+    from xuance.environment.multi_agent_env.uav_pursuit_coverage_3d import UAVPursuitCoverage3DEnv
+    REGISTRY_MULTI_AGENT_ENV["uav_pursuit_coverage_3d"] = UAVPursuitCoverage3DEnv
+except Exception as error:
+    REGISTRY_MULTI_AGENT_ENV["uav_pursuit_coverage_3d"] = str(error)
+
 __all__ = [
     "REGISTRY_MULTI_AGENT_ENV",
 ]
+
+try:
+    from xuance.environment.multi_agent_env.crlg_3d import CRLG3DEnv
+    REGISTRY_MULTI_AGENT_ENV["crlg_3d"] = CRLG3DEnv
+except Exception as error:
+    REGISTRY_MULTI_AGENT_ENV["crlg_3d"] = str(error)

@@ -13,6 +13,17 @@ runner: "MARL"  # Runner
 num_agents: 6
 z_min: 50.0
 z_max: 350.0
+# Quadrotor translation: speed may fall to zero; only the initial speed is 1 m/s.
+uav_initial_speed: 1.0
+uav_max_speed: 11.0
+max_accel: 1.0
+acceleration_lag: 0.5
+uav_jerk_max: 2.0
+target_jerk_max: 1.0
+target_velocity_response: 1.0
+max_yaw_rate: 0.7853981633974483
+decision_dt: 1.0
+physics_dt: 0.1
 episode_length: 400
 escape_num_dirs: 200
 curriculum_enabled: True

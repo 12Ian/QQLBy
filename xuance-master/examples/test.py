@@ -7,8 +7,8 @@ import os
 algorithms = ["MADDPG", "IDDPG", "MAPPO", "QMIX"]  # 请根据实际需要补全算法名称
 env_id = "3v1_city"
 
-# 定义存放所有实验结果的根目录（根据您的 config.json，通常在 results/ 目录下）
-base_dir = "./results"
+# 定义存放所有实验结果的根目录（根据您的 config.json，统一在 outputs/results/ 目录下）
+base_dir = "./outputs/results"
 
 all_data = []
 

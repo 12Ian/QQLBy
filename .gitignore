@@ -56,3 +56,5 @@ settings.json
 
 # Local shell scripts
 *.sh
+# Track curated launch scripts inside the project.
+!xuance-master/bash/*.sh

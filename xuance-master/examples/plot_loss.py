@@ -6,8 +6,8 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-f = sys.argv[1] if len(sys.argv) > 1 else "p3_results/loss_full.csv"
-out = sys.argv[2] if len(sys.argv) > 2 else "p3_results/fig_loss_full.png"
+f = sys.argv[1] if len(sys.argv) > 1 else "outputs/results/p3_results/loss_full.csv"
+out = sys.argv[2] if len(sys.argv) > 2 else "outputs/results/p3_results/fig_loss_full.png"
 
 S, A, C = [], [], []
 for r in csv.DictReader(open(f)):

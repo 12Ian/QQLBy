@@ -6,7 +6,7 @@ import numpy as np
 from xuance import get_runner
 from xuance.environment.multi_agent_env.uav_pursuit_apollonius_multitarget_3d import (
     UAVPursuitApolloniusMultiTarget3DEnv)
-from xuance.environment.multi_agent_env.eval_metrics import wilson_ci
+from xuance.environment.multi_agent_env.Apollonius.eval_metrics import wilson_ci
 
 
 def main():

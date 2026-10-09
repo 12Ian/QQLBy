@@ -34,3 +34,5 @@ Gemfile
 Gemfile.lock
 _config.yml
 _site/
+# 统一保存训练及评估产物。
+/outputs/

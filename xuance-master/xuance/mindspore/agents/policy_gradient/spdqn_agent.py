@@ -5,7 +5,7 @@ from copy import deepcopy
 from argparse import Namespace
 from gymnasium import spaces
 from xuance.common import Optional, DummyOffPolicyBuffer, BaseCallback
-from xuance.environment.single_agent_env import Gym_Env
+from typing import Any as Gym_Env
 from xuance.mindspore import Module
 from xuance.mindspore.utils import NormalizeFunctions, InitializeFunctions, ActivationFunctions
 from xuance.mindspore.policies import REGISTRY_Policy
