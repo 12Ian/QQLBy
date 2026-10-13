@@ -22,12 +22,17 @@ This repository contains a complete re-implementation of the paper's military in
 
 The regenerated engagement data is **harder than the paper's** (the generator's maneuver distribution is undisclosed), which is measured — not assumed — by the constant-velocity (CV) baseline, a quantity that depends only on the data:
 
-| Metric | Paper | This reproduction |
-|---|---|---|
-| CV baseline ADE (data difficulty) | ~265 m (inferred from the paper's reported 2.6× gain × 102 m) | **614.4 m** |
-| Model ADE | 102 m | 218.7 m |
-| **Relative gain over CV (ADE)** | **2.6×** | **2.81×** |
-| **Relative gain over CV (FDE)** | **5.2×** | **6.47×** |
+| Metric | Paper | This repo (engineering baseline) | This repo (literal arm) |
+|---|---|---|---|
+| CV baseline ADE (data difficulty) | ~265 m (inferred from the paper's reported 2.6× gain × 102 m) | **614.4 m** | **614.4 m** (same data) |
+| Model ADE | 102 m | 218.7 m | 216.6 m |
+| **Relative gain over CV (ADE)** | **2.6×** | **2.81×** | **2.80×** |
+| **Relative gain over CV (FDE)** | **5.2×** | **6.47×** | **6.29×** |
+| IV-A intention accuracy (9-class, Monte-Carlo) | 88% | 63.1% / 59.1% (last, two rounds) — 54.3% / 56.1% (best) | — |
+
+The two IV-B arms (engineering baseline: temperature 0.1 + zero-init attention; literal arm: the paper's unspecified defaults) agree within 1% ADE — the method is insensitive to these undisclosed details, and the headline numbers above hold under either reading.
+
+All numbers are single-seed. Measured cross-run variance on identical code/data: IV-B weighted score ±16% (252.7 → 213.0 across GPUs), IV-A last-epoch accuracy ±6%, best-epoch accuracy ±1.8 points. Multi-seed statistics (paper F5) are left as future work.
 
 Because the relative gain normalizes away data difficulty, the headline claim of the reproduction is:
 
