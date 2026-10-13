@@ -1,0 +1,44 @@
+from .device import set_device, collect_device_info
+from .layers import (
+    ms, nn,
+    ModuleType,
+    mlp_block, cnn_block, pooling_block, gru_block, lstm_block
+)
+from .distributions import (
+    split_distributions,
+    merge_distributions,
+    Distribution,
+    CategoricalDistribution,
+    DiagGaussianDistribution,
+    ActivatedDiagGaussianDistribution
+)
+from .operations import (update_linear_decay, set_seed, get_flat_grad, get_flat_params, assign_from_flat_grads,
+                         assign_from_flat_params, clip_grads)
+from .value_norm import ValueNorm
+
+class LeakyReLU_01(nn.LeakyReLU):
+    def __init__(self):
+        super(LeakyReLU_01, self).__init__(alpha=0.01)
+
+ActivationFunctions = {
+    "relu": nn.ReLU,
+    "leaky_relu": LeakyReLU_01,  # nn.LeakyReLU,
+    "tanh": nn.Tanh,
+    "sigmoid": nn.Sigmoid,
+    "softmax": nn.Softmax,
+    "softmax2d": nn.Softmax2d,
+    "elu": nn.ELU,
+    "None": None
+}
+
+NormalizeFunctions = {
+    "LayerNorm": nn.LayerNorm,
+    "GroupNorm": nn.GroupNorm,
+    "BatchNorm": nn.BatchNorm1d,
+    "BatchNorm2d": nn.BatchNorm2d,
+    "InstanceNorm2d": nn.InstanceNorm2d
+}
+
+InitializeFunctions = {
+    "orthogonal": ms.common.initializer.Orthogonal,
+}

@@ -1,0 +1,12 @@
+{
+  "lstm_hidden": 32,
+  "projection_dim": 32,
+  "graph_dim": 48,
+  "graph_layers": 1,
+  "batch_size": 32,
+  "epochs": 3,
+  "dropout": 0.0,
+  "device": "cpu",
+  "cpu_threads": 2,
+  "workers": 0
+}

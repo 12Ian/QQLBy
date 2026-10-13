@@ -1,0 +1,130 @@
+{
+  "review_date": "2026-10-11",
+  "torch": "2.7.1+cpu",
+  "cuda_available": false,
+  "current_code_sha256": "67465ae64a52c0fabdba5c7bd1a85324c5c3c068a74434059038197af6c1f5ad",
+  "datasets": {
+    "main": {
+      "phases": {
+        "train": {
+          "windows": 500,
+          "class_support": {
+            "0": 456,
+            "3": 44
+          },
+          "windows_with_missing_peer_at_final_frame": 23
+        },
+        "validation": {
+          "windows": 100,
+          "class_support": {
+            "0": 93,
+            "3": 7
+          },
+          "windows_with_missing_peer_at_final_frame": 4
+        },
+        "test": {
+          "windows": 120,
+          "class_support": {
+            "0": 120
+          },
+          "windows_with_missing_peer_at_final_frame": 2
+        }
+      },
+      "saved_code_sha256": "325dd2a199bf0bdd1c3e4decdbb3063866efa0542d7aa112cf915d181853e047",
+      "matches_current_source": false,
+      "accuracy": 1.0,
+      "macro_f1": 0.1111111111111111,
+      "ade_m": 0.8178168753782908,
+      "fde_m": 1.672710367043813,
+      "cv_ade_m": 0.72882665793101,
+      "cv_fde_m": 1.7725077470143635,
+      "fixed_checkpoint_reevaluation": {
+        "method": "Same saved best checkpoint and held-out partition; no training or selection.",
+        "current_ade_m": 0.8178168753782908,
+        "current_fde_m": 1.672710367043813,
+        "current_accuracy": 1.0,
+        "ade_difference_from_saved": 0.0,
+        "fde_difference_from_saved": 0.0,
+        "accuracy_difference_from_saved": 0.0
+      }
+    },
+    "coverage": {
+      "phases": {
+        "train": {
+          "windows": 1092,
+          "class_support": {
+            "0": 1009,
+            "3": 81,
+            "4": 2
+          },
+          "windows_with_missing_peer_at_final_frame": 43
+        },
+        "validation": {
+          "windows": 234,
+          "class_support": {
+            "0": 234
+          },
+          "windows_with_missing_peer_at_final_frame": 6
+        },
+        "test": {
+          "windows": 234,
+          "class_support": {
+            "0": 225,
+            "3": 9
+          },
+          "windows_with_missing_peer_at_final_frame": 8
+        }
+      },
+      "saved_code_sha256": "cad9349c4b097dcdb3ba979a22a96614a682143da506795f8ea9f55031a39da6",
+      "matches_current_source": false,
+      "accuracy": 0.9615384615384616,
+      "macro_f1": 0.10893246187363834,
+      "ade_m": 0.8353146936139489,
+      "fde_m": 1.8501382261259942,
+      "cv_ade_m": 0.855210214598566,
+      "cv_fde_m": 1.9141975386529906,
+      "fixed_checkpoint_reevaluation": {
+        "method": "Same saved best checkpoint and held-out partition; no training or selection.",
+        "current_ade_m": 0.8353146936139489,
+        "current_fde_m": 1.8501382261259942,
+        "current_accuracy": 0.9615384615384616,
+        "ade_difference_from_saved": 0.0,
+        "fde_difference_from_saved": 0.0,
+        "accuracy_difference_from_saved": 0.0
+      }
+    }
+  },
+  "static_snapshot_probe": {
+    "final_peer_frame_available": false,
+    "earlier_peer_frames_available": true,
+    "actual_static_input": [
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "last_available_peer_state_in_same_frame": [
+      [
+        -0.5,
+        2.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "actual_static_input_is_zero": true,
+    "meaning": "The static branch uses only the final frame; it does not find an earlier valid measurement."
+  },
+  "regression_suite": {
+    "passed": 40,
+    "warnings": 14,
+    "seconds": 53.91,
+    "warning_category": "PyparsingDeprecationWarning",
+    "scope": "Existing tests, current source; not full-scale research validation."
+  }
+}

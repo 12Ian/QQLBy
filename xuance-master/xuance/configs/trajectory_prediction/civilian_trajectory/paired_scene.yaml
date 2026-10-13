@@ -1,0 +1,48 @@
+runner: TrajectoryPrediction
+agent: CivilianTrajectory
+policy: CivilianTrajectory
+learner: CivilianTrajectoryLearner
+env_name: CivilianTrajectoryDataset
+env_id: paired_scene
+dl_toolbox: torch
+device: auto
+distributed_training: false
+render: false
+logger: csv
+trajectory:
+  dropout: 0.1
+  intention_dropout: 0.2
+  historical_edge_features: true
+  historical_reachability: true
+  crop_warmup_epochs: 5
+  early_stopping_mode: both
+  decoder_type: autoregressive_gru
+  static_state_branch: true
+  relative_frame: yaw
+  graph_dim: 256
+  heads: 6
+  graph_head_dim: 64
+  graph_layers: 2
+  graph_top_k: 8
+  temporal_radius: 4
+  temporal_layers: 2
+  temporal_heads: 4
+  attention_temperature: 0.1
+  attention_supervision: true
+  loss_balance: uncertainty
+  ade_weight: 0.4
+  fde_weight: 0.6
+  optimizer: adamw
+  weight_decay: 0.0001
+  schedule: warmup_cosine
+  epochs: 200
+  schedule_epochs: 200
+  warmup_epochs: 5
+  early_stopping_patience: 20
+  selection_metric: ade_fde
+  max_speed_mps: 2.0
+  max_acceleration_mps2: 1.0
+  context_entities: 1
+  use_interaction_context: true
+  interaction_radius_m: 6.0
+  interaction_time_radius: 0

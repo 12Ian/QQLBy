@@ -1,0 +1,4 @@
+# Retain the framework's NumPy bound when resolving plotting dependencies.
+numpy>=1.26,<2
+matplotlib==3.10.6
+contourpy>=1.2,<1.4

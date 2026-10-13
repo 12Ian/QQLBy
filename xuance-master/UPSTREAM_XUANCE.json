@@ -1,0 +1,4233 @@
+{
+  "version": "1.4.4",
+  "source": "https://pypi.org/project/xuance/1.4.4/",
+  "archive_sha256": "cd8e706619a5a8ed7cc33234d9879a4363196b9ecce5e19721e4be74170ead29",
+  "files": [
+    {
+      "path": "xuance/__init__.py",
+      "original_sha256": "7beb6100c6ef82498676da111447f1e1cb1441e565829cd754ba5ea564439157",
+      "upstream_sha256": "8803a752a785cbabda7344f199a20271f42667047a2caedea64f150cece30cd2"
+    },
+    {
+      "path": "xuance/common/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "b68d07d721f4585e4ffa4fa80ad3ca5b0b4fb4522172f5cd26619bf4fb3a1290"
+    },
+    {
+      "path": "xuance/common/callback.py",
+      "original_sha256": null,
+      "upstream_sha256": "ab5e4041653d9654d90f38ca900ae073dbcb7b1565ca5ccc5c037c78a4fe091e"
+    },
+    {
+      "path": "xuance/common/common_tools.py",
+      "original_sha256": null,
+      "upstream_sha256": "689fca3a7442dbdc7cb90cb202671457bdd157e8273512608d234aa56bb1353c"
+    },
+    {
+      "path": "xuance/common/memory_offline.py",
+      "original_sha256": null,
+      "upstream_sha256": "c1786684364ea549b82a06ab33bb45e9adb41b5531bc9937cb6240a9568d6d52"
+    },
+    {
+      "path": "xuance/common/memory_tools.py",
+      "original_sha256": null,
+      "upstream_sha256": "f1ec3d837fe4a676a2a0d2b46ee55a4e76c7d6aa85f4fae86a479eb93cf4a4c3"
+    },
+    {
+      "path": "xuance/common/memory_tools_marl.py",
+      "original_sha256": null,
+      "upstream_sha256": "7a53b628d346bc11a3d536498e4d9e91d4a6834b733ea4dcbdf3e6182a1550fa"
+    },
+    {
+      "path": "xuance/common/offline_util.py",
+      "original_sha256": null,
+      "upstream_sha256": "e25f11b21881a86558fd3a82849e43f9be0f28f2015dab3b4f0c8a997e1bc8e1"
+    },
+    {
+      "path": "xuance/common/segtree_tool.py",
+      "original_sha256": null,
+      "upstream_sha256": "65d36d4f87ba7284da70e1cb7aa46ed74b645493286c34159aad9b4e5d084a15"
+    },
+    {
+      "path": "xuance/common/statistic_tools.py",
+      "original_sha256": null,
+      "upstream_sha256": "8607d4cbcfbb42dbff3fbf2f63881676cd2cc3abaffbbc7faa57510adfce0505"
+    },
+    {
+      "path": "xuance/common/tuning_tools/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "6c628412a5aa059609aa03b82613901a12d7d518d5bea6a36519fb998f8e3ca4"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "ffd524ec273c2d625ef521540cbfafb7a6358dbd8acb77cb5fb9b5e01d066b7b"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/a2c.py",
+      "original_sha256": null,
+      "upstream_sha256": "646873bb343c0ffd90c34c3cfb108d38549c2715ccf48a9974348185bda6c030"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/c51.py",
+      "original_sha256": null,
+      "upstream_sha256": "7cf4158cc21f417def1c2453f0a73843000af828182fa07c284137e2154d1a35"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/coma.py",
+      "original_sha256": null,
+      "upstream_sha256": "412406070b8b9b8476e7f5784c95ba5fe2f3ed442e3f6c655ad7a27a30848cad"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/dcg.py",
+      "original_sha256": null,
+      "upstream_sha256": "f52d2c60b2b7d923c98d8596565af0b83640ab9b3abf929ab16c20d21c8d2264"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/ddpg.py",
+      "original_sha256": null,
+      "upstream_sha256": "3cff56711b755c1d58fe39d2d2d36e670b566c8f44fc1d339d7a27e81ec54661"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/ddqn.py",
+      "original_sha256": null,
+      "upstream_sha256": "e5d3ef580cfd37d34ac85af96631d3ad6a24d4503e85fb055d7fd2356edc83c4"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/dqn.py",
+      "original_sha256": null,
+      "upstream_sha256": "a4db3ead17a8dda64b626140751cb1c6739614068a0805f94a51e7176f610855"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/drqn.py",
+      "original_sha256": null,
+      "upstream_sha256": "7b767f529dea142a4c977252d6c2044865dbdf80c101ba0e6e1034e4cd461788"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/dueldqn.py",
+      "original_sha256": null,
+      "upstream_sha256": "27a74f53f407e6479321bbf06114cd73eec1373a6f21db1faa8e06a527da398c"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/iac.py",
+      "original_sha256": null,
+      "upstream_sha256": "085931abbeaeebc29ed79d5296483e9870bd8aad93fb1599b198238f34b30050"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/iddpg.py",
+      "original_sha256": null,
+      "upstream_sha256": "a9e4bc3b2bb562137eabd9a9cb34025cdd1ac01eda9bb6084b4fd7e33c358f6e"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/ippo.py",
+      "original_sha256": null,
+      "upstream_sha256": "77f29f6efa713b7a3d973824eb8e5c916d4ed5b81023658b3898db6a287d6881"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/iql.py",
+      "original_sha256": null,
+      "upstream_sha256": "c51b99e5bf1e745eedae4d57df254733c67f6ae694281ba5b768016237508606"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/isac.py",
+      "original_sha256": null,
+      "upstream_sha256": "3bdb0e463c1424bd25a3d27902f3216f9ab095fb44a6c1ed2ca77ca5b1fcd8ae"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/maddpg.py",
+      "original_sha256": null,
+      "upstream_sha256": "32ab3933831e12254f6424ecaf65b5ba4de5a44a1b5d8eb6eeccf56b93cdaf00"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/mappo.py",
+      "original_sha256": null,
+      "upstream_sha256": "47138a5ef01dd9eca42d09c83fe105907666f9b10b88c4b76f718fd3b16c7146"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/masac.py",
+      "original_sha256": null,
+      "upstream_sha256": "3bdb0e463c1424bd25a3d27902f3216f9ab095fb44a6c1ed2ca77ca5b1fcd8ae"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/matd3.py",
+      "original_sha256": null,
+      "upstream_sha256": "4c877b13300d107bc6f9133072f9bc0cd5225d1367f72615df4fc8dd0a71a156"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/noisydqn.py",
+      "original_sha256": null,
+      "upstream_sha256": "49deb0862c0eb756d6105d740276ad3eb37a87d304036f65b3b3a97d96ba7f42"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/perdqn.py",
+      "original_sha256": null,
+      "upstream_sha256": "e9fe085bca1d89ac3d1b239bb6a56f60a5d10f36d9283b0b51aa6ca3e9ae6682"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/pg.py",
+      "original_sha256": null,
+      "upstream_sha256": "556d468a8f6760633e7a3fd21286102e9788c93bb80da139eb4d5eb558a062ac"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/ppg.py",
+      "original_sha256": null,
+      "upstream_sha256": "49be80459954713a64db89226cf0933b12c7ff7a2c9435d7f8c40657a545116f"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/ppo.py",
+      "original_sha256": null,
+      "upstream_sha256": "c3b50fd5f27eb8b10750d1e2fe2e5a965e6cbb386ecf61039a43fd8b6a3760f4"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/qmix.py",
+      "original_sha256": null,
+      "upstream_sha256": "4ea8a3baffe9f88d5213d7deb45f807052f9ddac9c5ec1ac181f0021f7f687f3"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/qrdqn.py",
+      "original_sha256": null,
+      "upstream_sha256": "3f2883b883dd472eb8cad7dbb8f6a6ef092356219f0319228bb1220a924cc82d"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/qtran.py",
+      "original_sha256": null,
+      "upstream_sha256": "5c6ea45017df554bde843110c0e7f81c6dd9a9a14cb9c0db00926a31fa41ba2f"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/sac.py",
+      "original_sha256": null,
+      "upstream_sha256": "1af3aa31369b9ab85f82fb41a33c73019b97a7bfd9eff4ae7bde24db12ae18ff"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/td3.py",
+      "original_sha256": null,
+      "upstream_sha256": "534b865c84d09a75d269f66dc87be01f9c6dc24574ce22de59f8a8b55fe54f5a"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/vdac.py",
+      "original_sha256": null,
+      "upstream_sha256": "5b0de1597a96471d42086c19702dc6a487d92dffb2d3aad6e3cc27074a2ed435"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/vdn.py",
+      "original_sha256": null,
+      "upstream_sha256": "6b528d3c3d2444b9dbb03ee47727cf2ede9633012697b400c163c7b017731450"
+    },
+    {
+      "path": "xuance/common/tuning_tools/hyperparameters/wqmix.py",
+      "original_sha256": null,
+      "upstream_sha256": "2c62425135f79eb79b54de032d91c8dee9e4ecf853e5daa299ace2e6633b828e"
+    },
+    {
+      "path": "xuance/common/tuning_tools/tuning_tool.py",
+      "original_sha256": null,
+      "upstream_sha256": "ad2343a36b69d47e91847209c4f03291e55a990244810946f82148b0dc459bc8"
+    },
+    {
+      "path": "xuance/configs/__init__.py",
+      "original_sha256": "90f182e56e04534879332609e5202535ae431828e2f3c6942787b4d3bfdf1059",
+      "upstream_sha256": "90f182e56e04534879332609e5202535ae431828e2f3c6942787b4d3bfdf1059"
+    },
+    {
+      "path": "xuance/configs/a2c/atari.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "23c5aef389e1120b0fc25a674e429377a184bc6f24a03acd38735e0e4eca94d5"
+    },
+    {
+      "path": "xuance/configs/a2c/box2d/BipedalWalker-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "240b69619c6eb822be8755c46ec85bd7815b2a8dedeb5416a52100aaf11d3173"
+    },
+    {
+      "path": "xuance/configs/a2c/box2d/LunarLander-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "001d0271db8249030d6030f32c8d1fc60a25303fd30d631f57e6922eca17f46c"
+    },
+    {
+      "path": "xuance/configs/a2c/classic_control/Acrobot-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "e455e0599c36df1146a6dd601db273f461223935ca30168470f397a044a837be"
+    },
+    {
+      "path": "xuance/configs/a2c/classic_control/CartPole-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "8ac6260ada308093266bce823ea687df2f9ab0fc221897e51ce3371e51c012ac"
+    },
+    {
+      "path": "xuance/configs/a2c/classic_control/MountainCar-v0.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "5dd37c13327a01edb4ad41198310466e65f0eb6df8c3dccf918c0c99947530a3"
+    },
+    {
+      "path": "xuance/configs/a2c/classic_control/Pendulum-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "045af71a082815eeb75da31ec91439b0a41a886be93614ce83f87dce81807108"
+    },
+    {
+      "path": "xuance/configs/a2c/mujoco.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "9d1039a27cddc1f045f328b0273b195c9c4f4fe3dd199651bb50c3292d2f0f45"
+    },
+    {
+      "path": "xuance/configs/basic.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "136788fcb7cf3acd90fbb01cbeca4c0ecc672ed49f7533810152c801af9a34e8"
+    },
+    {
+      "path": "xuance/configs/c51/atari.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "a25b49eec43e701e4ccdaeb14832711b5a0fa2e4da93536831c7a25ee92d74f4"
+    },
+    {
+      "path": "xuance/configs/c51/box2d/CarRacing-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "e1bf2451abd89515c594bb1bfb4d8fb6b9cc9c43ff9d0d35d4a7c3549c6d8c8c"
+    },
+    {
+      "path": "xuance/configs/c51/box2d/LunarLander-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "09459a1670795829b20d7adb11de6e5859c113031126456d992b2efd7629d09d"
+    },
+    {
+      "path": "xuance/configs/c51/classic_control/Acrobot-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "121626b7a88e2a8d0ef86b20bd73f77ae70d1e60981662881fc138b75a941b2e"
+    },
+    {
+      "path": "xuance/configs/c51/classic_control/CartPole-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "2b0c0d090d06651584704c7b38789c0e5434a5cd4f98eb92d5cba09303c5eead"
+    },
+    {
+      "path": "xuance/configs/c51/classic_control/MountainCar-v0.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "3bae68363a14d1a716d2cf548b5fde2c08a8b91e94c717dd2afa0fb5b701c2d6"
+    },
+    {
+      "path": "xuance/configs/coma/mpe/simple_spread_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "c4a09fd113844a74f77e8d84c163c10d4e95dbf622b40b546346ebc34099d12b"
+    },
+    {
+      "path": "xuance/configs/coma/sc2/1c3s5z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "7c309ed762e8644e5c35e6bfd166b47db1b88aa0ddf2393765b057bda042f9b7"
+    },
+    {
+      "path": "xuance/configs/coma/sc2/25m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "13fccdbf97af477589aefa7d9d81c889ecf739c1709ae6f8bdaebcaa8eae63e5"
+    },
+    {
+      "path": "xuance/configs/coma/sc2/2m_vs_1z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "e8e95beb8bba8789d14176416fdd967d1a9a8e55f961c723954b6aaf44439a30"
+    },
+    {
+      "path": "xuance/configs/coma/sc2/2s3z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "be3f590fc7ca6f283fe9acc439b0af69081ac2dec77b0aaf16368566b4abbec2"
+    },
+    {
+      "path": "xuance/configs/coma/sc2/3m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "18f02d50dfc63a5d52f641224e194db15b9d4adc46da3851b185df745f11ba4c"
+    },
+    {
+      "path": "xuance/configs/coma/sc2/5m_vs_6m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "93a4c8dc38a5be76a81a12ac591ebdf04d7f91ee45022a21aca1cc74b77c3d36"
+    },
+    {
+      "path": "xuance/configs/coma/sc2/8m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "c3c905a92f3fbfa5fa51f2525e97e1bc0bbcc2c6ab04a0b411432e020f60c737"
+    },
+    {
+      "path": "xuance/configs/coma/sc2/8m_vs_9m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "ddc30b5b534e16b208b3f8910a0a85184ffeb2508288e41ec399b263d098b06a"
+    },
+    {
+      "path": "xuance/configs/coma/sc2/MMM2.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "f1cc8f78b9ac451ff986a55e57dba068bbf483dbb944f83e072890de4703802e"
+    },
+    {
+      "path": "xuance/configs/coma/sc2/corridor.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "9c7547864836cf503e5ce5d9fa736cf1cb5db1c56b1c4eba51815fd26525daf2"
+    },
+    {
+      "path": "xuance/configs/commnet/mpe/simple_spread_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "0eb15faa8f3f87ebe2785f19985a23c60462b516091fd43e2be0eddd76f423a6"
+    },
+    {
+      "path": "xuance/configs/commnet/sc2/2s3z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "e6dd2c9430e6070512a460120f79f82bf8715f6b30da0fcc2747d1e6fb22561f"
+    },
+    {
+      "path": "xuance/configs/commnet/sc2/3m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "4d633553d765ce2a9e2bf1a7332f9ebf77e4203c7e1a0319252f265d87b8fbd4"
+    },
+    {
+      "path": "xuance/configs/commnet/sc2/8m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "4a2366f1019211f459f26679f547e8e5a716dab4a5dff9de359d791fb1a947be"
+    },
+    {
+      "path": "xuance/configs/dcg/mpe/simple_spread_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "11bfff62d8e09430279c44cb01a69bcc1d62f1873f4aaabf36ece2147e08d8d0"
+    },
+    {
+      "path": "xuance/configs/dcg/sc2/1c3s5z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "d8f2160f0b72f633121b8173b9295e65193ec640bbf7dbe2881bf19ed2ae4979"
+    },
+    {
+      "path": "xuance/configs/dcg/sc2/25m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "f7b73b815ff4ed9812245b1fedd5e7bd0b320bcf4a8f14312fdc4ee503b0988d"
+    },
+    {
+      "path": "xuance/configs/dcg/sc2/2m_vs_1z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "52e3b3419cd786cd54b45e484fa5690d04c50515dbd52a518ef2d1eeac892850"
+    },
+    {
+      "path": "xuance/configs/dcg/sc2/2s3z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "138f461dc6c4415921d50ed198b2b27247da4dddef13b559b4ef0cd878f4711a"
+    },
+    {
+      "path": "xuance/configs/dcg/sc2/3m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "b245d4cab116ae297e54382be56aacf5e957e449d6f5f8f4549bcbba710a28b4"
+    },
+    {
+      "path": "xuance/configs/dcg/sc2/5m_vs_6m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "d310a5a51e910d4a47405bdad2117d8e29599d524353a6091d56a568b43f163e"
+    },
+    {
+      "path": "xuance/configs/dcg/sc2/8m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "0a2411d9456d70101a0691a35d2ba142db1219bef209cef225b3d0dde3a19b2b"
+    },
+    {
+      "path": "xuance/configs/dcg/sc2/8m_vs_9m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "9e422451062c25e8fa800a6e368411af17ae35da958d4514ba589ef746f0e83d"
+    },
+    {
+      "path": "xuance/configs/dcg/sc2/MMM2.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "e14b952724322e0b7a7b05c47f86ffa309fef258f2c34f3f6587d8bb4aeaa47c"
+    },
+    {
+      "path": "xuance/configs/dcg/sc2/corridor.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "e7cfcd4d9e0e6b720b6b2b5e69250e2d50194ccf972720a4537317a31ed200c3"
+    },
+    {
+      "path": "xuance/configs/ddpg/box2d/BipedalWalker-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "d41ad521a11f3550bb0cfac7b8f22bf71466cb6e77607bb9c41f687cd5aea684"
+    },
+    {
+      "path": "xuance/configs/ddpg/classic_control/Pendulum-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "3681649c10f41dd09a46396cd5af8a9cc10760f7ac7ac018575250ae215777b2"
+    },
+    {
+      "path": "xuance/configs/ddpg/drones.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "01c47be6276b18c581f10acbf7435234eaa5289449b0a7db8704a3e751a70669"
+    },
+    {
+      "path": "xuance/configs/ddpg/mujoco.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "d51b15abcd7bcc54d1a86cd893ee84020e8a9ab71951fd9560398500e32e0bd5"
+    },
+    {
+      "path": "xuance/configs/ddqn/atari.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "635fd21dfa098db82d9ef2cd7ef529c17ebc82530d3e8060ebc00030b6628bbc"
+    },
+    {
+      "path": "xuance/configs/ddqn/box2d/CarRacing-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "36d64abba8d6e59b5061a4f2e040f04a86a482ed24b17f64f9ded7c7c67b8216"
+    },
+    {
+      "path": "xuance/configs/ddqn/box2d/LunarLander-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "0e5b79a397a85448107055f03d5da72d7ab6b32d8c2d86fba0d4c76e2de6668f"
+    },
+    {
+      "path": "xuance/configs/ddqn/classic_control/Acrobot-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "859d83a681d5e3bbca565b6ae8c6425e87c6b3de42224abee4737889033dd01b"
+    },
+    {
+      "path": "xuance/configs/ddqn/classic_control/CartPole-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "8e357f12db958c3f7ea1075adcf98988aa7aad1b654b9ec6b157e9102e7ae981"
+    },
+    {
+      "path": "xuance/configs/ddqn/classic_control/MountainCar-v0.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "738135c3869c41a3683f278e453bb4bf122407ec1ecec91edd435facc15f6c45"
+    },
+    {
+      "path": "xuance/configs/dqn/atari.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "ade4187539a7159b9c71da35799b5ac17a40a5d3c84e0899c92e88edbd53bd10"
+    },
+    {
+      "path": "xuance/configs/dqn/box2d/CarRacing-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "026dfd0acfc6b5735eb879f6a8d0c286d3e2434587aef815c5a74ba54404c7db"
+    },
+    {
+      "path": "xuance/configs/dqn/box2d/LunarLander-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "f009748d86fdf8318f814af5e6d7195a9f383f4c18b9bda2c158890aee4e3bed"
+    },
+    {
+      "path": "xuance/configs/dqn/classic_control/Acrobot-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "d366f6a98ec38a9f590413e397010b41457dedf9220a8523dc744a8491a86fc6"
+    },
+    {
+      "path": "xuance/configs/dqn/classic_control/CartPole-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "2e2a45387684ac39068dfd2489555a333fb59eea8cde9c7489203d4190859605"
+    },
+    {
+      "path": "xuance/configs/dqn/classic_control/MountainCar-v0.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "4b5a99dd5a306f32ebe61f3e80c0435028090c3fa444112478e0c39bc127d196"
+    },
+    {
+      "path": "xuance/configs/dreamerv2/atari.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "5e909a6dacfdba961f3ca87e0d0967f4ed3399b8730385763b79f7449294d3d3"
+    },
+    {
+      "path": "xuance/configs/dreamerv2/classic_control/CartPole-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "2691ae2a825d70a8606f76a1c1cae3acd6dad5ad933af69cdc8a8dc4b4260ef3"
+    },
+    {
+      "path": "xuance/configs/dreamerv2/classic_control/Pendulum-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "9e5f786ab52a791a8f3bf915f6f380ffa3ade147c4d55f250d117cbd28f5c37e"
+    },
+    {
+      "path": "xuance/configs/dreamerv3/atari.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "826b2d4046b94e92cf61a7762c4a0700c8ff85feac8cfdb77262e7bdec511f04"
+    },
+    {
+      "path": "xuance/configs/dreamerv3/classic_control/CartPole-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "c646cbd38ea7876b882cce2344e9f7b9731afb76833527e38965c216dd0d6d91"
+    },
+    {
+      "path": "xuance/configs/dreamerv3/classic_control/Pendulum-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "76452f411582db0ff6b9f27be33ea1a5c012cbd5647ebd2fc227b1572f2e23f5"
+    },
+    {
+      "path": "xuance/configs/drqn/atari.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "e16c73b1775d7268b3117b79e5de22f80f1863ff6a1c747052552cfdbc3c594d"
+    },
+    {
+      "path": "xuance/configs/drqn/box2d/CarRacing-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "3e4c7cf58ad6d758e5e44589051e35a9fb0079d3b53c2da3bc19fac3987d711d"
+    },
+    {
+      "path": "xuance/configs/drqn/box2d/LunarLander-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "b6a7fa3077f6145808d95b258ecadae344849b8739eb8b2e77efef5175382ba3"
+    },
+    {
+      "path": "xuance/configs/drqn/classic_control/Acrobot-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "135c95ac44b313ca17153ab77838e3a503bcefe0f18a14740deea14fb00de340"
+    },
+    {
+      "path": "xuance/configs/drqn/classic_control/CartPole-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "5a9cb6c9c23d0eda9d559c937bfe61f33dc4472443afbaa067715f0f670b49ab"
+    },
+    {
+      "path": "xuance/configs/drqn/classic_control/MountainCar-v0.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "d3db0bcfbb9d3ad5f746144dbf6a83a3f2858149049ef84a9ddb86100ac8f9cb"
+    },
+    {
+      "path": "xuance/configs/dueldqn/atari.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "9a61f73224b4b8d4147ca7ef0fc2c48d9931d902d3abe990d5a0d0383a4b96e3"
+    },
+    {
+      "path": "xuance/configs/dueldqn/box2d/CarRacing-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "0c9add5b06a9e868b1dffbaf53fd3d6d4f13aeef1d390bf650c75c65a9cc7c95"
+    },
+    {
+      "path": "xuance/configs/dueldqn/box2d/LunarLander-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "481d4b1372c09be6d713ca0f41268cb756f92b505545cea06f459aebd58728cc"
+    },
+    {
+      "path": "xuance/configs/dueldqn/classic_control/Acrobot-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "d7df6d03d7d31db2380c7925018c458949a176083d979952468597428c2212cb"
+    },
+    {
+      "path": "xuance/configs/dueldqn/classic_control/CartPole-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "ccc4faa28645b453954f3265bd3570047baff6183f5ca70f09814f242ff07a5f"
+    },
+    {
+      "path": "xuance/configs/dueldqn/classic_control/MountainCar-v0.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "0d41fda1a1d132a723f2239df88d5c57c7b9b51b2c484f78572f4eea8ec864bb"
+    },
+    {
+      "path": "xuance/configs/iac/mpe/simple_spread_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "0f68d62d898edec49f0f5bfa73928d8c9604a077379ed683f0405cbbce2cd3dc"
+    },
+    {
+      "path": "xuance/configs/iac/sc2/1c3s5z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "98f167f767fdd0c619f3488f41c99d085c273f520c93a66936541a5fba5fc8df"
+    },
+    {
+      "path": "xuance/configs/iac/sc2/25m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "b03bcc94561d0cba27fe7d73e000079c2910db6eba6ad65d65f05b33916f763b"
+    },
+    {
+      "path": "xuance/configs/iac/sc2/2m_vs_1z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "bc9811866485197ff54ef0867b7bd0e75f22a1e84ef16c9065f23f7a73a2cf93"
+    },
+    {
+      "path": "xuance/configs/iac/sc2/2s3z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "46dbb1aaf7d947e9af6a9a28b2f26210d213be91e387e7eedfa051ee5bda4aaf"
+    },
+    {
+      "path": "xuance/configs/iac/sc2/3m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "38fcea05cc756a100863e09a7a3b6e9a75a83dbaa160f0765b688bdfb32f9554"
+    },
+    {
+      "path": "xuance/configs/iac/sc2/5m_vs_6m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "67710ecae78076ac8aa727fc645f68df4a3494a4fd9dd16da4a2ab6945d1755b"
+    },
+    {
+      "path": "xuance/configs/iac/sc2/8m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "62a1fbca8622bdc0429425d086092958878ec59f4e4e8ade0d229cf631258f9e"
+    },
+    {
+      "path": "xuance/configs/iac/sc2/8m_vs_9m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "e487d987f47f9b89ae88df1d6691e2a1a8c68363a674eae606195a8a597d792f"
+    },
+    {
+      "path": "xuance/configs/iac/sc2/MMM2.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "99345ee37cc666559d4f714daac402412c288c87f10a7283008198d0d049f71a"
+    },
+    {
+      "path": "xuance/configs/iac/sc2/corridor.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "e232e778d469de035413315e4c39ee26caf44601e37e650b4082b5f3db3c3019"
+    },
+    {
+      "path": "xuance/configs/ic3net/mpe/simple_spread_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "36e085b2ac35dedbea0f921229d8f2049f25d92e5a5935c325668ea05794a3f2"
+    },
+    {
+      "path": "xuance/configs/iddpg/drones.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "c1dce8b7cc8cc812ce722b5bfa29828761bb8b33a806d34cd07e9030860cb67a"
+    },
+    {
+      "path": "xuance/configs/iddpg/mpe/simple_adversary_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "f80e24fb1a14ed880323363802863f11ccd5d37e17153821807aa64d27e378fa"
+    },
+    {
+      "path": "xuance/configs/iddpg/mpe/simple_push_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "b93c91682d9e157fd41aea713ad35ff7087a3b617d16e8d727deb5ff13143413"
+    },
+    {
+      "path": "xuance/configs/iddpg/mpe/simple_reference_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "bccdd595a3156d6c7a4ccd9a1e6aed818a7e55bb8dfc715ada5d060afe8b0798"
+    },
+    {
+      "path": "xuance/configs/iddpg/mpe/simple_spread_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "33c200ff3eb9757795b4d4ace171e00fb15cb4b532a19c53a74e9567afe2806b"
+    },
+    {
+      "path": "xuance/configs/ippo/atari.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "e1af1dbb61ca2d3874069246115ed1913e1a56d749af8e2f2cfb037c935e253f"
+    },
+    {
+      "path": "xuance/configs/ippo/football/3v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "e9a4a06255f8e1592f80981716170bbea35389f81ea588678b6fc1e524ef9a68"
+    },
+    {
+      "path": "xuance/configs/ippo/mpe/simple_spread_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "2b07192a8ac088033dea47d80f3d8c3f37418d6eb6622fcc32d8af188aeacf19"
+    },
+    {
+      "path": "xuance/configs/ippo/sc2/1c3s5z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "85e981c8423905200ac0dd74687eb03d12e5244ab83a707407b7c3b965dcef44"
+    },
+    {
+      "path": "xuance/configs/ippo/sc2/25m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "1a841e43e5fa2ec43631719c00391c0c59445857230e7453180d06d42ede1e4e"
+    },
+    {
+      "path": "xuance/configs/ippo/sc2/2m_vs_1z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "6446a907e92f1261d318f451f4e2ddf7cc036875de83f497f0ab3217dd64a5e3"
+    },
+    {
+      "path": "xuance/configs/ippo/sc2/2s3z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "55cad02a2660dadb2da4759eca2ce2200a3c9974c04fdc9c6a161f2294622861"
+    },
+    {
+      "path": "xuance/configs/ippo/sc2/3m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "c093d5e7ebdc186d416ecf13ac77de77cb346d63e3c7e8a429e08a301e7b19ff"
+    },
+    {
+      "path": "xuance/configs/ippo/sc2/5m_vs_6m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "3907faa2345af7655b895b68ae88fcfa17e2c054692f1fb66ac740538016c7df"
+    },
+    {
+      "path": "xuance/configs/ippo/sc2/8m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "e96e09a7b433e7efaba67d115b8e0075983cecce1b7c90cd297173c6ffc1d146"
+    },
+    {
+      "path": "xuance/configs/ippo/sc2/8m_vs_9m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "17cf22f61600808b0479f9655708e0ab7a27e797aacb4a62920938e44073b571"
+    },
+    {
+      "path": "xuance/configs/ippo/sc2/MMM2.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "dd16537f3171351d3620ec9b2c8d2cbaf08bd446615ec3cb6851a97c94a534ac"
+    },
+    {
+      "path": "xuance/configs/ippo/sc2/corridor.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "4d3f2dc3de269e914f8ecd20545b5e3b44ae06e88905c2ae965890dda5ba05b2"
+    },
+    {
+      "path": "xuance/configs/iql/atari.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "3292c3b4916532ae9c4d1e5ce42d3ff072c6e7f2ba4fffa823690a31f9db5417"
+    },
+    {
+      "path": "xuance/configs/iql/football/1v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "492c8412980c92f7c10712a8082f46996287c240d0fd4c71cb76bf7525a0f876"
+    },
+    {
+      "path": "xuance/configs/iql/football/3v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "50636b77df6a55bde95db0344d383c4fc13bfcbcdca4c232457f55f366ee4777"
+    },
+    {
+      "path": "xuance/configs/iql/magent2/adversarial_pursuit_v4.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "52ed48e0152656793a2e2c082766c765d6a3e659a4926f8b0f253137766c1c16"
+    },
+    {
+      "path": "xuance/configs/iql/mpe/simple_spread_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "4235e9a599651d934d5b04d3315e5eacc9e2f0c9b90a2ae8cdb927b4bde662f0"
+    },
+    {
+      "path": "xuance/configs/iql/robotic_warehouse/rware-tiny-2ag-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "73ea05321127e90f05bbe2fb111d52399f20ad92cfd49325182e4698bb9bb181"
+    },
+    {
+      "path": "xuance/configs/iql/sc2/1c3s5z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "87a71f6b82e02080fd6e51d7507fdf3dacf78415d66aeb4dd929ac1834484c60"
+    },
+    {
+      "path": "xuance/configs/iql/sc2/25m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "5bd64f259be97016ea77712e7361b238279d38f32e0b607185df2e389082f662"
+    },
+    {
+      "path": "xuance/configs/iql/sc2/2m_vs_1z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "4ba198a35267e2777afe8d0096d68204f2b1c7c7c57d8672371bac20438cc6e3"
+    },
+    {
+      "path": "xuance/configs/iql/sc2/2s3z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "479cff1a77d8c37a77a244d98f715f685b24f7b55b47d2e6ef2da2fd940d8104"
+    },
+    {
+      "path": "xuance/configs/iql/sc2/3m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "c58d09327b3b23309c25fa333aa1728d0d224cd63f66c67f64c48d68353a817d"
+    },
+    {
+      "path": "xuance/configs/iql/sc2/5m_vs_6m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "07691a8cf2ebbb8d6195c3f781be655ccc3a3bcf3b637c302ef4e84e5442bb81"
+    },
+    {
+      "path": "xuance/configs/iql/sc2/8m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "be774a982d003495fc4543c16ff484fe626cb01c9033e7de13a2aaff02f2fd76"
+    },
+    {
+      "path": "xuance/configs/iql/sc2/8m_vs_9m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "8c4d268587e00886827ef5f442d0c69a6cbd6bcae6077dafe8c74f37e3b342e4"
+    },
+    {
+      "path": "xuance/configs/iql/sc2/MMM2.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "8c795a544926af690392487cd0467b6279dfe6760d35d5a49f7fceed35d23e0d"
+    },
+    {
+      "path": "xuance/configs/iql/sc2/corridor.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "f2144e6e3c51eeeed6a3246f264fc6cdab2f3b456f2a64306c9fc746a1bdbcc3"
+    },
+    {
+      "path": "xuance/configs/isac/mpe/simple_adversary_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "28b683bf70bab1f73e48d066ccad021cebcf9052bd92105c390655577b3629b9"
+    },
+    {
+      "path": "xuance/configs/isac/mpe/simple_push_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "693816805928d3dadc9d37130e130dd986c84a56a56ce1e7a2eb4b223e8782d2"
+    },
+    {
+      "path": "xuance/configs/isac/mpe/simple_spread_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "5e599f53ba99b2f62d4293225f0bfb86b4b77dffc8a2ec693b5dc5574793f15e"
+    },
+    {
+      "path": "xuance/configs/itd3/mpe/simple_adversary_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "d7d961b1a5de8850652f411c80e79054ac51ea4d44b432876017a42aa8fbb1b6"
+    },
+    {
+      "path": "xuance/configs/itd3/mpe/simple_push_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "50c75960e2d8f13ae9653cf4958ca653338b6430a0dd5f07979f7524db3904c9"
+    },
+    {
+      "path": "xuance/configs/itd3/mpe/simple_spread_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "217c2e4e500b85ef2ffc8ac29a914ae478c01c048b0c2071071145b79a8efd60"
+    },
+    {
+      "path": "xuance/configs/maddpg/drones.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "833d53b9daa18cbf7079dca18d522ac144732811d5b2760bc409d45657e57201"
+    },
+    {
+      "path": "xuance/configs/maddpg/mpe/simple_adversary_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "d1ffd1b9ce1b90beca6cfbbd47f3e01180f03145f27785bd9577770f1e80ee5f"
+    },
+    {
+      "path": "xuance/configs/maddpg/mpe/simple_push_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "3d676d26c0d747ea538b7c576f4aa9d34cd85f85041f1514015f71f688136af1"
+    },
+    {
+      "path": "xuance/configs/maddpg/mpe/simple_spread_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "82c0e69378f970a49beda0a2680128e70b42cfaecbee4ffaedf80dd19fb86d50"
+    },
+    {
+      "path": "xuance/configs/maddpg/new_env_mas.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "e17ca6aa91500bc9eacc8b13105c54ab0b3661d1655b783baed6d5c19ba5b66d"
+    },
+    {
+      "path": "xuance/configs/mappo/atari.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "9ece533df0fec17c5594c39492aec60c006ed814331dd0a384f779c17f3107a3"
+    },
+    {
+      "path": "xuance/configs/mappo/football/1v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "dfb37e23d88f422b2d4b6ba51a273eebeac7bb54d23b5b063f3d1a498b6105dd"
+    },
+    {
+      "path": "xuance/configs/mappo/football/3v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "5afa4e83bf39b828fd3ae3c3d28dec6642e43d64ef9f5e32c5a2b68091e016d9"
+    },
+    {
+      "path": "xuance/configs/mappo/mpe/simple_adversary_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "a09c8627ae4ed23b8845f6b4fe62eb203314033f567c7a73f16553b4f1023f6b"
+    },
+    {
+      "path": "xuance/configs/mappo/mpe/simple_push_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "63585cee764e31d901bae83a4fc4237a57245d7705fae065d9f97cad3a484cd9"
+    },
+    {
+      "path": "xuance/configs/mappo/mpe/simple_spread_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "73ad4725e41b98b22e43daa6298e80d6b2025eb5a29c9dbbdef38876241042f4"
+    },
+    {
+      "path": "xuance/configs/mappo/robotic_warehouse/rware-tiny-2ag-v2.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "54a23b394e8c7da3c66a462d9eebda0b6bf5af2bcea8b7c49cbba77989d25614"
+    },
+    {
+      "path": "xuance/configs/mappo/sc2/1c3s5z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "83221bf8a44f6b037a2a547899519cec0de0858b786874eff86c8f99ef355110"
+    },
+    {
+      "path": "xuance/configs/mappo/sc2/25m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "d07939aa1a3f0f8f00220e1e36ce4f71056def130cb2422dc4c7b01a971a6c02"
+    },
+    {
+      "path": "xuance/configs/mappo/sc2/2m_vs_1z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "f7bf0bb6c6052eb88fbe125f301ca5e869d517f37b4d041e5213a4c0b2f8c1c7"
+    },
+    {
+      "path": "xuance/configs/mappo/sc2/2s3z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "21bf1b987da905d6813c3dd0d33c48bebaa76cd8247cc16f0b4b72db8ce25d45"
+    },
+    {
+      "path": "xuance/configs/mappo/sc2/3m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "936e4918f06f316018899a8e176ae1f93b9b283f0c1d5d257f934db12fb9f7ce"
+    },
+    {
+      "path": "xuance/configs/mappo/sc2/5m_vs_6m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "0ebb1ff59de87546be98b5767819419d154454fdec2d29dfb4c0dbcbfae51abf"
+    },
+    {
+      "path": "xuance/configs/mappo/sc2/8m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "35c1297da6fc08d62d34f394f80ceb05f7be6dc724750a61df3cd8987f685dd3"
+    },
+    {
+      "path": "xuance/configs/mappo/sc2/8m_vs_9m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "98dff5e9813a698ec5af3c56e536b7fef7751e1e89e682de360c96e320f47669"
+    },
+    {
+      "path": "xuance/configs/mappo/sc2/MMM2.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "bc4c4504e03e4868d25498214bea84df8a1082bbd940bc0e55c57d923e637262"
+    },
+    {
+      "path": "xuance/configs/mappo/sc2/corridor.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "2ed55338ef5c8cbc3fc0aadbe13f7213fe51e7028c03017504da6bf5908df283"
+    },
+    {
+      "path": "xuance/configs/masac/mpe/simple_adversary_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "b68aad40c31b42c5aa93adc04ab0931060fb6fe54292e7277e4a8632e25dfa97"
+    },
+    {
+      "path": "xuance/configs/masac/mpe/simple_push_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "2550b01ae1717bb7bdd89d00173bbe8cc458c6e6682ed6e86e2973f12a6c3e68"
+    },
+    {
+      "path": "xuance/configs/masac/mpe/simple_spread_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "794abf7c573a553255b63f780d606ed2918925e98db93a37b72e3b0f30e60570"
+    },
+    {
+      "path": "xuance/configs/matd3/mpe/simple_adversary_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "3fedb44dff9ad77e3e878907799ffb0651169105b2bc86e1b0bb5d8946cd1bd0"
+    },
+    {
+      "path": "xuance/configs/matd3/mpe/simple_push_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "f484a02a0a87d4a6b998228bfad6271ed8113940f785ccd721bffcd1800cd7f7"
+    },
+    {
+      "path": "xuance/configs/matd3/mpe/simple_spread_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "4f79d69e1151eb1f67599c4fe7993cdee72028013063f6ef5e9be57c0a1c405e"
+    },
+    {
+      "path": "xuance/configs/mfac/mpe/simple_spread_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "c992f046a9c8b316b37c23cb5646d799d30080bb641c56f0e77f7777c5fabedc"
+    },
+    {
+      "path": "xuance/configs/mfq/magent2/adversarial_pursuit_v4.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "ffcbe7234c194da0b12932bd087ff17f0492402db0f009f6110949a01a0510fc"
+    },
+    {
+      "path": "xuance/configs/mfq/mpe/simple_spread_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "1892d17445889fa7764bc5acfe82e62f484049484a98e5f164252e48c9f21f36"
+    },
+    {
+      "path": "xuance/configs/mpdqn/Platform.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "ae0246f68dbc81bd2f75edbac217f4a089ba1cb27df1642454684a41abc603b0"
+    },
+    {
+      "path": "xuance/configs/noisydqn/atari.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "7e32b3748f7ddc71e9875b626f1f722411e41c50ac78ce2a6dcf89573e634500"
+    },
+    {
+      "path": "xuance/configs/noisydqn/box2d/CarRacing-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "28f0bedeb526439cc5c55a291c031cf04845d5df8c350672f20e30bd72322bfe"
+    },
+    {
+      "path": "xuance/configs/noisydqn/box2d/LunarLander-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "f1c514e33198d2e303e5704b71c36a0d7432e038780f800d234de91be2f6c803"
+    },
+    {
+      "path": "xuance/configs/noisydqn/classic_control/Acrobot-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "aa097a2c71ee22b658c398353e151c6abc0529a14dcea101db43b0ab6b68370c"
+    },
+    {
+      "path": "xuance/configs/noisydqn/classic_control/CartPole-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "58136f31dc6e74cb6c7aa696511cb9b5f26ab13bdccd92d7dac0641dae4ba51e"
+    },
+    {
+      "path": "xuance/configs/noisydqn/classic_control/MountainCar-v0.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "1dd74032edf8f71a41cd31f366ee2377f09ea0a34f006949689929842835dc52"
+    },
+    {
+      "path": "xuance/configs/npg/box2d/BipedalWalker-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "38dbcf3bf3d49e6362691d197e8bc5469a174b8fdcb7264a6beb4f206269214c"
+    },
+    {
+      "path": "xuance/configs/npg/box2d/LunarLander-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "a8ecf7fc745a9be33a6f5ef685b540a26bbaaa001cc61c2b93be7b38304cc20e"
+    },
+    {
+      "path": "xuance/configs/npg/classic_control/Acrobot-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "9d66f6a7ace22a087cc104262cd1c3c3414f275de1cb25c78e5d01be7a728b46"
+    },
+    {
+      "path": "xuance/configs/npg/classic_control/CartPole-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "90732eda2560823e7800c1b4a66376f4983aa8f903aaae1be4da86ffd006c124"
+    },
+    {
+      "path": "xuance/configs/npg/classic_control/Pendulum-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "195c2e9b4acd004b7691664e76e0311b713a858bead048a68f4cd08b9cf7e749"
+    },
+    {
+      "path": "xuance/configs/npg/mujoco.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "69dde6f16d4847224dd71cbb737add7feb1478912380ab27a1494141d8e9bcad"
+    },
+    {
+      "path": "xuance/configs/pdqn/Platform.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "02cee29572e8139c044668dd222c15d23def203474f0ee2cbfe753aace8f5822"
+    },
+    {
+      "path": "xuance/configs/perdqn/atari.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "99b226aee82ed575fa0c194579a7136c1068861fe54c315bd6f1bdccccf78136"
+    },
+    {
+      "path": "xuance/configs/perdqn/box2d/CarRacing-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "63c9e84d882ddaa54f10e8f6b383da9459b979ccbe35a007999304b53e805e42"
+    },
+    {
+      "path": "xuance/configs/perdqn/box2d/LunarLander-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "fb3fb6325396ecab10d85f4f28a8ecbc19fb9d32cc18b26ebad5609f73e49846"
+    },
+    {
+      "path": "xuance/configs/perdqn/classic_control/Acrobot-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "b46f0339e0ae16c611af678081e0c2e82a88c355fcab913462f5486700ac136a"
+    },
+    {
+      "path": "xuance/configs/perdqn/classic_control/CartPole-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "59998e7458f800c66b4911a021e5e9638057263718cf45ada361e5c87d3ba4c2"
+    },
+    {
+      "path": "xuance/configs/perdqn/classic_control/MountainCar-v0.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "fda2c4ed5d4e3f1215ab813d2ba8899486d2d4e30ce49e385626f012acab8fb7"
+    },
+    {
+      "path": "xuance/configs/pg/box2d/BipedalWalker-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "2de69af5be7d2cbfbf49080e541a478636cb1803cdd8f9aa9bd6c966c514d81d"
+    },
+    {
+      "path": "xuance/configs/pg/box2d/LunarLander-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "e2fe29e2329ea4b0ff4411b86b9da3c8dd57c3f2d17beb960159e8d6f076cb87"
+    },
+    {
+      "path": "xuance/configs/pg/classic_control/Acrobot-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "2926790d7377009a1a4f0d880cb02f291cb89b809ece3fd2d3e34d7a0807d9c2"
+    },
+    {
+      "path": "xuance/configs/pg/classic_control/CartPole-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "8bc18d3562002ed5cf7c548bd63b430e0b7855f1e20acba6ecf032289e2d803b"
+    },
+    {
+      "path": "xuance/configs/pg/classic_control/MountainCar-v0.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "d226b34740a00a5b6546c6d5477e30693f674a75ad3245782b0dd6e2f9deee36"
+    },
+    {
+      "path": "xuance/configs/pg/classic_control/Pendulum-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "4f72072c08986e573cfff42fd3f7c1fe6aab6bfdb78e1e6ed9be8af481511316"
+    },
+    {
+      "path": "xuance/configs/pg/mujoco.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "15d41b73c89aae8eef7708ef23f7bd743addaa794809601e8002bddb484e2b3b"
+    },
+    {
+      "path": "xuance/configs/ppg/box2d/BipedalWalker-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "be2697f6df40a830b5c54420dd655776cc787d090c5efebd6c79d63d52dc827a"
+    },
+    {
+      "path": "xuance/configs/ppg/box2d/LunarLander-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "6e0a6088bd6bdedaeb79bd9f4260f605cbd288e0f98b8e7dd0b474732eec7924"
+    },
+    {
+      "path": "xuance/configs/ppg/classic_control/Acrobot-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "9e0586421ec754debed2f0810dc6443b27833bdd08f5cf09ac967b1acee193cd"
+    },
+    {
+      "path": "xuance/configs/ppg/classic_control/CartPole-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "18f5eca78f0aa6a02ee277163d24b3a50cd0d067544ece8db190766cf279c52d"
+    },
+    {
+      "path": "xuance/configs/ppg/classic_control/MountainCar-v0.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "38a4808e83184a668e725b2bd33ead30dbd647b1dcb812a2226f1df7e5526600"
+    },
+    {
+      "path": "xuance/configs/ppg/classic_control/Pendulum-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "aebe8d7ea96b9cab2f133b27974b90be730d8157a5ad015b98218dd5594a1434"
+    },
+    {
+      "path": "xuance/configs/ppg/mujoco.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "7e41108c7cb53820e5fe90ee307796b4b1bdc6c28042376f36969447b5aafb39"
+    },
+    {
+      "path": "xuance/configs/ppo/atari.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "fd5d00dc6e319b061efb8d6e51c4ba92e302f84d5fd1eb0910edd18ca73cc7bd"
+    },
+    {
+      "path": "xuance/configs/ppo/box2d/BipedalWalker-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "c656c93042a7fa0515f13434dd8338d3ecfcf07934cfc97b4900c3c39c3db4c1"
+    },
+    {
+      "path": "xuance/configs/ppo/box2d/CarRacing-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "7453e2fac80c4f87f43e41fffdda322163053267eb6b698e6ba43b53f8ab10b5"
+    },
+    {
+      "path": "xuance/configs/ppo/box2d/LunarLander-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "43de68d95da9560bef27e235b8e85698858581d9a9230f1074f13bdb6988024b"
+    },
+    {
+      "path": "xuance/configs/ppo/classic_control/Acrobot-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "713f46375545f79fd30951133c8c81b286b6a6f512f94d7eaa3f239eba91eb9e"
+    },
+    {
+      "path": "xuance/configs/ppo/classic_control/CartPole-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "f2bdb40f9d15a80272f62f0ad059caf956f7f7815fe7eeb7e85895dc1a522fe8"
+    },
+    {
+      "path": "xuance/configs/ppo/classic_control/MountainCar-v0.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "2a72a0ecf77ac5e9d07cd7457e50e2df2920217790c1d6d064ba157fe2b45824"
+    },
+    {
+      "path": "xuance/configs/ppo/classic_control/Pendulum-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "82b03737fc7968f72bec2d5394e84f8f69408f34115e73f44d51c5cc5bbc2906"
+    },
+    {
+      "path": "xuance/configs/ppo/drones.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "74cf598da8b4044e1c13545d9fcf830edc03ef62014e2dd43c2e7b4d29b6f528"
+    },
+    {
+      "path": "xuance/configs/ppo/metadrive.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "fea39141b8894a453b414b56f684535c6b21bf8918cc0ebd16737715444001f9"
+    },
+    {
+      "path": "xuance/configs/ppo/minigrid.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "1f4496bf1129b1d2bc26ab774bec64ac2c53594d6c1e54794bb6662138a2f440"
+    },
+    {
+      "path": "xuance/configs/ppo/mujoco.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "bcc78a89db1c584709a19f07e6ff81c56444fa3ae3d87abde66fea6c23cb45f9"
+    },
+    {
+      "path": "xuance/configs/qmix/atari.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "878af05089cfaf68d332e7caac5fc77c8022097418b82e2f7c11197553a6208d"
+    },
+    {
+      "path": "xuance/configs/qmix/football/3v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "038dd07b692de1b99cd9af0abca038aebcd35468b96308624c9b69e9acd4d356"
+    },
+    {
+      "path": "xuance/configs/qmix/mpe/simple_spread_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "c8f8ac5e32f49d6f27c8f2c588962a22854edc2945708e24f8771c008a9d76e5"
+    },
+    {
+      "path": "xuance/configs/qmix/robotic_warehouse/rware-tiny-2ag-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "071e4fb08950f44e93b081684d5e155f0b5e704aeaf39b48fdaa0d3e20d7c33d"
+    },
+    {
+      "path": "xuance/configs/qmix/sc2/1c3s5z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "73eda82f8e8d43ce7a55af84aa64136e1c1259458303c02445073676d6c08d92"
+    },
+    {
+      "path": "xuance/configs/qmix/sc2/25m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "2ac9de48717564c0b05179ccb3c8be99c8bd3656f02e38d59ab47f27c067af8c"
+    },
+    {
+      "path": "xuance/configs/qmix/sc2/2m_vs_1z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "f7ca9d54bd6837edba1da3d837cae420eb5bb7e35ac6851657e24d984bbd4277"
+    },
+    {
+      "path": "xuance/configs/qmix/sc2/2s3z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "7c08ea330669566ed7c27d40ea0b039168640349ff72506f3d5536c9cb3122a5"
+    },
+    {
+      "path": "xuance/configs/qmix/sc2/3m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "1d0c7ee5d57d9f9ccc3074385d234e0d43353573d46077b8e0a8df0a2075c7a3"
+    },
+    {
+      "path": "xuance/configs/qmix/sc2/5m_vs_6m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "e6c9073f158f2720a56bb726527c7aeeec3373b3a11bb036d27870e9b86f332d"
+    },
+    {
+      "path": "xuance/configs/qmix/sc2/8m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "a64b97d7831f3d1997442393e34c3fd41c522583c065e7553428079c39dd3c9a"
+    },
+    {
+      "path": "xuance/configs/qmix/sc2/8m_vs_9m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "faa4d2dd4199f6f1b9f54f43357ba273ca2c785e3290e94dfd75ee7e63c2a51e"
+    },
+    {
+      "path": "xuance/configs/qmix/sc2/MMM2.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "d119707050291fc709642bdab86ec57760ad82ec562ad96b981f347efb4a6572"
+    },
+    {
+      "path": "xuance/configs/qmix/sc2/corridor.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "0fa69743935f616bedf397ef956d418d8b4b67a20811183eaa8e8047733422cf"
+    },
+    {
+      "path": "xuance/configs/qrdqn/atari.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "0038b2130f9e63916302021b2f525b9bd5e83af7f08bb2d7e651c0f46243e6a6"
+    },
+    {
+      "path": "xuance/configs/qrdqn/box2d/CarRacing-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "1582cc8e967c884fc98ace877b12e879649fb44617b5cafa43703b2c69a3b5c3"
+    },
+    {
+      "path": "xuance/configs/qrdqn/box2d/LunarLander-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "08e69c8d39e6998737696ef8c0c253be91bc0266b8e255d7a4c9aed4b4891744"
+    },
+    {
+      "path": "xuance/configs/qrdqn/classic_control/Acrobot-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "c82a1494cc7981549a85713c3bf8624d3ab291fba05434d0ddb1ca20b9407aad"
+    },
+    {
+      "path": "xuance/configs/qrdqn/classic_control/CartPole-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "7e2af15d17eedb5e32c40dcce9054ee806246355dc1580cf5632be3ffb0622f9"
+    },
+    {
+      "path": "xuance/configs/qrdqn/classic_control/MountainCar-v0.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "dbe739d2aa05b694148abc6a95b02dad3f810fe38ca9168f89bc0f3e8ad3d40d"
+    },
+    {
+      "path": "xuance/configs/qtran/mpe/simple_spread_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "ec6ff102b63f450486f190f1ebb068cc42573f960c0eb3dc845a6b1a52cc7332"
+    },
+    {
+      "path": "xuance/configs/qtran/sc2/1c3s5z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "7305b91b4dc32a878f36ae0c8c2c792214e53f5feec39b37f754e9f358247581"
+    },
+    {
+      "path": "xuance/configs/qtran/sc2/25m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "a95409b442069768b8e69c4943de6d0164ce010dfd01c1e7f3660e354ea26652"
+    },
+    {
+      "path": "xuance/configs/qtran/sc2/2m_vs_1z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "f728d29fc0c5dadc108226bdf52e40df25b0bf472ad8312a8a8964cd2f3b169c"
+    },
+    {
+      "path": "xuance/configs/qtran/sc2/2s3z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "7d6b355a3de497d8b1889363052022e6d7effd63966379f4567a8e5310875186"
+    },
+    {
+      "path": "xuance/configs/qtran/sc2/3m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "7d4054e82c0a4ab2767063e30596d27c0597b14b165dfeb4a12af2cb305cf6cb"
+    },
+    {
+      "path": "xuance/configs/qtran/sc2/5m_vs_6m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "078e8b1ba7c887269a1356aa3fec16753cf51f4fbc2aeb70592a7f2f21f4bd09"
+    },
+    {
+      "path": "xuance/configs/qtran/sc2/8m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "eca29a2ef20a4c2317c2ba09537629530b9c74ec4180f27263585978c5f82114"
+    },
+    {
+      "path": "xuance/configs/qtran/sc2/8m_vs_9m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "21c9cfb5a7734ecea840819c24461f948146f91a85dd8316a284fcbccb13539f"
+    },
+    {
+      "path": "xuance/configs/qtran/sc2/MMM2.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "73ac38ffb29a6b90df1d343c674d3a393d0921cb9c910c2266c338f59e1d1564"
+    },
+    {
+      "path": "xuance/configs/qtran/sc2/corridor.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "af635b773d24200fe3c15507b449b575806488c1dced223a51de4527af3c6ec9"
+    },
+    {
+      "path": "xuance/configs/random/mpe/simple_adversary.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "36ed74fbacaf1a2ab8a9d5709edeb83b2b6b5ece6ed501b17b998619142e4aee"
+    },
+    {
+      "path": "xuance/configs/random/mpe/simple_push.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "08a32c51d57b3f2c86638c6beed16732f82bd3e7eeb579bc4f56bf67e4110c3b"
+    },
+    {
+      "path": "xuance/configs/random/mpe/simple_spread.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "ca57024e902b1c21489abcc339f3ce2bdb4cee1f5bc5ac8e36b7e2a0879d3b71"
+    },
+    {
+      "path": "xuance/configs/sac/atari.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "1e2646bfb6ac02bd29fcc18c64f83a8ae0373ab1bc08dfd1cdc6abc537f48891"
+    },
+    {
+      "path": "xuance/configs/sac/box2d/BipedalWalker-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "4da9d5bf59b45daf7af7bf853bd56b0cbdfcb472bd48508a04b9ed8679509d79"
+    },
+    {
+      "path": "xuance/configs/sac/box2d/LunarLander-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "d38014336119713a19fa33eeb174712269e588ddca4679be854a32c4231fa767"
+    },
+    {
+      "path": "xuance/configs/sac/classic_control/Acrobot-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "bb369bd9ce55b16432697484e3859d5a8ef5cbcd707ae0a8c98fdcaf37c7c3c8"
+    },
+    {
+      "path": "xuance/configs/sac/classic_control/CartPole-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "56f8ed256d3f44b6697727f5c089dc01d7e6caae27da775932ea941fda9dc46d"
+    },
+    {
+      "path": "xuance/configs/sac/classic_control/MountainCar-v0.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "692bffcc94975c3f3a92d81fc0b9db1f83305e33b973f9635c291e1e8c724438"
+    },
+    {
+      "path": "xuance/configs/sac/classic_control/Pendulum-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "ea9d3353d3686f77d783287bbccf707b60321a37de175f09c4f9160047ab4303"
+    },
+    {
+      "path": "xuance/configs/sac/drones.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "2494608a3c07f3b32c25469159c2c3dd1b27c76b75738726be79815f87318949"
+    },
+    {
+      "path": "xuance/configs/sac/metadrive.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "806493ea8c5592c04d4f1395d292e11c5c221c9de877fe1f8c16594850fb4f04"
+    },
+    {
+      "path": "xuance/configs/sac/mujoco.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "5723733046b78315ea24f05b8459698ed0531ab002a05c0d81004cc1417166b4"
+    },
+    {
+      "path": "xuance/configs/spdqn/Platform.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "66510863d0e7a33240b79e769afdc27dd678ca793868d09076cc6f5c36f32b2e"
+    },
+    {
+      "path": "xuance/configs/tarmac/mpe/simple_spread_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "afffbf85af1badded68312a26272c0fc03bc8aa1015272db1cb870bdcfe08691"
+    },
+    {
+      "path": "xuance/configs/tarmac/sc2/2s3z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "c8df63bd4ead5593c0ca9d7bdc2eedcd6cd3df278638ad45dbbba6dd776a75dd"
+    },
+    {
+      "path": "xuance/configs/tarmac/sc2/3m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "a5a0dc6aedd2ecf047c0068a403976b5083092f65152c3c5355e737a52b7e01b"
+    },
+    {
+      "path": "xuance/configs/tarmac/sc2/8m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "00e4ac89c5039c141035c7bfd08da91912b9ea0cc68a0e64f31cc464aa520414"
+    },
+    {
+      "path": "xuance/configs/td3/box2d/BipedalWalker-v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "73e94cbc96d2b01279e8744afa2ac8740781b23d0f0f9d817f4aaac21645ac0c"
+    },
+    {
+      "path": "xuance/configs/td3/classic_control/Pendulum-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "6549c584aec475fc8ca5bed329a82e539c400c4bb75ddc2c151460819615d3c2"
+    },
+    {
+      "path": "xuance/configs/td3/mujoco.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "b9947afbf53dde7f6a8efc6cf97bc2a98667edaf7fea895fab6580c1e8fdeaa7"
+    },
+    {
+      "path": "xuance/configs/td3bc/mujoco.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "ccfc820146123237fc768f0ebf7e4edfc029e1e8ec1c1dc481b04b1ee33bdde0"
+    },
+    {
+      "path": "xuance/configs/td3bc/td3_bc_hopper.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "1e4629e2c7b38c7b5f853edea97db6d5eff3397d86b543232bcd1a7069e87a68"
+    },
+    {
+      "path": "xuance/configs/td3bc/td3_bc_walker2d.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "d315e9314ab1962557847eb8eed5431f183cab3dce33accd2f98742720eb533d"
+    },
+    {
+      "path": "xuance/configs/vdac/atari.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "9c3cea3c2b9cb60bb14611ed0df0ad57f1e2f7efe1e397ae7a52064c60d37dd8"
+    },
+    {
+      "path": "xuance/configs/vdac/mpe/simple_spread_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "536c330afaaef5fe9422c2013d63bdd8888a0c5404553978309624c47901ca5d"
+    },
+    {
+      "path": "xuance/configs/vdac/sc2/1c3s5z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "04aef1af5e49797332269887a06ed39a6f979036bbbeb7338db38fa5940c6f3c"
+    },
+    {
+      "path": "xuance/configs/vdac/sc2/25m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "5d713501ba9a83f388d612410bfdeb21ce401e09d307c3e878d013470f79d929"
+    },
+    {
+      "path": "xuance/configs/vdac/sc2/2m_vs_1z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "e5d23c79b6c814e0cf4f0395f73404f1c6b6ec80106e4aa72c0c8c7f05b5cac6"
+    },
+    {
+      "path": "xuance/configs/vdac/sc2/2s3z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "877e01d7eca587339daf8a760e35a4514b548c630afd670b2396d6a66b5391a1"
+    },
+    {
+      "path": "xuance/configs/vdac/sc2/3m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "61b6593d7f2eb5bd7684340bc3b5b46a6c517f13454aa29127933742305e9a4e"
+    },
+    {
+      "path": "xuance/configs/vdac/sc2/5m_vs_6m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "e8759fae565f54b35c7eabb85d3ebb1f0ab8b31572a73489a3a87c94bb12c2c6"
+    },
+    {
+      "path": "xuance/configs/vdac/sc2/8m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "26c37d58e1233905c90b4369bd58dc1b398d3f1f9f08475de329e25079b8f5ee"
+    },
+    {
+      "path": "xuance/configs/vdac/sc2/8m_vs_9m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "5df55ebfff24b284efeb5b7541dad8f4aa6a0eae9c91e7f0e47a3b034135bbcd"
+    },
+    {
+      "path": "xuance/configs/vdac/sc2/MMM2.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "031ed8af325ec9f783afa8fd2f4cf6bde0c0d62e9ec7fe5bd58335cc1338ece4"
+    },
+    {
+      "path": "xuance/configs/vdac/sc2/corridor.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "985eaf1ab5d958b85b9ada7e2231ae5b60fac2adaaeb8d204fec01a5f9e656b0"
+    },
+    {
+      "path": "xuance/configs/vdn/atari.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "6c4f6976ee18b51ae58b5847a6f1485a30a83d545ec09c2b9f320d805e66d8f0"
+    },
+    {
+      "path": "xuance/configs/vdn/football/3v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "ca22a7d79dc1315fe1deaba250d7b17f945ea746b90660290a39c194447cc476"
+    },
+    {
+      "path": "xuance/configs/vdn/mpe/simple_spread_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "55dbad8ddf17f488410d2b3b04dbb436192a0758b111c7f8c37535004e178de0"
+    },
+    {
+      "path": "xuance/configs/vdn/new_env_mas.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "57ce2d9d5960ce7637db726431b382b63dca278b2bc5defbb4cf003ff36090f7"
+    },
+    {
+      "path": "xuance/configs/vdn/robotic_warehouse/rware-tiny-2ag-v1.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "06ef43d3c9be09e6d33b9f2602dfebb4606e1fa239742214b74bb20924bd2d0a"
+    },
+    {
+      "path": "xuance/configs/vdn/sc2/1c3s5z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "c933565d63e5224ac2a34e5e460574dc7f3a74dbe0bfda49f54e185eea90fbed"
+    },
+    {
+      "path": "xuance/configs/vdn/sc2/25m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "531dc2939aebb2386648739e470040ecc5ecedf40066165d4ef611771be7acab"
+    },
+    {
+      "path": "xuance/configs/vdn/sc2/2m_vs_1z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "412b49c112609f0c68d9fb778aadff160d6ecc0eaf6ed908636a17e18a28abb9"
+    },
+    {
+      "path": "xuance/configs/vdn/sc2/2s3z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "bce16c4cabaaa0b8919accf829caf6e753bc3f87aae430b9d1eceabefd71e6ae"
+    },
+    {
+      "path": "xuance/configs/vdn/sc2/3m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "d0bb71ee687a1ae361fadfd673b61af3431cf650e8659a7df96cd36d899ea7af"
+    },
+    {
+      "path": "xuance/configs/vdn/sc2/5m_vs_6m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "aec5b40665607f6f5f986c09c2314c803cc6f90a02a8aadedca8afdd65a7d4f9"
+    },
+    {
+      "path": "xuance/configs/vdn/sc2/8m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "9e51e85e51011b92323cc75044ef3c4c43b9488b6941de95e5302f08dfed5f8c"
+    },
+    {
+      "path": "xuance/configs/vdn/sc2/8m_vs_9m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "ebc6baadad5ef7686cbc06da302f4048a01774f8db0c3a978024b41af63a3720"
+    },
+    {
+      "path": "xuance/configs/vdn/sc2/MMM2.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "fbabadc23624f6cf2e0a4c0c5de3ae19a7c9e460b924f3d38c20989a984267b7"
+    },
+    {
+      "path": "xuance/configs/vdn/sc2/corridor.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "bf663961bce0e1f3fed1e8efbd77fa1a480f9092249395238989c58e16443a9f"
+    },
+    {
+      "path": "xuance/configs/wqmix/atari.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "3bdaf8fb857ad441c8fe882497728961c2c04a33dd62b0ee9b014fc025178c17"
+    },
+    {
+      "path": "xuance/configs/wqmix/mpe/simple_spread_v3.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "ea7252960fe0537a72e5d5dec70cf9318d31cf8a8732056a98d277816f69b16a"
+    },
+    {
+      "path": "xuance/configs/wqmix/sc2/1c3s5z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "3196188e874690ef417eec027bbf7d5045a7e4d02149c0f3152032d16a8c0267"
+    },
+    {
+      "path": "xuance/configs/wqmix/sc2/25m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "3b829850da254e95515ba0249386522227a871b9588f798d6e592dc0fa11d482"
+    },
+    {
+      "path": "xuance/configs/wqmix/sc2/2m_vs_1z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "cf298d53d6497d1fc1fcaf1d17deb76528500e5f419116aa518b85bd15321010"
+    },
+    {
+      "path": "xuance/configs/wqmix/sc2/2s3z.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "1ac57d44cae8b7e747d31eb36ed110a2a04db9e2c4736c587895da8da99562fe"
+    },
+    {
+      "path": "xuance/configs/wqmix/sc2/3m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "7c7cc1ee289f03ccc449e5591e517246c34f6245d9edfedd3ffa22fe3bffaa92"
+    },
+    {
+      "path": "xuance/configs/wqmix/sc2/5m_vs_6m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "e0b194e4cda982af36aa4664f8c62e1e08bdad6787129f6bbfb589eac064b924"
+    },
+    {
+      "path": "xuance/configs/wqmix/sc2/8m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "d1f9488758427147c5382d45165e271a94863acdae69562a142a2d07d9c1b8d1"
+    },
+    {
+      "path": "xuance/configs/wqmix/sc2/8m_vs_9m.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "02aaed703ca7989f06f1a238833f0db33aefd7854b4f40237867e1fa412b4c96"
+    },
+    {
+      "path": "xuance/configs/wqmix/sc2/MMM2.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "be19e7f0fd1e389069486076d2e703efcdf0288503ae5ac16776bceaa8d94e5d"
+    },
+    {
+      "path": "xuance/configs/wqmix/sc2/corridor.yaml",
+      "original_sha256": null,
+      "upstream_sha256": "106979ebf0c59cf7c6a22eb5119bbc37b4bc5bb57636d3dfbae6c0e326340231"
+    },
+    {
+      "path": "xuance/engine/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "b0c9c0a573602d6b2777b0e39c597c9ab945a7ae11152600ac8fdc88a615c512"
+    },
+    {
+      "path": "xuance/engine/run_basic.py",
+      "original_sha256": null,
+      "upstream_sha256": "47a335d9ef4afa9a8a489ee1cc7204a131461a1dbe64c75310f4073f5498469b"
+    },
+    {
+      "path": "xuance/engine/run_competition.py",
+      "original_sha256": null,
+      "upstream_sha256": "d63f190afbb3c7cd7766866280990888accda9fb449361e76f66ae5717a5a495"
+    },
+    {
+      "path": "xuance/engine/run_drl.py",
+      "original_sha256": null,
+      "upstream_sha256": "9bf0a7790a6bca098373eb3c4c5e037a77cd8068b61a7a88f106d4ea6ed5e219"
+    },
+    {
+      "path": "xuance/engine/run_football.py",
+      "original_sha256": null,
+      "upstream_sha256": "a7f53a285ae9f4a48cac8d7d8284c5819648f28625527fd91b382d88784bfe1f"
+    },
+    {
+      "path": "xuance/engine/run_marl.py",
+      "original_sha256": null,
+      "upstream_sha256": "58274561cda12da2feff7757b6436fa92756c58048c9c1f96cee72d24e9a0aec"
+    },
+    {
+      "path": "xuance/engine/run_offlinerl.py",
+      "original_sha256": null,
+      "upstream_sha256": "a9bd300233b4cd0509d56edac3ab08e14c64914da3b49d5f0096b1e83757045a"
+    },
+    {
+      "path": "xuance/engine/run_sc2.py",
+      "original_sha256": null,
+      "upstream_sha256": "01c62c761d9ef38c0e62e8654a1db8105ea6b86c37d750e012c7d7e7f0ae7a89"
+    },
+    {
+      "path": "xuance/environment/__init__.py",
+      "original_sha256": "5837b816c0b5adf1db0953f888dcf1e37c2199b5e905f581787da71da93301f4",
+      "upstream_sha256": "f618c966aae7c9ed6042b57f68ed8c1e8227ceaba3b0c00ca00418325ec1699f"
+    },
+    {
+      "path": "xuance/environment/multi_agent_env/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "c53e2abff5ef2aa2d4bb12cc60c71201ea48f4440245bcd8a9891ea1007d66c3"
+    },
+    {
+      "path": "xuance/environment/multi_agent_env/atari.py",
+      "original_sha256": null,
+      "upstream_sha256": "3ef4b117b799ffab6563934886bf46b304918d4422e2b24f7527746b2fa6498e"
+    },
+    {
+      "path": "xuance/environment/multi_agent_env/drones.py",
+      "original_sha256": null,
+      "upstream_sha256": "50b715f762a5659085a7fd72ab944cc75e895f794866341397d872a07cee0dc4"
+    },
+    {
+      "path": "xuance/environment/multi_agent_env/football.py",
+      "original_sha256": null,
+      "upstream_sha256": "b9070f5b657829070a77b46a4ac9d61f75cfe3d7316e0368362cbf20408af38f"
+    },
+    {
+      "path": "xuance/environment/multi_agent_env/mpe.py",
+      "original_sha256": null,
+      "upstream_sha256": "f88f9f5b5b583877d570d5b906642abf109a1df0003a07ee21f0b9db371cecf5"
+    },
+    {
+      "path": "xuance/environment/multi_agent_env/robotic_warehouse.py",
+      "original_sha256": null,
+      "upstream_sha256": "107de675c9282bee1b85aab1b6aa7f1980a2b2b0145246731787ea3e38e4e8ed"
+    },
+    {
+      "path": "xuance/environment/multi_agent_env/smacv2.py",
+      "original_sha256": null,
+      "upstream_sha256": "d28ab406c2e8452f2fbda86d05d17430a8a4fd05030047cffc969795719e160a"
+    },
+    {
+      "path": "xuance/environment/multi_agent_env/starcraft2.py",
+      "original_sha256": null,
+      "upstream_sha256": "a1a413d06d6c8c5f1073363ec894a7371fa4512f021ca21d247dfdabccd3a05f"
+    },
+    {
+      "path": "xuance/environment/single_agent_env/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "bdc35a370ee376d0f5a00dd0b6cdf1999a1cddb5b89a408289f8e429bfe490bc"
+    },
+    {
+      "path": "xuance/environment/single_agent_env/atari.py",
+      "original_sha256": null,
+      "upstream_sha256": "4f3cfae485a6921e5224c8aaa73297893828a438b221c4bcae709f490e5c9eb4"
+    },
+    {
+      "path": "xuance/environment/single_agent_env/drones.py",
+      "original_sha256": null,
+      "upstream_sha256": "e1da5c6c6b0b0baeee0906629cde0678769b91bfd0f865645f88b314b0161ddb"
+    },
+    {
+      "path": "xuance/environment/single_agent_env/gym.py",
+      "original_sha256": null,
+      "upstream_sha256": "dae4da1cc2ffcfba1f14e5b60a3da1d26d81eeb3d275946e8ccf48be338b2b0d"
+    },
+    {
+      "path": "xuance/environment/single_agent_env/metadrive.py",
+      "original_sha256": null,
+      "upstream_sha256": "5913ab5eeb1c21813242ef5985abd4fa90066c0fc370ae50423e07f46c2bc16f"
+    },
+    {
+      "path": "xuance/environment/single_agent_env/minigrid.py",
+      "original_sha256": null,
+      "upstream_sha256": "5fc90183d82a505583db758765f6d28434b075e4e3ad5566f02afd8e31b2fe0b"
+    },
+    {
+      "path": "xuance/environment/single_agent_env/platform.py",
+      "original_sha256": null,
+      "upstream_sha256": "003019adc67073bbc3ca15c404ac8b255a792bfecd96571ac29c3d6d1193f91b"
+    },
+    {
+      "path": "xuance/environment/utils/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "5facd75a833e553427750b8799e7b53b3f4fdbd7eaa77bc69c4005668e696128"
+    },
+    {
+      "path": "xuance/environment/utils/base.py",
+      "original_sha256": null,
+      "upstream_sha256": "269568fb3ebc8599e2c2c22d4d509122a4313b74904a27bd9d2f345d6f3b9174"
+    },
+    {
+      "path": "xuance/environment/utils/shapes.py",
+      "original_sha256": null,
+      "upstream_sha256": "8b0867413c38d3036271f4b9fef225d4ac5e53034da3ff0a219046fec21fa3d6"
+    },
+    {
+      "path": "xuance/environment/utils/wrapper.py",
+      "original_sha256": null,
+      "upstream_sha256": "9a826820e160e7381cc95f6ee9c0c280fb8088ff3f25d9df1366b2fcb5c1bb62"
+    },
+    {
+      "path": "xuance/environment/vector_envs/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "19081fa5618d6aaeae749f8fead28a2338c17ff6d1a43ecf10be3671a41360c1"
+    },
+    {
+      "path": "xuance/environment/vector_envs/dummy/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "8495b03f26cb4aead9b68d0d94a795700e5ee1be47fea07364571d927c3a6c55"
+    },
+    {
+      "path": "xuance/environment/vector_envs/dummy/dummy_vec_env.py",
+      "original_sha256": null,
+      "upstream_sha256": "c420b7b7f073a87857269f73a5966722cc0476aa9397ed37a289fac1be7920e8"
+    },
+    {
+      "path": "xuance/environment/vector_envs/dummy/dummy_vec_maenv.py",
+      "original_sha256": null,
+      "upstream_sha256": "67e06859b37b84de795b4c088b23d9044b45d2eee99173da4b248adef18dafc6"
+    },
+    {
+      "path": "xuance/environment/vector_envs/env_utils.py",
+      "original_sha256": null,
+      "upstream_sha256": "d3df57a273cc7c509c9b7d9309b33165a588cddac054b9b1648c40c900eb336d"
+    },
+    {
+      "path": "xuance/environment/vector_envs/subprocess/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "d50ffc6999f66b1c264c0439d79773a77b626fd37e598d397f63db7f7016d34e"
+    },
+    {
+      "path": "xuance/environment/vector_envs/subprocess/subproc_vec_env.py",
+      "original_sha256": null,
+      "upstream_sha256": "fbe49cb1a13bb58be02fd9de6cf5ab380f42ece06d1de7d7aa39b244bbb46443"
+    },
+    {
+      "path": "xuance/environment/vector_envs/subprocess/subproc_vec_maenv.py",
+      "original_sha256": null,
+      "upstream_sha256": "8f58f9d68ddb9bfa7e4bf84a1b236809b98e77c9caf881117bb3ba74c6501eff"
+    },
+    {
+      "path": "xuance/environment/vector_envs/vector_env.py",
+      "original_sha256": null,
+      "upstream_sha256": "ad8ae5feab646f1e48474dac93d577828ee61a432369dd955e110a799e5d9dc3"
+    },
+    {
+      "path": "xuance/mindspore/__init__.py",
+      "original_sha256": "ecbdcb01f732f66f39280ff3d440ed8dcba5dec9d370bff6446ac0222d683a9b",
+      "upstream_sha256": "ecbdcb01f732f66f39280ff3d440ed8dcba5dec9d370bff6446ac0222d683a9b"
+    },
+    {
+      "path": "xuance/mindspore/agents/__init__.py",
+      "original_sha256": "f21671f08dddd057e47c5a2d20fc6c3fee92df3d7a74e150b0d68e4b20a9503b",
+      "upstream_sha256": "a6aca963684752d903b054d9978075af9ec19f180dc0a2a6c2184483e88c5c58"
+    },
+    {
+      "path": "xuance/mindspore/agents/base/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "651ac34e883ec2e0d7af206d20182ffce5c9be3d8091b5c0f1a5f2c52776baf6"
+    },
+    {
+      "path": "xuance/mindspore/agents/base/agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "dcbf5494d92a3a322a8ef0e56c61e83113f9f0caaf1ad4783534a5b8877a03f4"
+    },
+    {
+      "path": "xuance/mindspore/agents/base/agents_marl.py",
+      "original_sha256": null,
+      "upstream_sha256": "bbac8d0ae7d4b3ebe64093711322625a7ccf8950a079e01f14e96b9dd651aa27"
+    },
+    {
+      "path": "xuance/mindspore/agents/contrastive_unsupervised_rl/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "f0ea6bf49b5fe96d3b12741eaa95f2212e1a199d935a086d904e26938b042c1d"
+    },
+    {
+      "path": "xuance/mindspore/agents/contrastive_unsupervised_rl/curl_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "cceb4fe7df9f29fcd368e37cb6c902f039b3a1aa36f534ecfce46f34d404eaa7"
+    },
+    {
+      "path": "xuance/mindspore/agents/contrastive_unsupervised_rl/drq_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "7f7fccf7f0f28571ca1beb40394ca6225dc06e23b1ca4f867023a6b5db8d07ef"
+    },
+    {
+      "path": "xuance/mindspore/agents/contrastive_unsupervised_rl/spr_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "c405e68d94f9576eb2413f2cee7f8bb64d098429f46eda9741d546ac97a52bd5"
+    },
+    {
+      "path": "xuance/mindspore/agents/core/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "e1a6d27971f44c9585e3745e2119b29e4440baf8fb1f591fcbc4454c2689528b"
+    },
+    {
+      "path": "xuance/mindspore/agents/core/off_policy.py",
+      "original_sha256": null,
+      "upstream_sha256": "8c6651ef22063fbf6800261603590c43951e0883d9c8ec5e333371380bbc2a03"
+    },
+    {
+      "path": "xuance/mindspore/agents/core/off_policy_marl.py",
+      "original_sha256": null,
+      "upstream_sha256": "155455bf692616600a6d68856b9d03303d6d16ba051eed008ef10e0d7aeafc79"
+    },
+    {
+      "path": "xuance/mindspore/agents/core/offline.py",
+      "original_sha256": null,
+      "upstream_sha256": "2140c10f6d232ffdb338e0810c0c2ee9a8c7f13a26f4187816253954113cb578"
+    },
+    {
+      "path": "xuance/mindspore/agents/core/on_policy.py",
+      "original_sha256": null,
+      "upstream_sha256": "295cef50519a6c335c31eb3e78a38593a4346d53690ad9d838625ea284b8d34d"
+    },
+    {
+      "path": "xuance/mindspore/agents/core/on_policy_marl.py",
+      "original_sha256": null,
+      "upstream_sha256": "98a8ad6729f34e2167d0831342ab1a9ff9bc1ecba3ff7d3b2dc0411292fea46a"
+    },
+    {
+      "path": "xuance/mindspore/agents/model_based_rl/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "997583248dec3bd243baff33d3e8d6891b09a6d066acffb0423f9f2b54a30278"
+    },
+    {
+      "path": "xuance/mindspore/agents/model_based_rl/dreamer_v2_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "c558629eb46e9056190b79c741f8db3dd6559e6b1dd224fa8dabbf24b80cb74e"
+    },
+    {
+      "path": "xuance/mindspore/agents/model_based_rl/dreamer_v3_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "3239aa351dbca580026407ddb5ec541e98e73143ee5ca2416936b95273853ba8"
+    },
+    {
+      "path": "xuance/mindspore/agents/multi_agent_rl/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "41944fa83e6d8f5f1e245f13b80a9aae6ac789c264c0b2da812dd44cc21870ca"
+    },
+    {
+      "path": "xuance/mindspore/agents/multi_agent_rl/coma_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "0dc627379e4046668399a40c24747b11cd5678a16bb252416ffbd03d5679bff7"
+    },
+    {
+      "path": "xuance/mindspore/agents/multi_agent_rl/commnet_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "8a7bd77abcd41dd624647d8bb0f499ef7fc046a4f88a8e7cd13de065730136ac"
+    },
+    {
+      "path": "xuance/mindspore/agents/multi_agent_rl/dcg_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "165f00c1b19fa95b6d60e6fc1b50d9f8fef63b9d36015ac54311e5afe00b2b2f"
+    },
+    {
+      "path": "xuance/mindspore/agents/multi_agent_rl/iac_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "6e268e0ffc6519094d14db637c8d82cd42ec1e342d4703d88ebb902180d8eb08"
+    },
+    {
+      "path": "xuance/mindspore/agents/multi_agent_rl/ic3net_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "9eed8a39f413786493b17aac9af4fcbe0b6f29b8609fec62861b255d95520b7d"
+    },
+    {
+      "path": "xuance/mindspore/agents/multi_agent_rl/iddpg_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "1a00d0c20e2326600584f77092d2d7e6252ba16c073ba4145210f07c04b62c28"
+    },
+    {
+      "path": "xuance/mindspore/agents/multi_agent_rl/ippo_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "1a72f6ebae4a32a59441f01e76759d4075350908bce9b8861027fe41d211f506"
+    },
+    {
+      "path": "xuance/mindspore/agents/multi_agent_rl/iql_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "b8da68b45308987384e13e675ea7528232c94da9245f7555b1f6ee91721f89e2"
+    },
+    {
+      "path": "xuance/mindspore/agents/multi_agent_rl/isac_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "ca98523574cf47ba5d3b48dcb4cd3eb3c899039f471ad771bf2393e8fc77eb8d"
+    },
+    {
+      "path": "xuance/mindspore/agents/multi_agent_rl/maddpg_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "0b5e285415be0bd4ac9df1a0c0726d198084293c15d8901e53bef94a7b8751c3"
+    },
+    {
+      "path": "xuance/mindspore/agents/multi_agent_rl/mappo_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "030c5481ac942703efccb116b1338957afdbcfd8627ecb270eece91c2fb7f96d"
+    },
+    {
+      "path": "xuance/mindspore/agents/multi_agent_rl/masac_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "98725f02503a01c60eef4765686ebe7550b76216284d5eb0faf3c37fd32b980a"
+    },
+    {
+      "path": "xuance/mindspore/agents/multi_agent_rl/matd3_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "7fa021148029a99731b38204e5a13f2cd8373b377dfb113bf9e712801005b144"
+    },
+    {
+      "path": "xuance/mindspore/agents/multi_agent_rl/mfac_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "f3a5ed64919a27a77b05f8441f307c1da931ee72b3a970fc24c375e72f88ad1e"
+    },
+    {
+      "path": "xuance/mindspore/agents/multi_agent_rl/mfq_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "86e79a8f8b40ff21b1e33937963ad5ab215de35271a5bad627f7fe62f686655c"
+    },
+    {
+      "path": "xuance/mindspore/agents/multi_agent_rl/qmix_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "052a9218dbc42bfe85a62a7fe1b0f2ae60f9ce38d552d6372af2c59d19580524"
+    },
+    {
+      "path": "xuance/mindspore/agents/multi_agent_rl/qtran_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "2e19dafe2b0e84428cd08b94b2d93c9b09a144a11ddb3192e5282f14921ac9b6"
+    },
+    {
+      "path": "xuance/mindspore/agents/multi_agent_rl/tarmac_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "567bf0068b74a3406a8581bc581f5c48d5849d9a477e4e6a48ffc95152195602"
+    },
+    {
+      "path": "xuance/mindspore/agents/multi_agent_rl/vdac_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "eb60e2fc61972249800dc37fbbb900e0d404d23ba3c091daca17f9b9cc77a4fa"
+    },
+    {
+      "path": "xuance/mindspore/agents/multi_agent_rl/vdn_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "862751b26485465a08b455065e59795d9dece7abcbcf0adcbe195daceb26331f"
+    },
+    {
+      "path": "xuance/mindspore/agents/multi_agent_rl/wqmix_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "b9a5eefde3d4526ebc1de06bde3800fbb2d45ae5a79a156417ebfa02382733fd"
+    },
+    {
+      "path": "xuance/mindspore/agents/offline_rl/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "5c693df758fad0c4dc59ed1a96fd0358d457ef4791c4a16aeb9744c157d9ee8d"
+    },
+    {
+      "path": "xuance/mindspore/agents/offline_rl/td3bc_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "1a1784ec5ed4ea59d566cc9ab5c07283f8029f0ca6f0e7d5c8518f3cf8c3ec83"
+    },
+    {
+      "path": "xuance/mindspore/agents/policy_gradient/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "12cc96bc994e5e5b26a6fefd276f4ec14abf3547a586803018fcdca1c4f2cadb"
+    },
+    {
+      "path": "xuance/mindspore/agents/policy_gradient/a2c_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "cc042d7bb9792308fecf9d99509efc5c47bdd3fb8535e7903ee02adfa4f51816"
+    },
+    {
+      "path": "xuance/mindspore/agents/policy_gradient/ddpg_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "44018c18e999d6ad9588d45efec8ca1c04349423916b84baa1d95bf8158ad4d0"
+    },
+    {
+      "path": "xuance/mindspore/agents/policy_gradient/mpdqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "27f22cb55c62c6629bf9428760e5e94fe2080be2adce485531c22bcc06f7d4b0"
+    },
+    {
+      "path": "xuance/mindspore/agents/policy_gradient/npg_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "799a5778eb03cc849cc3c663123919a3bf1f49570383368c158809c08bc54263"
+    },
+    {
+      "path": "xuance/mindspore/agents/policy_gradient/pdqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "14d93d1f58b7c20b9450f9b33df78b6c0614911410138624ce8b4c1407d92d43"
+    },
+    {
+      "path": "xuance/mindspore/agents/policy_gradient/pg_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "963088969a1cef2e8b1246379c2b10fd55cf7ea14aa0742e109a04ada4d3c07d"
+    },
+    {
+      "path": "xuance/mindspore/agents/policy_gradient/ppg_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "1e9cd5a49c2f779cd19b8f9558548f02aa123c6fa1b5b79785bc733a627b1152"
+    },
+    {
+      "path": "xuance/mindspore/agents/policy_gradient/ppo_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "cd2747ed5a9beb541aaf8499d220cb2f6c50ff2e909caf98eb3f7273e338b45a"
+    },
+    {
+      "path": "xuance/mindspore/agents/policy_gradient/ppokl_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "5c1ea8b6017caa1fa5f4a46e0cd68032b5e2582a486e63ddccd97222d9fbe74e"
+    },
+    {
+      "path": "xuance/mindspore/agents/policy_gradient/sac_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "32324c4c4e0d290c78e416d15430204c3c877e0ce71e1139f33899486666c732"
+    },
+    {
+      "path": "xuance/mindspore/agents/policy_gradient/spdqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "344f34f8aa5d8949296a577b65a7845d0a5f2845933bad08cb18d68824cd3f61"
+    },
+    {
+      "path": "xuance/mindspore/agents/policy_gradient/td3_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "90c665e44bdcfff89767a989482e17999bd9ac0edb50ee7f2617b5a4ae021df5"
+    },
+    {
+      "path": "xuance/mindspore/agents/qlearning_family/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "b1bd30cf18b7e6a0173c6f108c11ad1d67d3d3c61c45dd512be2b47dda5af666"
+    },
+    {
+      "path": "xuance/mindspore/agents/qlearning_family/c51_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "3a6fca553e8fa302f062c12981d3056df4b6bc9a7ac725c0987f8496b0ad72a7"
+    },
+    {
+      "path": "xuance/mindspore/agents/qlearning_family/ddqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "ccd8ae197dd65841d6109ab1daff431012d6e52844aa6855131159aac38cebf0"
+    },
+    {
+      "path": "xuance/mindspore/agents/qlearning_family/dqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "6a0d09919bbe0a2f9ff49010a69f55d69c5803cd12340630add35382ec594da6"
+    },
+    {
+      "path": "xuance/mindspore/agents/qlearning_family/drqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "1bd4f1cb277e8aebfd2ab7e5de7fc51563fbfd5d62c9a0e22adf7208dfe0c56e"
+    },
+    {
+      "path": "xuance/mindspore/agents/qlearning_family/dueldqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "21dfaf4c51498e1a38e05be8b03d5a68d0d7a62bf7491b8d20ffd0f8a4ee3f99"
+    },
+    {
+      "path": "xuance/mindspore/agents/qlearning_family/noisydqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "c8a1e77a96797a7929923b098deb96fe4758fde3954c1be61b19c670fa607a64"
+    },
+    {
+      "path": "xuance/mindspore/agents/qlearning_family/perdqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "3b0a4be8444637838695f1f703b7e7d318b286041a3b27a41bb8b7de4c850dde"
+    },
+    {
+      "path": "xuance/mindspore/agents/qlearning_family/qrdqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "d2eb2f6215981415bc5cded698935e15ba6badd92a2bbed1358ac03cb6ed1e7b"
+    },
+    {
+      "path": "xuance/mindspore/communications/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "ffc471193070b14b1253893bb598c873bf2553e4adf35746a12165292f800706"
+    },
+    {
+      "path": "xuance/mindspore/communications/attention_comm.py",
+      "original_sha256": null,
+      "upstream_sha256": "aee715f60029a5ca1f2086543f71369830d707ea7f2c5b2a61120353994df57d"
+    },
+    {
+      "path": "xuance/mindspore/communications/base_comm.py",
+      "original_sha256": null,
+      "upstream_sha256": "8b34bb71a6c563b5d2b89847c76baf094f7417f7742430e2640b987d8a5c7874"
+    },
+    {
+      "path": "xuance/mindspore/communications/comm_net.py",
+      "original_sha256": null,
+      "upstream_sha256": "bc4f7db37b4ff3df96fdd78760c627633d042fa8e9e5173159676ff610e177a9"
+    },
+    {
+      "path": "xuance/mindspore/communications/emergent_comm.py",
+      "original_sha256": null,
+      "upstream_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "xuance/mindspore/communications/gnn_comm.py",
+      "original_sha256": null,
+      "upstream_sha256": "c73e53f5b6e054b10cb46169f0ed9529d5cf54deae33030ce97b73c80b4d15aa"
+    },
+    {
+      "path": "xuance/mindspore/communications/ic3net_comm.py",
+      "original_sha256": null,
+      "upstream_sha256": "fae4548d81aa47c27c0a1a49ac389f69873c0162b2980db257330cd2f83900f7"
+    },
+    {
+      "path": "xuance/mindspore/learners/__init__.py",
+      "original_sha256": "8a536188b4a3bfa5b1a8523010486b271a7bf1e0ec762b13766d5d1e79ef1687",
+      "upstream_sha256": "103789ee09ee57224c6671136fc60517068a8fd6ad2e870369d2b03edaf857d6"
+    },
+    {
+      "path": "xuance/mindspore/learners/contrastive_unsupervised_rl/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "3a3b169a7e431091c013548d2f6dd67cfc71f0f1db49db42c59ff999e6a0bf8c"
+    },
+    {
+      "path": "xuance/mindspore/learners/contrastive_unsupervised_rl/curl_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "fd282037c3d50fb689f5fa5715bccd9a6588bb8f936af280d30453dc5e34d1f1"
+    },
+    {
+      "path": "xuance/mindspore/learners/contrastive_unsupervised_rl/drq_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "b92ac29ac18438384474d2bdb06b58bc8dcf2be69aa3a14663da16525ff15835"
+    },
+    {
+      "path": "xuance/mindspore/learners/contrastive_unsupervised_rl/spr_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "822e4f93928fbf30201582fef3b7b0b379ef3cadfbb0fb2a2da28e0ab8bdc4d7"
+    },
+    {
+      "path": "xuance/mindspore/learners/learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "96ca75f48497e437508668f1c0d940ed389786db060eb74caeeefceb15cb05e2"
+    },
+    {
+      "path": "xuance/mindspore/learners/model_based/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "67f5f9c22e03582a638d6968f5f6ff4333299cbdae18d8cad90e5b6ff303270b"
+    },
+    {
+      "path": "xuance/mindspore/learners/model_based/dreamer_v2_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "9093bf2587958ed4e51f70afb997f85dbe805324b98fe9516745be6d967e1d1f"
+    },
+    {
+      "path": "xuance/mindspore/learners/model_based/dreamer_v3_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "6de0669a51a4129f349fcbb9c72e6bcc834d20f3a65c18e6a2e55dbc7229533b"
+    },
+    {
+      "path": "xuance/mindspore/learners/multi_agent_rl/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "5eb40bce401a62f682369600c196900754359cd5db737a398a82d5a723f63ffd"
+    },
+    {
+      "path": "xuance/mindspore/learners/multi_agent_rl/coma_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "28f08c769caa760d8de59c9483f2da37211758d3ee6dae294b82e30b83b7ded9"
+    },
+    {
+      "path": "xuance/mindspore/learners/multi_agent_rl/commnet_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "ea0d179620b4a1e771ec3418de30ed88af29f1f792cf598936dbbd1ffdfd93eb"
+    },
+    {
+      "path": "xuance/mindspore/learners/multi_agent_rl/dcg_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "141f5c15b77c5eedb0af5c5547a48d2e29b420d748d967b7789d1e0187a22c4f"
+    },
+    {
+      "path": "xuance/mindspore/learners/multi_agent_rl/iac_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "ed5fe038a755aa70fa851540b641a2884134f96a7769d4f21acb9ea9b44c74cd"
+    },
+    {
+      "path": "xuance/mindspore/learners/multi_agent_rl/ic3net_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "e75cdcf4bb9f9f2efc8478dc771c5bd55b85ec67955433141b59a6320b492679"
+    },
+    {
+      "path": "xuance/mindspore/learners/multi_agent_rl/iddpg_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "3cf0c1e5b8b3e653ba2745e77a6af9332a1a920b820861e487be8c58416e54c2"
+    },
+    {
+      "path": "xuance/mindspore/learners/multi_agent_rl/ippo_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "918b78caae6d6ed18c5e3a9fe0b530d3cbcf6b668c9a74fbee6fd68fc4d74d6c"
+    },
+    {
+      "path": "xuance/mindspore/learners/multi_agent_rl/iql_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "8b5c99dba1706279d1f0da50b47f833e8f57bcb48546c5482f1e341725a1a25f"
+    },
+    {
+      "path": "xuance/mindspore/learners/multi_agent_rl/isac_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "3548ba5c690c5cf5d3aaa6c45ae9ec65b5a2eba2e0ad4bb0097a2633fab1e20c"
+    },
+    {
+      "path": "xuance/mindspore/learners/multi_agent_rl/isacdis_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "65fa7c106bf79004fa4cfe606ed6ece72182bdd0ab237aa1a7f04d545a123bfa"
+    },
+    {
+      "path": "xuance/mindspore/learners/multi_agent_rl/maddpg_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "5d48d12df2bb9a727108a78a7edc8bff30ac4b85c74684fba38cdafadf1936bf"
+    },
+    {
+      "path": "xuance/mindspore/learners/multi_agent_rl/mappo_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "158e22cafbef049417cb8498c3d1b8ba1ccb15b710420a45eeb0d5de07c80428"
+    },
+    {
+      "path": "xuance/mindspore/learners/multi_agent_rl/masac_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "8f320f5b70fb3e14e7eaeeea7a5253345223d504ed2925b3969ef02991309997"
+    },
+    {
+      "path": "xuance/mindspore/learners/multi_agent_rl/masacdis_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "65eaf2082a4c07402808ce3fbf675bbdca31e66e28a5b97ac2acc89c75e12ab0"
+    },
+    {
+      "path": "xuance/mindspore/learners/multi_agent_rl/matd3_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "63d1a579a74f279ac526422cd5346ff4318f548b23f92e603d088a67b821e754"
+    },
+    {
+      "path": "xuance/mindspore/learners/multi_agent_rl/mfac_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "c499bc9bad84cda62121f20b1fe7a56cda7f685a21f01dc5898f98499a03e7d2"
+    },
+    {
+      "path": "xuance/mindspore/learners/multi_agent_rl/mfq_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "7190d7fbf2678f1726bd3b3eba085eef79cad0680ddf6b1d9168bd8c82d98040"
+    },
+    {
+      "path": "xuance/mindspore/learners/multi_agent_rl/qmix_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "b929e44ab073d5a37382e9568f89cea207ac481657c6ea5fa04282bfa1466723"
+    },
+    {
+      "path": "xuance/mindspore/learners/multi_agent_rl/qtran_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "833bec6d328295d382a2e2b9f5d55b6759c94a042835fea7bb0f7e3a960efb0c"
+    },
+    {
+      "path": "xuance/mindspore/learners/multi_agent_rl/tarmac_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "a2d35fd0eb345a02fcff7e7d8c82b127bd387432762f1360020601b7ada825f5"
+    },
+    {
+      "path": "xuance/mindspore/learners/multi_agent_rl/vdac_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "a994891e9fdbb7ad7818b48053f3e6173d63ba6d2d43de5368418aca4aacf719"
+    },
+    {
+      "path": "xuance/mindspore/learners/multi_agent_rl/vdn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "8dc7d021140c5827cfb29e63a92918465c2924ccc8ebb00dba99294126ca0c50"
+    },
+    {
+      "path": "xuance/mindspore/learners/multi_agent_rl/wqmix_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "144dbd58ccf031b573f4cdf6c127aca2fcb18d4715ae7b57122f352698d013c7"
+    },
+    {
+      "path": "xuance/mindspore/learners/offline/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "a2d62bc8e932667a751be38c3cc0e4935cfdb7a9189faaff52f04743a8e67a8a"
+    },
+    {
+      "path": "xuance/mindspore/learners/offline/td3bc_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "349230293907bf929cec08143f44fca347051ab9fb16db28eef7d77e27b14bcf"
+    },
+    {
+      "path": "xuance/mindspore/learners/policy_gradient/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "ecf00c5ee4504e0a191cd72b2b4bf37f0acb70de77cdfa5d8387722e51140902"
+    },
+    {
+      "path": "xuance/mindspore/learners/policy_gradient/a2c_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "828684c7eba9c6491c34d8363786cfc11f28cd2c7a5732cde1c8e1f582c091d1"
+    },
+    {
+      "path": "xuance/mindspore/learners/policy_gradient/ddpg_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "a0a9f09a715da6e2dd00dd99dd7ed667fe792a61f95b1eb1e2a3b8d68d3c82b9"
+    },
+    {
+      "path": "xuance/mindspore/learners/policy_gradient/mpdqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "23cc2264367482e6a19f38de8419fa2d89369e449ef7827567240d6cfb9e2e23"
+    },
+    {
+      "path": "xuance/mindspore/learners/policy_gradient/npg_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "868fa1dd03bc2184a19ac962f3ef8af11c378f56bbace597de7307ccd2158e5b"
+    },
+    {
+      "path": "xuance/mindspore/learners/policy_gradient/pdqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "de36a327de81d0c1a54011d67be937c4fa01ede95b1bb40187536cead7fce647"
+    },
+    {
+      "path": "xuance/mindspore/learners/policy_gradient/pg_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "9bc5ad22b710c596d8f0add5d1393e5057e0f83cafcfaeb9c053ab5c2e1d1db9"
+    },
+    {
+      "path": "xuance/mindspore/learners/policy_gradient/ppg_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "5801aff16d8fb16d147c977aa9e6df9e3700d616b0951b1575feca180f5a14a3"
+    },
+    {
+      "path": "xuance/mindspore/learners/policy_gradient/ppo_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "e2a54d8321a3f4b3eb516c1f1db6bc9d9fb13d9e9310e9f32c4b1b66b7fb0edd"
+    },
+    {
+      "path": "xuance/mindspore/learners/policy_gradient/ppokl_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "1a0a0998322f3fe0c9638b9966b1385cacaea339a589eb71c243595cac197807"
+    },
+    {
+      "path": "xuance/mindspore/learners/policy_gradient/sac_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "e2a0d24a1e049ab00532b2a5e6dbdded3286564f04d6ce95bd82eab9844a3d25"
+    },
+    {
+      "path": "xuance/mindspore/learners/policy_gradient/sacdis_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "3c08cd4a422293b85226c46f5451e0d6a8e70f6e47c58554c208515ccc4f065e"
+    },
+    {
+      "path": "xuance/mindspore/learners/policy_gradient/spdqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "04d0439096952c6b83e27d363b880a69ee2c7fea543f1661ee2221845d3a2f81"
+    },
+    {
+      "path": "xuance/mindspore/learners/policy_gradient/td3_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "e25ff7c091f134fdafda98d2b43209bfd04ee8eada7eac88c23380d2b0717152"
+    },
+    {
+      "path": "xuance/mindspore/learners/qlearning_family/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "a76bb9896d8d48573d52109415df7579303a8c9ae2f748b3b164d8878fe1d890"
+    },
+    {
+      "path": "xuance/mindspore/learners/qlearning_family/c51_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "3248ccb89ee6fdf688321fb79fbcdbc40d23a773d56fcda2c3a7d73962832d6c"
+    },
+    {
+      "path": "xuance/mindspore/learners/qlearning_family/ddqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "03f432d0b7a63274d4c1c4e90ba142c2743c2a8c5a19a0d142f7f4ed117c72c6"
+    },
+    {
+      "path": "xuance/mindspore/learners/qlearning_family/dqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "5d90254098aab6475574cfef260d6f4ab0f234d0754466d8fd86716542ef87f8"
+    },
+    {
+      "path": "xuance/mindspore/learners/qlearning_family/drqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "b86fea3b0ab19b7346bd81dec243e6bc848403a5e0113b956423da07e96db45c"
+    },
+    {
+      "path": "xuance/mindspore/learners/qlearning_family/dueldqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "b563c8f5f6e256ba72e50bb4ff447e8c234635aeec1ad6855e0bfe7331ba1180"
+    },
+    {
+      "path": "xuance/mindspore/learners/qlearning_family/perdqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "96530dd490da7393df9db7d7207811a265ac6b328572937b9c89f17e9c2506bb"
+    },
+    {
+      "path": "xuance/mindspore/learners/qlearning_family/qrdqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "3f3c6ac153ccb2dc7e24cf061b2ca3d3b5da38c59f19c9dc8f0f1e3ee9ae81da"
+    },
+    {
+      "path": "xuance/mindspore/policies/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "2b7bf7217988930e41f17c275b3480ec131353081c7dd77e1147977682ef1426"
+    },
+    {
+      "path": "xuance/mindspore/policies/categorical.py",
+      "original_sha256": null,
+      "upstream_sha256": "4b76b5947b963162eac6ee6ef7f0193bed204536c834ad2736f74803e96e8fcd"
+    },
+    {
+      "path": "xuance/mindspore/policies/categorical_marl.py",
+      "original_sha256": null,
+      "upstream_sha256": "296b09408d1be228f3f368888308f5201687b7a39e52808b5b7627bd0a5acfe6"
+    },
+    {
+      "path": "xuance/mindspore/policies/coordination_graph.py",
+      "original_sha256": null,
+      "upstream_sha256": "cdd695efb31b3b910128c5180f0e3c42d9bd35386acac6e1f52eadf6926612bf"
+    },
+    {
+      "path": "xuance/mindspore/policies/core.py",
+      "original_sha256": null,
+      "upstream_sha256": "8fdceff4f5f25bda2d78942a12e62c087717354af03adf7c69a8a203028b3ffd"
+    },
+    {
+      "path": "xuance/mindspore/policies/deterministic.py",
+      "original_sha256": null,
+      "upstream_sha256": "71de5a748e03227bf530f54b74daca995dad514ffbc43308fad64a88e1fb7729"
+    },
+    {
+      "path": "xuance/mindspore/policies/deterministic_marl.py",
+      "original_sha256": null,
+      "upstream_sha256": "5d1db808f1919559ccf1a4cef75fa4b9d311e22c134796581230c384e4c2c99f"
+    },
+    {
+      "path": "xuance/mindspore/policies/dreamer.py",
+      "original_sha256": null,
+      "upstream_sha256": "1fb910d921bbda7ac23c54c12518563bb0b0ad065801e0675f86ede1468943f2"
+    },
+    {
+      "path": "xuance/mindspore/policies/gaussian.py",
+      "original_sha256": null,
+      "upstream_sha256": "959aff85bce2de856ebaafa1573409be7e3fbbdf7e8bb42483c8a20bd487a83c"
+    },
+    {
+      "path": "xuance/mindspore/policies/gaussian_marl.py",
+      "original_sha256": null,
+      "upstream_sha256": "4bba1f725286d6060975dcf97d9321d0b3a193e4629d27dbe7889ee69b83bbb4"
+    },
+    {
+      "path": "xuance/mindspore/representations/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "47afa72435b31b7959f88cab20e2e3e444899619d1930638bb776061faa1bf86"
+    },
+    {
+      "path": "xuance/mindspore/representations/cnn.py",
+      "original_sha256": null,
+      "upstream_sha256": "98d1fe25105b06715638bddcd06b40901df22b8dec45dbb51304dfca5de6c84d"
+    },
+    {
+      "path": "xuance/mindspore/representations/mlp.py",
+      "original_sha256": null,
+      "upstream_sha256": "4821a5d9e0b8357e4af71b6ef2ca47574599023eed9564f0a3abf0d42f0672af"
+    },
+    {
+      "path": "xuance/mindspore/representations/rnn.py",
+      "original_sha256": null,
+      "upstream_sha256": "759a02eec694836b19400b2ffad9e4fa5f00ea139bc5977fc38b256b33f69dc5"
+    },
+    {
+      "path": "xuance/mindspore/representations/vit.py",
+      "original_sha256": null,
+      "upstream_sha256": "7104624c169d0f3898d4746c26bb0007bb92b4aa117e6463c50a6a5b6fdfde21"
+    },
+    {
+      "path": "xuance/mindspore/representations/world_model.py",
+      "original_sha256": null,
+      "upstream_sha256": "86620ebfc733d2c87ffa105d7e1364091271c6ab68a96c5ce7132be5ed8e6040"
+    },
+    {
+      "path": "xuance/mindspore/representations/world_model_v2.py",
+      "original_sha256": null,
+      "upstream_sha256": "3ff23eb65a7e8efc06d06809168df5f453c6ab1af7cadfa27b041ec1a598c790"
+    },
+    {
+      "path": "xuance/mindspore/utils/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "4fb5e15aed9d120255f05e0eefd385eedb564eefd59f93b12c5c395f465ee5d5"
+    },
+    {
+      "path": "xuance/mindspore/utils/device.py",
+      "original_sha256": null,
+      "upstream_sha256": "b865a862bcdb864296f0fbb1bc1d99a5018200f63b1f71bf2cf9198bb06adb8f"
+    },
+    {
+      "path": "xuance/mindspore/utils/distributions.py",
+      "original_sha256": null,
+      "upstream_sha256": "fd060926b2ac1163b68c851359a664f61f863601f9ca088678bee4d2f9ce3cec"
+    },
+    {
+      "path": "xuance/mindspore/utils/harmonizer.py",
+      "original_sha256": null,
+      "upstream_sha256": "58967a6b94e42e857e4054a881ef55ac6c2ca097193276175feeaf5d34f00cf6"
+    },
+    {
+      "path": "xuance/mindspore/utils/layers.py",
+      "original_sha256": null,
+      "upstream_sha256": "8db8324a04cbc542371362ba6ca85a9d9bc86e4e457b0f9fc11332371584fb18"
+    },
+    {
+      "path": "xuance/mindspore/utils/layers4dreamer.py",
+      "original_sha256": null,
+      "upstream_sha256": "44e6ea3407b629a79085eafa960a363d28eb6b1e79a94e0964935945dcd1637d"
+    },
+    {
+      "path": "xuance/mindspore/utils/operations.py",
+      "original_sha256": null,
+      "upstream_sha256": "b2eb365792f7e7ce9dd8ea188d6dfe9c7474744c04b15cd9b41b59185c8114ad"
+    },
+    {
+      "path": "xuance/mindspore/utils/set_trainer.py",
+      "original_sha256": null,
+      "upstream_sha256": "e5bad5d22f690daceb96f27922b257f0c9a1f2979420ddb76f38c409b997d195"
+    },
+    {
+      "path": "xuance/mindspore/utils/value_norm.py",
+      "original_sha256": null,
+      "upstream_sha256": "8e8ae81afc65861a58ec6a3f7fe47f9a13313742de9762913110f0db86edc955"
+    },
+    {
+      "path": "xuance/tensorflow/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "3cd11113892faa6e076885cdb59cf981fd95d4a71d43f1ffff5ba3011f591a46"
+    },
+    {
+      "path": "xuance/tensorflow/agents/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "2163f840c051a351ae17e94471211c18911b411e7e2e254929667a34ea2f8179"
+    },
+    {
+      "path": "xuance/tensorflow/agents/base/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "651ac34e883ec2e0d7af206d20182ffce5c9be3d8091b5c0f1a5f2c52776baf6"
+    },
+    {
+      "path": "xuance/tensorflow/agents/base/agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "4018379d8b61259957d0c5e6c5d061b2d631f1f445393e9fff5169f06bcc9f0b"
+    },
+    {
+      "path": "xuance/tensorflow/agents/base/agents_marl.py",
+      "original_sha256": null,
+      "upstream_sha256": "0ca0c97a97a229ddd956719e6b06aea79de88a37b0acdfa77fae3f5e15692415"
+    },
+    {
+      "path": "xuance/tensorflow/agents/contrastive_unsupervised_rl/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "f0ea6bf49b5fe96d3b12741eaa95f2212e1a199d935a086d904e26938b042c1d"
+    },
+    {
+      "path": "xuance/tensorflow/agents/contrastive_unsupervised_rl/curl_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "cceb4fe7df9f29fcd368e37cb6c902f039b3a1aa36f534ecfce46f34d404eaa7"
+    },
+    {
+      "path": "xuance/tensorflow/agents/contrastive_unsupervised_rl/drq_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "641409446fc15e9bbc770143eb93e740f9835265955804297a89fd8b5fed1fc3"
+    },
+    {
+      "path": "xuance/tensorflow/agents/contrastive_unsupervised_rl/spr_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "c405e68d94f9576eb2413f2cee7f8bb64d098429f46eda9741d546ac97a52bd5"
+    },
+    {
+      "path": "xuance/tensorflow/agents/core/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "acb9db28b11c28a42907d78d697b9e05863bd48d92e5442ed4908aabcdfaadba"
+    },
+    {
+      "path": "xuance/tensorflow/agents/core/off_policy.py",
+      "original_sha256": null,
+      "upstream_sha256": "a3ea1e229d88bd92442f052e0789df09a4ada8c878be280df277e48a1436855f"
+    },
+    {
+      "path": "xuance/tensorflow/agents/core/off_policy_marl.py",
+      "original_sha256": null,
+      "upstream_sha256": "e12199423b485d08b1600f36a8faf5fa9afaa230fe442a3aa4ea4ee4bef43cd6"
+    },
+    {
+      "path": "xuance/tensorflow/agents/core/offline.py",
+      "original_sha256": null,
+      "upstream_sha256": "2140c10f6d232ffdb338e0810c0c2ee9a8c7f13a26f4187816253954113cb578"
+    },
+    {
+      "path": "xuance/tensorflow/agents/core/on_policy.py",
+      "original_sha256": null,
+      "upstream_sha256": "d5142a59577771b6583396bbe1e32445028e613de404d20c31271ebb67e8013f"
+    },
+    {
+      "path": "xuance/tensorflow/agents/core/on_policy_marl.py",
+      "original_sha256": null,
+      "upstream_sha256": "854faf087ae58ae4855e6e8a39eaaf3fa131fb343c746d7eb3e3b446f9b75947"
+    },
+    {
+      "path": "xuance/tensorflow/agents/model_based_rl/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "997583248dec3bd243baff33d3e8d6891b09a6d066acffb0423f9f2b54a30278"
+    },
+    {
+      "path": "xuance/tensorflow/agents/model_based_rl/dreamer_v2_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "c558629eb46e9056190b79c741f8db3dd6559e6b1dd224fa8dabbf24b80cb74e"
+    },
+    {
+      "path": "xuance/tensorflow/agents/model_based_rl/dreamer_v3_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "3239aa351dbca580026407ddb5ec541e98e73143ee5ca2416936b95273853ba8"
+    },
+    {
+      "path": "xuance/tensorflow/agents/multi_agent_rl/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "41944fa83e6d8f5f1e245f13b80a9aae6ac789c264c0b2da812dd44cc21870ca"
+    },
+    {
+      "path": "xuance/tensorflow/agents/multi_agent_rl/coma_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "12673006c8441aa85c62e9db24906013e6b77ff13805e6af935e6e652fdc22d1"
+    },
+    {
+      "path": "xuance/tensorflow/agents/multi_agent_rl/commnet_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "8a7bd77abcd41dd624647d8bb0f499ef7fc046a4f88a8e7cd13de065730136ac"
+    },
+    {
+      "path": "xuance/tensorflow/agents/multi_agent_rl/dcg_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "0768ae587f290aa45565b3310f873d6256a7b19562bc34d3b7773ae744fef344"
+    },
+    {
+      "path": "xuance/tensorflow/agents/multi_agent_rl/iac_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "6bb8977dc28ad3aeaf21687e215ca63f3925510dddcce94966fb9132c4466ea9"
+    },
+    {
+      "path": "xuance/tensorflow/agents/multi_agent_rl/ic3net_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "9eed8a39f413786493b17aac9af4fcbe0b6f29b8609fec62861b255d95520b7d"
+    },
+    {
+      "path": "xuance/tensorflow/agents/multi_agent_rl/iddpg_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "b36e77512a30512d955a364233222f42ae5b53546e816235937c39b1cdbc00eb"
+    },
+    {
+      "path": "xuance/tensorflow/agents/multi_agent_rl/ippo_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "419d5380bab27aee3454ac49052c33ace97c90b2267a07f90a42204824b0d92e"
+    },
+    {
+      "path": "xuance/tensorflow/agents/multi_agent_rl/iql_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "a5d19d99797ae271c3d73c7e06f1394b7fa7b3865c403fbc6f9601e428d3438a"
+    },
+    {
+      "path": "xuance/tensorflow/agents/multi_agent_rl/isac_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "dfc2170c75f375404d4d6266db4534e04c00c1a21760484a8de9444ec565c942"
+    },
+    {
+      "path": "xuance/tensorflow/agents/multi_agent_rl/maddpg_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "b105e2dd25051fca45282d7a4840aa7223ece9833f1f8beb98b5538feeeb07ab"
+    },
+    {
+      "path": "xuance/tensorflow/agents/multi_agent_rl/mappo_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "85db69cb23939c3967aede15540f5e6ff158c381a3c169b6c3c9a08ecf63d545"
+    },
+    {
+      "path": "xuance/tensorflow/agents/multi_agent_rl/masac_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "64a103b887d0a7a43de4987cbef5b9a34282297db8463c35ce333a5530dcd684"
+    },
+    {
+      "path": "xuance/tensorflow/agents/multi_agent_rl/matd3_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "b76da7ee9fba9eb6eea7ded3e505a69be01efcfd299ecb8ebf4e8ce8a4e1509d"
+    },
+    {
+      "path": "xuance/tensorflow/agents/multi_agent_rl/mfac_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "94425fa34b53ab4643251e8c98bd70ce9e4a70e00df9c8bb6d1857b1048ec848"
+    },
+    {
+      "path": "xuance/tensorflow/agents/multi_agent_rl/mfq_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "d166005fcbd43a9e59de9c97a20c4cbd509ad832675d07f9ced13bf9e14447cc"
+    },
+    {
+      "path": "xuance/tensorflow/agents/multi_agent_rl/qmix_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "3031d53046c548dd1747394a7a117a06542c4f843107ce971ff8f967736f61a2"
+    },
+    {
+      "path": "xuance/tensorflow/agents/multi_agent_rl/qtran_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "dbfd357bab149845333dd45bee36f393ad93b13800d33b95816709c315d1c354"
+    },
+    {
+      "path": "xuance/tensorflow/agents/multi_agent_rl/tarmac_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "567bf0068b74a3406a8581bc581f5c48d5849d9a477e4e6a48ffc95152195602"
+    },
+    {
+      "path": "xuance/tensorflow/agents/multi_agent_rl/vdac_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "4d19a077d39701d7cdb7008a61289f65f80382f4bb25e410c494c7aaf7078207"
+    },
+    {
+      "path": "xuance/tensorflow/agents/multi_agent_rl/vdn_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "8cc090b9139440aa40c3a5ab241b29d875b5f4efef13fb93b43f33b22a0b7ac4"
+    },
+    {
+      "path": "xuance/tensorflow/agents/multi_agent_rl/wqmix_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "cdf28238fb94c85dfad3a124935307a5390936788f1a077ed676b743bc40a511"
+    },
+    {
+      "path": "xuance/tensorflow/agents/offline_rl/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "5c693df758fad0c4dc59ed1a96fd0358d457ef4791c4a16aeb9744c157d9ee8d"
+    },
+    {
+      "path": "xuance/tensorflow/agents/offline_rl/td3bc_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "1a1784ec5ed4ea59d566cc9ab5c07283f8029f0ca6f0e7d5c8518f3cf8c3ec83"
+    },
+    {
+      "path": "xuance/tensorflow/agents/policy_gradient/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "12cc96bc994e5e5b26a6fefd276f4ec14abf3547a586803018fcdca1c4f2cadb"
+    },
+    {
+      "path": "xuance/tensorflow/agents/policy_gradient/a2c_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "bcff9751975912a5fc15bf91c3a23d31b6aa75a406068e5c683418882c4503b6"
+    },
+    {
+      "path": "xuance/tensorflow/agents/policy_gradient/ddpg_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "35b7315bcda802b65ef4037178e44960b15364fb8c28fdbed42af2b184d5ead4"
+    },
+    {
+      "path": "xuance/tensorflow/agents/policy_gradient/mpdqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "51b885a3b27f608f4a647a7e688a1f275e346fa3b78fe5663f16f3f8e9dff7a4"
+    },
+    {
+      "path": "xuance/tensorflow/agents/policy_gradient/npg_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "799a5778eb03cc849cc3c663123919a3bf1f49570383368c158809c08bc54263"
+    },
+    {
+      "path": "xuance/tensorflow/agents/policy_gradient/pdqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "9cb2d4c892d5411d41a263765ae241dc5ef89c82b3174070405b69ae4b1f59d9"
+    },
+    {
+      "path": "xuance/tensorflow/agents/policy_gradient/pg_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "4896d1abeae715571d8bdbbac35c9a574c4caa9b2d56c3b42ce7437e5a4b19e7"
+    },
+    {
+      "path": "xuance/tensorflow/agents/policy_gradient/ppg_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "820582ecdd8f3c3f17829668c98fe3faa6d0a5005273f0f5cad950a26f911ffd"
+    },
+    {
+      "path": "xuance/tensorflow/agents/policy_gradient/ppo_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "48b7159752d023199a7bf9af2603cd11ebb53e4575294c773420862a9a12f3f3"
+    },
+    {
+      "path": "xuance/tensorflow/agents/policy_gradient/ppokl_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "f887b45ca05ab43317ef8da683ff27684529bf367d2c94ff653dbe6a1bd62247"
+    },
+    {
+      "path": "xuance/tensorflow/agents/policy_gradient/sac_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "e61eacab033e3b7635fd0bcfd3237431a4ea79f4aa7dc30121c836c395b8901f"
+    },
+    {
+      "path": "xuance/tensorflow/agents/policy_gradient/spdqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "e50024ed72d49050894172c3fb7bfa59ce8d4a7377bf93202b0dce269aa193ff"
+    },
+    {
+      "path": "xuance/tensorflow/agents/policy_gradient/td3_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "ced45ba837dbd658e37683463e23375af0f2116fa592952fa030213b9f81df25"
+    },
+    {
+      "path": "xuance/tensorflow/agents/qlearning_family/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "b1bd30cf18b7e6a0173c6f108c11ad1d67d3d3c61c45dd512be2b47dda5af666"
+    },
+    {
+      "path": "xuance/tensorflow/agents/qlearning_family/c51_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "4445ccb6b2ac3e720096378ca7c964d64ce7d84d919e11f50993dd44f74f9815"
+    },
+    {
+      "path": "xuance/tensorflow/agents/qlearning_family/ddqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "736f1bd245a0b1af27eacacec1b1b0be0f86cf40c9aa08b33694a5ffb24aa736"
+    },
+    {
+      "path": "xuance/tensorflow/agents/qlearning_family/dqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "abd4e18a4b719f94e08066704f58ca86f2961f5671ee55cef5b68d1e420cc519"
+    },
+    {
+      "path": "xuance/tensorflow/agents/qlearning_family/drqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "d38acad76df688c8af0e06fa0d96e5f9accc7261618cd934612f606e53a84dc3"
+    },
+    {
+      "path": "xuance/tensorflow/agents/qlearning_family/dueldqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "559e441d8a232631fe0409c441bd012cc013bf5bd7ac84f310764caffb924481"
+    },
+    {
+      "path": "xuance/tensorflow/agents/qlearning_family/noisydqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "5339693dbd7d45843b2b88b705cdd28e558d19e553b11432b7b5af18ed8ac998"
+    },
+    {
+      "path": "xuance/tensorflow/agents/qlearning_family/perdqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "f89192e62350a998a6030f8d76df2f080f66465a4b26ccf40d7770ed332bf99a"
+    },
+    {
+      "path": "xuance/tensorflow/agents/qlearning_family/qrdqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "f193ea415f745c29a6e13d1564541099b939ca2168b0ec9c117a4b132f155e1a"
+    },
+    {
+      "path": "xuance/tensorflow/communications/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "ffc471193070b14b1253893bb598c873bf2553e4adf35746a12165292f800706"
+    },
+    {
+      "path": "xuance/tensorflow/communications/attention_comm.py",
+      "original_sha256": null,
+      "upstream_sha256": "aee715f60029a5ca1f2086543f71369830d707ea7f2c5b2a61120353994df57d"
+    },
+    {
+      "path": "xuance/tensorflow/communications/base_comm.py",
+      "original_sha256": null,
+      "upstream_sha256": "8b34bb71a6c563b5d2b89847c76baf094f7417f7742430e2640b987d8a5c7874"
+    },
+    {
+      "path": "xuance/tensorflow/communications/comm_net.py",
+      "original_sha256": null,
+      "upstream_sha256": "bc4f7db37b4ff3df96fdd78760c627633d042fa8e9e5173159676ff610e177a9"
+    },
+    {
+      "path": "xuance/tensorflow/communications/emergent_comm.py",
+      "original_sha256": null,
+      "upstream_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "xuance/tensorflow/communications/gnn_comm.py",
+      "original_sha256": null,
+      "upstream_sha256": "c73e53f5b6e054b10cb46169f0ed9529d5cf54deae33030ce97b73c80b4d15aa"
+    },
+    {
+      "path": "xuance/tensorflow/communications/ic3net_comm.py",
+      "original_sha256": null,
+      "upstream_sha256": "fae4548d81aa47c27c0a1a49ac389f69873c0162b2980db257330cd2f83900f7"
+    },
+    {
+      "path": "xuance/tensorflow/learners/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "103789ee09ee57224c6671136fc60517068a8fd6ad2e870369d2b03edaf857d6"
+    },
+    {
+      "path": "xuance/tensorflow/learners/contrastive_unsupervised_rl/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "3a3b169a7e431091c013548d2f6dd67cfc71f0f1db49db42c59ff999e6a0bf8c"
+    },
+    {
+      "path": "xuance/tensorflow/learners/contrastive_unsupervised_rl/curl_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "fd282037c3d50fb689f5fa5715bccd9a6588bb8f936af280d30453dc5e34d1f1"
+    },
+    {
+      "path": "xuance/tensorflow/learners/contrastive_unsupervised_rl/drq_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "b92ac29ac18438384474d2bdb06b58bc8dcf2be69aa3a14663da16525ff15835"
+    },
+    {
+      "path": "xuance/tensorflow/learners/contrastive_unsupervised_rl/spr_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "822e4f93928fbf30201582fef3b7b0b379ef3cadfbb0fb2a2da28e0ab8bdc4d7"
+    },
+    {
+      "path": "xuance/tensorflow/learners/learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "293c5e52d3a98dc7830abe4ee7827a9422cb3b4db638c4ce4ed3f4e7b5856300"
+    },
+    {
+      "path": "xuance/tensorflow/learners/model_based/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "67f5f9c22e03582a638d6968f5f6ff4333299cbdae18d8cad90e5b6ff303270b"
+    },
+    {
+      "path": "xuance/tensorflow/learners/model_based/dreamer_v2_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "9093bf2587958ed4e51f70afb997f85dbe805324b98fe9516745be6d967e1d1f"
+    },
+    {
+      "path": "xuance/tensorflow/learners/model_based/dreamer_v3_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "6de0669a51a4129f349fcbb9c72e6bcc834d20f3a65c18e6a2e55dbc7229533b"
+    },
+    {
+      "path": "xuance/tensorflow/learners/multi_agent_rl/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "5eb40bce401a62f682369600c196900754359cd5db737a398a82d5a723f63ffd"
+    },
+    {
+      "path": "xuance/tensorflow/learners/multi_agent_rl/coma_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "0be64ad18c37a20e86301fc4134dcd8fd06ddfa8df81f0ce4c719bd99c9c560e"
+    },
+    {
+      "path": "xuance/tensorflow/learners/multi_agent_rl/commnet_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "ea0d179620b4a1e771ec3418de30ed88af29f1f792cf598936dbbd1ffdfd93eb"
+    },
+    {
+      "path": "xuance/tensorflow/learners/multi_agent_rl/dcg_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "0d0b5131b87cd25db9edabddb3b4b6210f94abe5e69e4b519f71af8fcb6655a4"
+    },
+    {
+      "path": "xuance/tensorflow/learners/multi_agent_rl/iac_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "b34fdb5e5fd1a6a5ba1846c70b8de1666dc002350b25ef1cb6661a37bc770cd4"
+    },
+    {
+      "path": "xuance/tensorflow/learners/multi_agent_rl/ic3net_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "e75cdcf4bb9f9f2efc8478dc771c5bd55b85ec67955433141b59a6320b492679"
+    },
+    {
+      "path": "xuance/tensorflow/learners/multi_agent_rl/iddpg_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "debc4873b7a7331b5f6799bc2d750720ef8d8a5ec775e33fb14fb54fdf031f6f"
+    },
+    {
+      "path": "xuance/tensorflow/learners/multi_agent_rl/ippo_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "dacf38323d81ee797acb3aefe20fcc6c03cb2aa3a4a89df185f1e997cdb9f3ee"
+    },
+    {
+      "path": "xuance/tensorflow/learners/multi_agent_rl/iql_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "05b04f394216ab9d34e4e89d66e36c65c9db177bcfbd023c123c5f0f88b83f48"
+    },
+    {
+      "path": "xuance/tensorflow/learners/multi_agent_rl/isac_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "d924a67eb44edd7deda1afae3c84f38fc1ea7d9006c18a823cce3c34f5816dab"
+    },
+    {
+      "path": "xuance/tensorflow/learners/multi_agent_rl/isacdis_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "65fa7c106bf79004fa4cfe606ed6ece72182bdd0ab237aa1a7f04d545a123bfa"
+    },
+    {
+      "path": "xuance/tensorflow/learners/multi_agent_rl/maddpg_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "849fb51368c207212fdadd8e5f91a44d2761ac991e9d46363b0d3dc8ae4e33ca"
+    },
+    {
+      "path": "xuance/tensorflow/learners/multi_agent_rl/mappo_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "912dee888b02fffb90b65f821bd05d9df9fdaadbfbefc6e6965bf4491e8f9b0e"
+    },
+    {
+      "path": "xuance/tensorflow/learners/multi_agent_rl/masac_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "9b7ade0c1c8682592e6816d46e95dd473cf2b27e447c8d98e1cee241c6d7001c"
+    },
+    {
+      "path": "xuance/tensorflow/learners/multi_agent_rl/masacdis_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "65eaf2082a4c07402808ce3fbf675bbdca31e66e28a5b97ac2acc89c75e12ab0"
+    },
+    {
+      "path": "xuance/tensorflow/learners/multi_agent_rl/matd3_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "29a8c4b9ab98167536261e477adb1f5b5b4600d2e3b7d32780169dbda44f28c3"
+    },
+    {
+      "path": "xuance/tensorflow/learners/multi_agent_rl/mfac_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "bb4e1880736ce19240b29c2212739e18ba2691d17718286b6f1a79294674a990"
+    },
+    {
+      "path": "xuance/tensorflow/learners/multi_agent_rl/mfq_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "c1142f7835f4b6a6781dcb63286e563ce6746e330ae95dd23872a522c52f9cc5"
+    },
+    {
+      "path": "xuance/tensorflow/learners/multi_agent_rl/qmix_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "a1606284b9335205a8be86b4530f5155f22805d212359a4df96282ddabeeb9e7"
+    },
+    {
+      "path": "xuance/tensorflow/learners/multi_agent_rl/qtran_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "b510c56e96c81e4aa06c376dc2394c1735d273746c56af19cade518e52230109"
+    },
+    {
+      "path": "xuance/tensorflow/learners/multi_agent_rl/tarmac_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "a2d35fd0eb345a02fcff7e7d8c82b127bd387432762f1360020601b7ada825f5"
+    },
+    {
+      "path": "xuance/tensorflow/learners/multi_agent_rl/vdac_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "d295b34e352a4962ee0883c68ba45fce2e53c748d86ae237ab162dca18de3617"
+    },
+    {
+      "path": "xuance/tensorflow/learners/multi_agent_rl/vdn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "4acf6ff929bee521c6a35ae1e6e4f4baa16bc2f2bb613a8ab76d1370794f3f08"
+    },
+    {
+      "path": "xuance/tensorflow/learners/multi_agent_rl/wqmix_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "74d2c5c887bbf43d12131794d45f09dc7e864c20ecacd05ceb4a92c651a8de7e"
+    },
+    {
+      "path": "xuance/tensorflow/learners/offline/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "a2d62bc8e932667a751be38c3cc0e4935cfdb7a9189faaff52f04743a8e67a8a"
+    },
+    {
+      "path": "xuance/tensorflow/learners/offline/td3bc_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "349230293907bf929cec08143f44fca347051ab9fb16db28eef7d77e27b14bcf"
+    },
+    {
+      "path": "xuance/tensorflow/learners/policy_gradient/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "ecf00c5ee4504e0a191cd72b2b4bf37f0acb70de77cdfa5d8387722e51140902"
+    },
+    {
+      "path": "xuance/tensorflow/learners/policy_gradient/a2c_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "cb56f04a21fad0926ef7909bb2f8bfd27bb59d9c704b7ec59db583eeda2fe4b0"
+    },
+    {
+      "path": "xuance/tensorflow/learners/policy_gradient/ddpg_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "421a57b6d21ef9c2b927121c11e4175f18c3312e47767113422d0c7c1e833587"
+    },
+    {
+      "path": "xuance/tensorflow/learners/policy_gradient/mpdqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "bb770378d32d370e57a677018c1ed28188f305e128f0e0aabe38d7c24ae9c5ab"
+    },
+    {
+      "path": "xuance/tensorflow/learners/policy_gradient/npg_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "868fa1dd03bc2184a19ac962f3ef8af11c378f56bbace597de7307ccd2158e5b"
+    },
+    {
+      "path": "xuance/tensorflow/learners/policy_gradient/pdqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "fb1062dbd5628ba6faa269048fbbd79ce16534c10dc7cb8373f4e67915b90a88"
+    },
+    {
+      "path": "xuance/tensorflow/learners/policy_gradient/pg_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "b5bc96e57e0eeefd6835206865f9d08c2dbc0ad01f9b0f8543305b6599417336"
+    },
+    {
+      "path": "xuance/tensorflow/learners/policy_gradient/ppg_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "2838227813c66fa0ff257159ec77d71393f19d53fbeda43f5f2607cec450e4bf"
+    },
+    {
+      "path": "xuance/tensorflow/learners/policy_gradient/ppo_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "85e5a748f2096f2672c47f931d7af532e91b51772c8d8f9c06d4f6f8c1cf6fc5"
+    },
+    {
+      "path": "xuance/tensorflow/learners/policy_gradient/ppokl_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "3f03c8369d7d66c5b84c4c079a08a918dd9bffcb2b0644799b8975cd9483e08d"
+    },
+    {
+      "path": "xuance/tensorflow/learners/policy_gradient/sac_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "9acdb2200ff43dc3335b4af61d1b1b1665e4b2ee5a70099ce068c370edd517d6"
+    },
+    {
+      "path": "xuance/tensorflow/learners/policy_gradient/sacdis_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "95bb2ed3cefefa5a62fec4abd89d1b2c20a2a7a82a6b9899b1f01008c4e6ba87"
+    },
+    {
+      "path": "xuance/tensorflow/learners/policy_gradient/spdqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "7211d94000879dcf2a860c9d14afa5406749a651d8103b7966bb7cb83ee326d9"
+    },
+    {
+      "path": "xuance/tensorflow/learners/policy_gradient/td3_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "42fbdd20a48531ca995db5783025d925b29a92084a8aff98c005ced39685d000"
+    },
+    {
+      "path": "xuance/tensorflow/learners/qlearning_family/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "a76bb9896d8d48573d52109415df7579303a8c9ae2f748b3b164d8878fe1d890"
+    },
+    {
+      "path": "xuance/tensorflow/learners/qlearning_family/c51_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "8691f9639df797aeb24b8da079ea633f876f113937d7611a65c2ab5ac3939850"
+    },
+    {
+      "path": "xuance/tensorflow/learners/qlearning_family/ddqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "9d69489d3e3ad3f9d02a0ff5f87976634519406e07555fc4a0e6154bb0a51046"
+    },
+    {
+      "path": "xuance/tensorflow/learners/qlearning_family/dqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "caf38e06a82f798bee158fa7a28d452a63cd05913a53ead0eefee5b70978b976"
+    },
+    {
+      "path": "xuance/tensorflow/learners/qlearning_family/drqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "5487c373343217613826e98f73e0c17e2d4a2ddc704eb61a1d8c9c189ed64116"
+    },
+    {
+      "path": "xuance/tensorflow/learners/qlearning_family/dueldqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "ba8668c1d56f0eaf5fa1d8a539a02427d63dc89cbb840fcd1e727b004a3c5676"
+    },
+    {
+      "path": "xuance/tensorflow/learners/qlearning_family/perdqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "e7e05ef407816ff9a1a044d875e2d4655e5f21a077ea00397356747d35660753"
+    },
+    {
+      "path": "xuance/tensorflow/learners/qlearning_family/qrdqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "07bf8ef444e5f0ddac8d8544a00e7fe28a3afe57b0d6221e47c37e303b1e51ed"
+    },
+    {
+      "path": "xuance/tensorflow/policies/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "2b7bf7217988930e41f17c275b3480ec131353081c7dd77e1147977682ef1426"
+    },
+    {
+      "path": "xuance/tensorflow/policies/categorical.py",
+      "original_sha256": null,
+      "upstream_sha256": "9eb32686276d49ff921e4b406777d22ed8177ae4e6e3bb44ee6088b8dc9b1cc3"
+    },
+    {
+      "path": "xuance/tensorflow/policies/categorical_marl.py",
+      "original_sha256": null,
+      "upstream_sha256": "d96978f4fdf149f2eb6d68c84109e9031184b6c1fd32b1a0ce9037504127e77a"
+    },
+    {
+      "path": "xuance/tensorflow/policies/coordination_graph.py",
+      "original_sha256": null,
+      "upstream_sha256": "25d8c8aad5cc5d1a10f2577de8600e9b7ea50d36a5f49177450e5b95c5893e1e"
+    },
+    {
+      "path": "xuance/tensorflow/policies/core.py",
+      "original_sha256": null,
+      "upstream_sha256": "6c312bd855578ee0af59faa7524f2620a2ac8820ce05f04cc6e0ef00ad12b3c4"
+    },
+    {
+      "path": "xuance/tensorflow/policies/deterministic.py",
+      "original_sha256": null,
+      "upstream_sha256": "37829acaacb7a6c0bca6b0fb056fccb8cdbf2733bbb5efe1c6e64ea0673a786f"
+    },
+    {
+      "path": "xuance/tensorflow/policies/deterministic_marl.py",
+      "original_sha256": null,
+      "upstream_sha256": "68cbd2840f07da85b7c6c41cc258d5bbe52a2acb588a7d8affb409cf0aed0567"
+    },
+    {
+      "path": "xuance/tensorflow/policies/dreamer.py",
+      "original_sha256": null,
+      "upstream_sha256": "1fb910d921bbda7ac23c54c12518563bb0b0ad065801e0675f86ede1468943f2"
+    },
+    {
+      "path": "xuance/tensorflow/policies/gaussian.py",
+      "original_sha256": null,
+      "upstream_sha256": "546854089540081ac599b7b3089f2f10f8f2b88ed41c80c8d9cdd5185e53dde7"
+    },
+    {
+      "path": "xuance/tensorflow/policies/gaussian_marl.py",
+      "original_sha256": null,
+      "upstream_sha256": "75fe2c64ac4730313807c9c77bf50364c1b2f309f14d860b99f10b3ab60fc70c"
+    },
+    {
+      "path": "xuance/tensorflow/representations/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "ced5bec6af10aa44dd98139d9e12667d23bacfe510830a176b59d3ce339be6d5"
+    },
+    {
+      "path": "xuance/tensorflow/representations/cnn.py",
+      "original_sha256": null,
+      "upstream_sha256": "c9e5aa1e4edff96a9a4285f345c57352b1e64268a20fabc1620e18f0eec491d7"
+    },
+    {
+      "path": "xuance/tensorflow/representations/mlp.py",
+      "original_sha256": null,
+      "upstream_sha256": "e1d0294b92b301dbcb0a67b4865bd7761d10ac51bb67370347adbe0cd9c8bfdb"
+    },
+    {
+      "path": "xuance/tensorflow/representations/rnn.py",
+      "original_sha256": null,
+      "upstream_sha256": "cae1fb5677ccb4636a78cfa77ffb982c94fa1f32ec328d14a71cc813242efc24"
+    },
+    {
+      "path": "xuance/tensorflow/representations/vit.py",
+      "original_sha256": null,
+      "upstream_sha256": "7104624c169d0f3898d4746c26bb0007bb92b4aa117e6463c50a6a5b6fdfde21"
+    },
+    {
+      "path": "xuance/tensorflow/representations/world_model.py",
+      "original_sha256": null,
+      "upstream_sha256": "86620ebfc733d2c87ffa105d7e1364091271c6ab68a96c5ce7132be5ed8e6040"
+    },
+    {
+      "path": "xuance/tensorflow/representations/world_model_v2.py",
+      "original_sha256": null,
+      "upstream_sha256": "3ff23eb65a7e8efc06d06809168df5f453c6ab1af7cadfa27b041ec1a598c790"
+    },
+    {
+      "path": "xuance/tensorflow/utils/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "09539577d60c33b909f2f552ac7165ee519b2cd30fc95e83e85f22dfe9879d01"
+    },
+    {
+      "path": "xuance/tensorflow/utils/device.py",
+      "original_sha256": null,
+      "upstream_sha256": "d3e813e0acfc4ae147ea001917f9a63de2bd785e308b6344980ea7c0dc301264"
+    },
+    {
+      "path": "xuance/tensorflow/utils/distributions.py",
+      "original_sha256": null,
+      "upstream_sha256": "2dff394b7e12257c99381f5c95d54bc8bb96a2233c4eec08f7b13d1d3097d6f9"
+    },
+    {
+      "path": "xuance/tensorflow/utils/harmonizer.py",
+      "original_sha256": null,
+      "upstream_sha256": "58967a6b94e42e857e4054a881ef55ac6c2ca097193276175feeaf5d34f00cf6"
+    },
+    {
+      "path": "xuance/tensorflow/utils/layers.py",
+      "original_sha256": null,
+      "upstream_sha256": "7d8c886df0d1082de70d183496cdeb3af4cb977f98539c3daff635835f44471c"
+    },
+    {
+      "path": "xuance/tensorflow/utils/layers4dreamer.py",
+      "original_sha256": null,
+      "upstream_sha256": "44e6ea3407b629a79085eafa960a363d28eb6b1e79a94e0964935945dcd1637d"
+    },
+    {
+      "path": "xuance/tensorflow/utils/operations.py",
+      "original_sha256": null,
+      "upstream_sha256": "4c540d18f63309dd2b1da83e9c4449f9a16ce01875a1b01f4196b3a16affb021"
+    },
+    {
+      "path": "xuance/tensorflow/utils/value_norm.py",
+      "original_sha256": null,
+      "upstream_sha256": "4fafebb685d294b4b26706ef36279ed5d5b95ebde24213b909580dd6f1a1f2e8"
+    },
+    {
+      "path": "xuance/torch/__init__.py",
+      "original_sha256": "56a902525da7a7bf2951ca52f35b7abd2fe761445642f04f495518ab35ff690a",
+      "upstream_sha256": "b9255e32e56e55459fcbca7f356a26ce281b7037d7e6ec92e4bb280fcf886b50"
+    },
+    {
+      "path": "xuance/torch/agents/__init__.py",
+      "original_sha256": "f2a648bb898f5a56f9910b42b6ebcd91778e0b27e8f67982f63e08baf0a8bf94",
+      "upstream_sha256": "6e7a3cb6395549f1e9b15c5a37a5dddcf936e6477b34cb8296c8a9bfce0bff31"
+    },
+    {
+      "path": "xuance/torch/agents/base/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "651ac34e883ec2e0d7af206d20182ffce5c9be3d8091b5c0f1a5f2c52776baf6"
+    },
+    {
+      "path": "xuance/torch/agents/base/agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "b11d9048d8c9dfc85e9b52605e834c047f763d43c7001e94631099ca995733b1"
+    },
+    {
+      "path": "xuance/torch/agents/base/agents_marl.py",
+      "original_sha256": null,
+      "upstream_sha256": "d9faf7152523d9b639ab10eb960771a6106a92db9245db3a2564450702e66da9"
+    },
+    {
+      "path": "xuance/torch/agents/contrastive_unsupervised_rl/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "f0ea6bf49b5fe96d3b12741eaa95f2212e1a199d935a086d904e26938b042c1d"
+    },
+    {
+      "path": "xuance/torch/agents/contrastive_unsupervised_rl/curl_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "6fef18d35c2c198067298af83c5f2aa7a9dc266e8a228d5f9f1f7f1270dd77d7"
+    },
+    {
+      "path": "xuance/torch/agents/contrastive_unsupervised_rl/drq_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "7f7fccf7f0f28571ca1beb40394ca6225dc06e23b1ca4f867023a6b5db8d07ef"
+    },
+    {
+      "path": "xuance/torch/agents/contrastive_unsupervised_rl/spr_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "dbb5d58e383e69b79b640a6ede8b12f1e593fa038b7115b2352ba1c7ef41ed61"
+    },
+    {
+      "path": "xuance/torch/agents/core/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "1dac8ee1a5a67d6b7642dcd63abf1e2ac4313370566ebbe589a68c5f0c6ca3ec"
+    },
+    {
+      "path": "xuance/torch/agents/core/off_policy.py",
+      "original_sha256": null,
+      "upstream_sha256": "f5485c6c98bd789c67551e5e53c68f9787d745b766d44cf8442320767df3cbe5"
+    },
+    {
+      "path": "xuance/torch/agents/core/off_policy_marl.py",
+      "original_sha256": null,
+      "upstream_sha256": "94ef8cb6ee134873a71772f753d0b0cdedba0cb445c73e0344cd1ed3ad7adc5d"
+    },
+    {
+      "path": "xuance/torch/agents/core/offline.py",
+      "original_sha256": null,
+      "upstream_sha256": "59bc5c4a3f2766a81e5c4b6cd6e208269fee4e194f3868acba501a49c7374aba"
+    },
+    {
+      "path": "xuance/torch/agents/core/on_policy.py",
+      "original_sha256": null,
+      "upstream_sha256": "0f4654fd5ae0c83a4ab55b9555da593987150f3c97190dccfae16ef987615e56"
+    },
+    {
+      "path": "xuance/torch/agents/core/on_policy_marl.py",
+      "original_sha256": null,
+      "upstream_sha256": "0c8e2898aca5ebbb0033eabf14fe278a1682e42a985fc040473d21b389d16c16"
+    },
+    {
+      "path": "xuance/torch/agents/model_based_rl/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "997583248dec3bd243baff33d3e8d6891b09a6d066acffb0423f9f2b54a30278"
+    },
+    {
+      "path": "xuance/torch/agents/model_based_rl/dreamer_v2_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "ed62cbd205e8c3661a55a5691b90da814434432f785196fb45c6f92c76f9d68a"
+    },
+    {
+      "path": "xuance/torch/agents/model_based_rl/dreamer_v3_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "8f09b8a706a0f528b1aeef83c9832904692638c26425efee7f4e27bcec9f98ba"
+    },
+    {
+      "path": "xuance/torch/agents/multi_agent_rl/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "352e53a542e9828381500fca327badae9b47304406cdc4849ce7b1daa0515fed"
+    },
+    {
+      "path": "xuance/torch/agents/multi_agent_rl/coma_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "55e2f368da6152ced3c7badf0cc14f4cf29a4ad59cb11adc48a81516071b85cb"
+    },
+    {
+      "path": "xuance/torch/agents/multi_agent_rl/commnet_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "a936995c577aaa1bb16625ba1469b0963686e781c7c28471146f950e6044b19c"
+    },
+    {
+      "path": "xuance/torch/agents/multi_agent_rl/dcg_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "48a25ead664d934b28281815efe09c66fd13d13bdf6689b70d0da9fbf583ce39"
+    },
+    {
+      "path": "xuance/torch/agents/multi_agent_rl/iac_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "ab99babd99ae40a586726b10ffcc2b59dfbffe4939d12b338e8262e0f7237b6d"
+    },
+    {
+      "path": "xuance/torch/agents/multi_agent_rl/ic3net_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "1456af515736ac2ebe3d8ae1bbeff0a1a1f9a3ff59450cf188968ec2b2e26942"
+    },
+    {
+      "path": "xuance/torch/agents/multi_agent_rl/iddpg_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "135067d7d880f0e0085620bafbacb2b85ba3e82e495d6f3ac493bde5cc024428"
+    },
+    {
+      "path": "xuance/torch/agents/multi_agent_rl/ippo_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "5683b9c98181a42f29e66981eb51135aa2b6ff2552d8600b1fd7004900b261b0"
+    },
+    {
+      "path": "xuance/torch/agents/multi_agent_rl/iql_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "131295c64159133924bfa7111a5f3d17798cb24bc260602d61d6622887994b48"
+    },
+    {
+      "path": "xuance/torch/agents/multi_agent_rl/isac_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "a6c97134df8c06b1610248c0b4ae74297ca2e1aca1020f02a536b0c0fa3ae14c"
+    },
+    {
+      "path": "xuance/torch/agents/multi_agent_rl/itd3_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "cf9cf20aef6ca1f286a474f714cf10b51d61cbc6531df8e3d223b663690a7654"
+    },
+    {
+      "path": "xuance/torch/agents/multi_agent_rl/maddpg_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "f62a34af43123bccd7ff344bdc1b8160cf13e6d24796b8e19be909c918683832"
+    },
+    {
+      "path": "xuance/torch/agents/multi_agent_rl/mappo_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "986d57b25d8706187a28153d7dd7707d5da3562b478523beee20d3c69a519204"
+    },
+    {
+      "path": "xuance/torch/agents/multi_agent_rl/masac_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "7784d9f58dac3d01a78bc8d3135aae6948a5c51be9298cd5afa9ebbbc08ac34a"
+    },
+    {
+      "path": "xuance/torch/agents/multi_agent_rl/matd3_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "6c9b9f1b7d3bc3dda9f6bcbf35e33aac1d9077023981ee9fa4509fca5083409b"
+    },
+    {
+      "path": "xuance/torch/agents/multi_agent_rl/mfac_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "fc28eef5a37b548eb9417e121626e86a9cb73f07ad215492e5b9a3e4cbc5e8cc"
+    },
+    {
+      "path": "xuance/torch/agents/multi_agent_rl/mfq_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "adf1efb7f75332358345cbf94c0d1740411f72f18ee903af963b1837b28cc4f7"
+    },
+    {
+      "path": "xuance/torch/agents/multi_agent_rl/qmix_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "a1951919f273a06de577a0a5401a802cd1f794a40a1dd6ceaf9957f024c6b1bb"
+    },
+    {
+      "path": "xuance/torch/agents/multi_agent_rl/qtran_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "97d823af61718e9c69c7d33d3e70d431e05e394b3f87ab0e0226b61760d2bc61"
+    },
+    {
+      "path": "xuance/torch/agents/multi_agent_rl/tarmac_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "567bf0068b74a3406a8581bc581f5c48d5849d9a477e4e6a48ffc95152195602"
+    },
+    {
+      "path": "xuance/torch/agents/multi_agent_rl/vdac_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "4c6f5ea80ecff24b277b1d328221aad5229f38fa3daa99485173c6e20f25b7a8"
+    },
+    {
+      "path": "xuance/torch/agents/multi_agent_rl/vdn_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "7ceae40b1c07fbd77db5b61c78a735737add800aa424381baeda2a819e7f8df2"
+    },
+    {
+      "path": "xuance/torch/agents/multi_agent_rl/wqmix_agents.py",
+      "original_sha256": null,
+      "upstream_sha256": "ce59ff6ff106741537a9564b59131555a2f88975e7d3bb1b8866bdafa0be5876"
+    },
+    {
+      "path": "xuance/torch/agents/offline_rl/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "5c693df758fad0c4dc59ed1a96fd0358d457ef4791c4a16aeb9744c157d9ee8d"
+    },
+    {
+      "path": "xuance/torch/agents/offline_rl/td3bc_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "242e0af24ef76bffbe6caf0ab10d0f5b98e471107d62a2b2dea4c7a189951674"
+    },
+    {
+      "path": "xuance/torch/agents/policy_gradient/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "34ac756d995cf07042a97a5d42ffa07bbd7e4f7ed1fdad54844b87912f2061ee"
+    },
+    {
+      "path": "xuance/torch/agents/policy_gradient/a2c_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "494471ce1a66b54870525660a03a4f819dfe496c6c0dfbcc1fe2fa0c16bcb997"
+    },
+    {
+      "path": "xuance/torch/agents/policy_gradient/ddpg_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "c6a5a4b61ea7e23d7877d1c5682768554452b2fa942e790fc4457de9a1bc311e"
+    },
+    {
+      "path": "xuance/torch/agents/policy_gradient/mpdqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "d67d01427bcbfac8c1a44264086cb241e0898f56fd4b8b8502cbf39933e668ad"
+    },
+    {
+      "path": "xuance/torch/agents/policy_gradient/npg_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "799a5778eb03cc849cc3c663123919a3bf1f49570383368c158809c08bc54263"
+    },
+    {
+      "path": "xuance/torch/agents/policy_gradient/pdqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "791c57522a79ac06eaeae1e946246bee13e7f985c41f094d82e6d99385bd0d43"
+    },
+    {
+      "path": "xuance/torch/agents/policy_gradient/pg_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "57f39eebbaa373964e9168e25e076f5b288bb46cbd1ab2735f788002fadc2b90"
+    },
+    {
+      "path": "xuance/torch/agents/policy_gradient/ppg_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "ecdbc65c33aae09835b42606d6b9254655c1ffe04191e856d964698b125e0139"
+    },
+    {
+      "path": "xuance/torch/agents/policy_gradient/ppo_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "18bbfec9c5d50a5e82e1d574ce56abccef9b29fdea5146431f83d1c05c155a4e"
+    },
+    {
+      "path": "xuance/torch/agents/policy_gradient/ppokl_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "1aa158a19f0e6e4b6879ad489116f340e845b31f9dbc49ba0cf52d8bbbfcedd6"
+    },
+    {
+      "path": "xuance/torch/agents/policy_gradient/sac_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "b0f52a3168d4962ef28f3a086fc968f850961f694d20c726a715521e144098df"
+    },
+    {
+      "path": "xuance/torch/agents/policy_gradient/spdqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "e28ce5e249a7e9282fc33f9e74e2d5d7d0ecb244171bcb4e16b91fe2ae98566b"
+    },
+    {
+      "path": "xuance/torch/agents/policy_gradient/td3_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "05ef663cc99df0b25895d598f5183416c7d90d5099220edaaf99ac3bc87f5710"
+    },
+    {
+      "path": "xuance/torch/agents/qlearning_family/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "b1bd30cf18b7e6a0173c6f108c11ad1d67d3d3c61c45dd512be2b47dda5af666"
+    },
+    {
+      "path": "xuance/torch/agents/qlearning_family/c51_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "39e931df431396d2c803ecb90d877f99608a19ae059740dccb433cb0ed5eeee4"
+    },
+    {
+      "path": "xuance/torch/agents/qlearning_family/ddqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "2a74b8bd3bba2667f729d790c5b79c9465f61295955f1fdf8e76365cd8671861"
+    },
+    {
+      "path": "xuance/torch/agents/qlearning_family/dqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "df8c53a6c1b7e85584d0bb65eeeb9a13bd716a10ee61fb4f3b37afc05e02249f"
+    },
+    {
+      "path": "xuance/torch/agents/qlearning_family/drqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "41e65c67ab85383cde43b9de9593ca6956712991d0dfd0acf5e81717335534c0"
+    },
+    {
+      "path": "xuance/torch/agents/qlearning_family/dueldqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "6b0314a11090570fe14788b88a968b53bf3d9c33f20c53d28bd1179b7ef95460"
+    },
+    {
+      "path": "xuance/torch/agents/qlearning_family/noisydqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "009d581c7e333ce4adfcc1ef75d30ee139289da8a8fca76e91c4d260b5cedbdd"
+    },
+    {
+      "path": "xuance/torch/agents/qlearning_family/perdqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "b35db8ecdf5ed606aa397601883df2f44a53a85f8462766a8e38254a62261156"
+    },
+    {
+      "path": "xuance/torch/agents/qlearning_family/qrdqn_agent.py",
+      "original_sha256": null,
+      "upstream_sha256": "69b637c8cd09dd140049e7f49b4fad3706d38679f2f8a763965912626e7989b3"
+    },
+    {
+      "path": "xuance/torch/communications/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "ffc471193070b14b1253893bb598c873bf2553e4adf35746a12165292f800706"
+    },
+    {
+      "path": "xuance/torch/communications/attention_comm.py",
+      "original_sha256": null,
+      "upstream_sha256": "aee715f60029a5ca1f2086543f71369830d707ea7f2c5b2a61120353994df57d"
+    },
+    {
+      "path": "xuance/torch/communications/base_comm.py",
+      "original_sha256": null,
+      "upstream_sha256": "8b34bb71a6c563b5d2b89847c76baf094f7417f7742430e2640b987d8a5c7874"
+    },
+    {
+      "path": "xuance/torch/communications/comm_net.py",
+      "original_sha256": null,
+      "upstream_sha256": "bc4f7db37b4ff3df96fdd78760c627633d042fa8e9e5173159676ff610e177a9"
+    },
+    {
+      "path": "xuance/torch/communications/emergent_comm.py",
+      "original_sha256": null,
+      "upstream_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "xuance/torch/communications/gnn_comm.py",
+      "original_sha256": null,
+      "upstream_sha256": "e62323edfd4109d9540f36857314ed278a78015b0c6b005cf7fc86dcf70b2ec4"
+    },
+    {
+      "path": "xuance/torch/communications/ic3net_comm.py",
+      "original_sha256": null,
+      "upstream_sha256": "fae4548d81aa47c27c0a1a49ac389f69873c0162b2980db257330cd2f83900f7"
+    },
+    {
+      "path": "xuance/torch/learners/__init__.py",
+      "original_sha256": "2134a70c530eea0d84677a3728e7dd2650325d41b89a197f7b78448b2b78997a",
+      "upstream_sha256": "6236d787a5eedb4dc3920930fad622c8db98af06a4f74fcd8cab37007268213a"
+    },
+    {
+      "path": "xuance/torch/learners/contrastive_unsupervised_rl/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "3a3b169a7e431091c013548d2f6dd67cfc71f0f1db49db42c59ff999e6a0bf8c"
+    },
+    {
+      "path": "xuance/torch/learners/contrastive_unsupervised_rl/curl_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "fd282037c3d50fb689f5fa5715bccd9a6588bb8f936af280d30453dc5e34d1f1"
+    },
+    {
+      "path": "xuance/torch/learners/contrastive_unsupervised_rl/drq_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "b92ac29ac18438384474d2bdb06b58bc8dcf2be69aa3a14663da16525ff15835"
+    },
+    {
+      "path": "xuance/torch/learners/contrastive_unsupervised_rl/spr_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "822e4f93928fbf30201582fef3b7b0b379ef3cadfbb0fb2a2da28e0ab8bdc4d7"
+    },
+    {
+      "path": "xuance/torch/learners/learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "7f5fc9f490089086aca2669a12f9e0b529154b7657a0b79f1cc72426fb8f60cf"
+    },
+    {
+      "path": "xuance/torch/learners/model_based/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "67f5f9c22e03582a638d6968f5f6ff4333299cbdae18d8cad90e5b6ff303270b"
+    },
+    {
+      "path": "xuance/torch/learners/model_based/dreamer_v2_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "9093bf2587958ed4e51f70afb997f85dbe805324b98fe9516745be6d967e1d1f"
+    },
+    {
+      "path": "xuance/torch/learners/model_based/dreamer_v3_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "6de0669a51a4129f349fcbb9c72e6bcc834d20f3a65c18e6a2e55dbc7229533b"
+    },
+    {
+      "path": "xuance/torch/learners/multi_agent_rl/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "fcd3a9fa01c0119efad66fb818f5c46953b6d3f7ae21121063ab81cbe7dfcf34"
+    },
+    {
+      "path": "xuance/torch/learners/multi_agent_rl/coma_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "bd87aa8e4f568b8414a101b62454417a27edd189c794fc0142741d24429ce752"
+    },
+    {
+      "path": "xuance/torch/learners/multi_agent_rl/commnet_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "96c245bc15455b96ec9d75feb8513391e62a6a9033adf3b6df2d0032ececa7f9"
+    },
+    {
+      "path": "xuance/torch/learners/multi_agent_rl/dcg_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "8e308d440dfc71e608b623cb445045f44b6f5fbcc5b08647a6d167174c6e4fa5"
+    },
+    {
+      "path": "xuance/torch/learners/multi_agent_rl/iac_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "24a78665658ccb0b421508c5434337d83e2f4fc6f93b4cb46fa50462d0ecc038"
+    },
+    {
+      "path": "xuance/torch/learners/multi_agent_rl/ic3net_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "612bc6bf5e67c99e02604b8da3c612d8bf86d33fe7a3ddfd9329f0662236874e"
+    },
+    {
+      "path": "xuance/torch/learners/multi_agent_rl/iddpg_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "c3da72daa176cd2e314856ce50e0810f0f5e982386ca71c0d899edd22d6b096d"
+    },
+    {
+      "path": "xuance/torch/learners/multi_agent_rl/ippo_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "5781cb612ed02ad47b481600ee8c4500ddcd8283aa5eeec52969627f4bdaa0e8"
+    },
+    {
+      "path": "xuance/torch/learners/multi_agent_rl/iql_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "3d101c2f4c4568acf23f2095c7e7ddd9934604a8d490dd6c0af74e1c6bd14e0c"
+    },
+    {
+      "path": "xuance/torch/learners/multi_agent_rl/isac_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "1d0a602f873822fc4a04a0d7d87a2e9d081e577333111b0f2fb33862da60b138"
+    },
+    {
+      "path": "xuance/torch/learners/multi_agent_rl/isacdis_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "65fa7c106bf79004fa4cfe606ed6ece72182bdd0ab237aa1a7f04d545a123bfa"
+    },
+    {
+      "path": "xuance/torch/learners/multi_agent_rl/itd3_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "aa5d00481847a52845340643904e73353320235365102da732dd3c006b563ff4"
+    },
+    {
+      "path": "xuance/torch/learners/multi_agent_rl/maddpg_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "63eb08d657466930bd8a34d930f2d763725bf8048025d76d2793f6a428f5d849"
+    },
+    {
+      "path": "xuance/torch/learners/multi_agent_rl/mappo_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "f9dbb6e7d9d1a13bcda849a71a3ef4b883a279e349a293cae06fc531028ec367"
+    },
+    {
+      "path": "xuance/torch/learners/multi_agent_rl/masac_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "cd94b4e9b1ad3210601f62f35d921d35a97cdaff3ce0f6b2a977fd2826416206"
+    },
+    {
+      "path": "xuance/torch/learners/multi_agent_rl/masacdis_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "65eaf2082a4c07402808ce3fbf675bbdca31e66e28a5b97ac2acc89c75e12ab0"
+    },
+    {
+      "path": "xuance/torch/learners/multi_agent_rl/matd3_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "becf7091e172dcb4809f9be9f264399b0d4a2ff62b722099fcee352bf93cc74c"
+    },
+    {
+      "path": "xuance/torch/learners/multi_agent_rl/mfac_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "0d748251226e1641d052f018f8b7da2411565bd18de819aa1ece968a08131a03"
+    },
+    {
+      "path": "xuance/torch/learners/multi_agent_rl/mfq_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "df6aa080725585acdcc93314385f23e8fa4457ee7b29b63da962ccee2ef9d99a"
+    },
+    {
+      "path": "xuance/torch/learners/multi_agent_rl/qmix_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "0cfce58888bbe0c3634251d74a497d23c73c109a2d8f83f3c78438b960f3e4b7"
+    },
+    {
+      "path": "xuance/torch/learners/multi_agent_rl/qtran_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "62efecccb9304cf20851737060eb7e02585a42cd9fce508870ec1fb33a3e0407"
+    },
+    {
+      "path": "xuance/torch/learners/multi_agent_rl/tarmac_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "a2d35fd0eb345a02fcff7e7d8c82b127bd387432762f1360020601b7ada825f5"
+    },
+    {
+      "path": "xuance/torch/learners/multi_agent_rl/vdac_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "ab6547ed3d2dbe8cc5e78202cecfe1905f2bfc0343180ee527287c7a57c9a798"
+    },
+    {
+      "path": "xuance/torch/learners/multi_agent_rl/vdn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "a8615c09cb3d1c19bbc794d49681110ddd638e784530836dc4a9abee971f005d"
+    },
+    {
+      "path": "xuance/torch/learners/multi_agent_rl/wqmix_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "54367c5143dc0a212155b3b33f21047e78a22cf3bcf10bc6a8bea66fcab2a6dc"
+    },
+    {
+      "path": "xuance/torch/learners/offline/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "a2d62bc8e932667a751be38c3cc0e4935cfdb7a9189faaff52f04743a8e67a8a"
+    },
+    {
+      "path": "xuance/torch/learners/offline/td3bc_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "349230293907bf929cec08143f44fca347051ab9fb16db28eef7d77e27b14bcf"
+    },
+    {
+      "path": "xuance/torch/learners/policy_gradient/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "ecf00c5ee4504e0a191cd72b2b4bf37f0acb70de77cdfa5d8387722e51140902"
+    },
+    {
+      "path": "xuance/torch/learners/policy_gradient/a2c_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "621a62e70115d36711f186f92901419a35ca24fad5500e1805513d246afa094c"
+    },
+    {
+      "path": "xuance/torch/learners/policy_gradient/ddpg_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "09aa520ad0fc1923059724b99f141f4dbc161d6c50a404cf499bdd2a3bb50275"
+    },
+    {
+      "path": "xuance/torch/learners/policy_gradient/mpdqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "d7640b5d477dcf59c5d73236bdc53f9b84fcd450602d27a5714f00ef85c4ca45"
+    },
+    {
+      "path": "xuance/torch/learners/policy_gradient/npg_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "868fa1dd03bc2184a19ac962f3ef8af11c378f56bbace597de7307ccd2158e5b"
+    },
+    {
+      "path": "xuance/torch/learners/policy_gradient/pdqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "bc6b2d5634c4b7c9a84e441596e53dc95354a5fd00762100bdc7d1993141fa36"
+    },
+    {
+      "path": "xuance/torch/learners/policy_gradient/pg_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "1c322df1c10d4e9744519be55b85ae389aa1726536dd807db6a4c955bfda7af9"
+    },
+    {
+      "path": "xuance/torch/learners/policy_gradient/ppg_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "76f4b424c594d22a0a6a4d916b67e0290b457d2f61c8874289192a0da15daa5f"
+    },
+    {
+      "path": "xuance/torch/learners/policy_gradient/ppo_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "1bf59002e88af685859c1794ee5d51aaae010dbf6d06d30f6d49dc761b31c0a5"
+    },
+    {
+      "path": "xuance/torch/learners/policy_gradient/ppokl_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "7590c2ca8aeb3c14173168bbfc3bd9ba15c0dc03e97c8ab3e219ab54a830fede"
+    },
+    {
+      "path": "xuance/torch/learners/policy_gradient/sac_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "c184bb81d0cc87591f1f9f38ea3f482133b4de0bd06e33052a9c49c292c0eb1e"
+    },
+    {
+      "path": "xuance/torch/learners/policy_gradient/sacdis_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "e487e53879b9b3d0a8c914f3f2bec1e563f198aa9ef602c19585b3dea4eb0e6a"
+    },
+    {
+      "path": "xuance/torch/learners/policy_gradient/spdqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "89b6b4755dde5322694d15e9ebf0074d4856dad4900537c6941b1faf2d6f88e4"
+    },
+    {
+      "path": "xuance/torch/learners/policy_gradient/td3_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "1ad6892425f251417a8d0f44bbb85cf758bf877642d2fa6d3ac5dd80731909d2"
+    },
+    {
+      "path": "xuance/torch/learners/qlearning_family/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "a76bb9896d8d48573d52109415df7579303a8c9ae2f748b3b164d8878fe1d890"
+    },
+    {
+      "path": "xuance/torch/learners/qlearning_family/c51_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "570aaf72db9106a7e7aaaa01ac912a395b6da50e2ee57b80b85c1c545c8e3b66"
+    },
+    {
+      "path": "xuance/torch/learners/qlearning_family/ddqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "d3857f1ae3868268e89fbf49ba5fae7d2ef2a09400ded6aba911cee51b04937b"
+    },
+    {
+      "path": "xuance/torch/learners/qlearning_family/dqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "e40e6445496b758af0d4075253c64063bc088bd9278e4a4dd161d613fe0c4da3"
+    },
+    {
+      "path": "xuance/torch/learners/qlearning_family/drqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "d460d12f8a93aaa0f931d9069d178cc67b4c866656d171f744519d4f129fee25"
+    },
+    {
+      "path": "xuance/torch/learners/qlearning_family/dueldqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "e2399f2bc4d0da7a170c30170e6421ededa415d1a7f6c35c8ee8de1376330925"
+    },
+    {
+      "path": "xuance/torch/learners/qlearning_family/perdqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "21d446e559567a8d67219f87c3a56e37482e70aea649d15eda9dc87279f08347"
+    },
+    {
+      "path": "xuance/torch/learners/qlearning_family/qrdqn_learner.py",
+      "original_sha256": null,
+      "upstream_sha256": "673719de2ea3edfa521ab8d5debc029c77d7c670db3a2a0da6d82771fb2419e4"
+    },
+    {
+      "path": "xuance/torch/policies/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "f6f32b7e790c7eb576bc2b49d97df84a61f33344df6f97ba6c8cb130677e3803"
+    },
+    {
+      "path": "xuance/torch/policies/categorical.py",
+      "original_sha256": null,
+      "upstream_sha256": "379868166a0196512b6f03ab4080e5b9c09fcd466f69d66d1efad62a6704c9cc"
+    },
+    {
+      "path": "xuance/torch/policies/categorical_marl.py",
+      "original_sha256": null,
+      "upstream_sha256": "92c3106a88ac7aee3c9a2662f875dda5a95cb364ce2ccf8bc6f7d7c912ea81c6"
+    },
+    {
+      "path": "xuance/torch/policies/coordination_graph.py",
+      "original_sha256": null,
+      "upstream_sha256": "bc68ffea717299e4584dca2e977ebef4322bf5958d96f34910b8591868b4827a"
+    },
+    {
+      "path": "xuance/torch/policies/core.py",
+      "original_sha256": null,
+      "upstream_sha256": "549471dd868d8c75994a7e7296fa198dc4d8597e5a7bd3c123b45d5933085f84"
+    },
+    {
+      "path": "xuance/torch/policies/deterministic.py",
+      "original_sha256": null,
+      "upstream_sha256": "d39fa8533f0e62fcceb9bd7227e33133c04d84ac4482b9d2648088ecb24bd989"
+    },
+    {
+      "path": "xuance/torch/policies/deterministic_marl.py",
+      "original_sha256": null,
+      "upstream_sha256": "50d34421726d77bf377a9a1e26b8c5298820210818bfc5e8eb6a7a3cab228b84"
+    },
+    {
+      "path": "xuance/torch/policies/dreamer.py",
+      "original_sha256": null,
+      "upstream_sha256": "1fb910d921bbda7ac23c54c12518563bb0b0ad065801e0675f86ede1468943f2"
+    },
+    {
+      "path": "xuance/torch/policies/gaussian.py",
+      "original_sha256": null,
+      "upstream_sha256": "8579affa568b62024c741da2e276619c18553826d4c9df59596e71adf4dc0d0b"
+    },
+    {
+      "path": "xuance/torch/policies/gaussian_marl.py",
+      "original_sha256": null,
+      "upstream_sha256": "863f9732b84a5bc4d99f69b9af2147e9d111ced403fd9cbd3adf88e9f010d707"
+    },
+    {
+      "path": "xuance/torch/representations/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "47eb7e60c6a9d75c9b5fbcf9ab1c3534c8c889bc2b6eef39bfd4ca8c8e791f70"
+    },
+    {
+      "path": "xuance/torch/representations/cnn.py",
+      "original_sha256": null,
+      "upstream_sha256": "1b34eeab60f5591ebde182596706090201fce8cdc3281c21f165d16bf2e9d22b"
+    },
+    {
+      "path": "xuance/torch/representations/mlp.py",
+      "original_sha256": null,
+      "upstream_sha256": "2a6520a30605ad110c572880f5052b9ab8bb95af5e97ebaf7b206c56150a7316"
+    },
+    {
+      "path": "xuance/torch/representations/rnn.py",
+      "original_sha256": null,
+      "upstream_sha256": "984b88126a6a47abd5eede91c837a42e7c852233b60a012d307ae7120911af2b"
+    },
+    {
+      "path": "xuance/torch/representations/vit.py",
+      "original_sha256": null,
+      "upstream_sha256": "1ed0b36f5860d8540e2c49c392e962ab099609e279209918f5ce3b2a2ee40a7a"
+    },
+    {
+      "path": "xuance/torch/representations/world_model.py",
+      "original_sha256": null,
+      "upstream_sha256": "86620ebfc733d2c87ffa105d7e1364091271c6ab68a96c5ce7132be5ed8e6040"
+    },
+    {
+      "path": "xuance/torch/representations/world_model_v2.py",
+      "original_sha256": null,
+      "upstream_sha256": "3ff23eb65a7e8efc06d06809168df5f453c6ab1af7cadfa27b041ec1a598c790"
+    },
+    {
+      "path": "xuance/torch/utils/__init__.py",
+      "original_sha256": null,
+      "upstream_sha256": "8b43d75e557854d915a4522e5ed1df47f27ed451712c4652d657ffc8190c8b11"
+    },
+    {
+      "path": "xuance/torch/utils/device.py",
+      "original_sha256": null,
+      "upstream_sha256": "6f1586ca9f2c00d570ef6e5fcec92c88f600b1a310dcbf5d0458ee3256b181d8"
+    },
+    {
+      "path": "xuance/torch/utils/distributions.py",
+      "original_sha256": null,
+      "upstream_sha256": "7b436c05ca973be5d0dab6b12c397860d8233e6c3b1f6a1352d05dd7272551bf"
+    },
+    {
+      "path": "xuance/torch/utils/harmonizer.py",
+      "original_sha256": null,
+      "upstream_sha256": "58967a6b94e42e857e4054a881ef55ac6c2ca097193276175feeaf5d34f00cf6"
+    },
+    {
+      "path": "xuance/torch/utils/layers.py",
+      "original_sha256": null,
+      "upstream_sha256": "1a840182e12123e498ac32fd04ce1e921c690ecfe259b9b216d377afe5482a88"
+    },
+    {
+      "path": "xuance/torch/utils/layers4dreamer.py",
+      "original_sha256": null,
+      "upstream_sha256": "44e6ea3407b629a79085eafa960a363d28eb6b1e79a94e0964935945dcd1637d"
+    },
+    {
+      "path": "xuance/torch/utils/operations.py",
+      "original_sha256": null,
+      "upstream_sha256": "eb5781e0d9f92f728c35c2f6ef54461b334eba5664e9271760acdf053342a80c"
+    },
+    {
+      "path": "xuance/torch/utils/tensor_env.py",
+      "original_sha256": null,
+      "upstream_sha256": "a688389905e38930da64c59190bf5a99268ee2081187b0870b74b595440d70cc"
+    },
+    {
+      "path": "xuance/torch/utils/tensor_memory.py",
+      "original_sha256": null,
+      "upstream_sha256": "030e6fee2f5e4f82ed26e8d947a3d4e512c238dce526c0d00739d07f441a9623"
+    },
+    {
+      "path": "xuance/torch/utils/tensor_statistics.py",
+      "original_sha256": null,
+      "upstream_sha256": "b025f388995b781bf1d802deb699a9143d6c7c96300ad263a5ee8d1c85b1f77c"
+    },
+    {
+      "path": "xuance/torch/utils/value_norm.py",
+      "original_sha256": null,
+      "upstream_sha256": "23862b9be046f83926d67cc962352bdd09d35712fc2ecab4fdaeb0d3ed52638f"
+    }
+  ],
+  "backup": "outputs/bootstrap/original_xuance"
+}

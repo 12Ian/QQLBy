@@ -1,0 +1,8 @@
+{
+  "observation_steps": 20, "prediction_steps": 12, "dt": 0.5, "stride": 5,
+  "stage": "intention", "relative_frame": "yaw", "static_state_branch": true,
+  "lstm_hidden": 128, "projection_dim": 64, "dropout": 0.2,
+  "batch_size": 256, "epochs": 70, "optimizer": "adam", "learning_rate": 0.001,
+  "schedule": "step", "lr_step": 30, "lr_gamma": 0.5, "gradient_clip": 1,
+  "device": "auto", "workers": 4, "seed": 42, "split_seed": 42
+}
