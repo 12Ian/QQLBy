@@ -360,9 +360,6 @@ def simulate_engagement_batch(path, conditions, steps=140, dt=.1, seed=0,
         overload_series = np.zeros(steps)
         window = max(1, overload_window_steps)
         evasion_on, evasion_started = False, -1
-        evasion_segment_steps = max(1, int(round(4.0 / dt)))
-        evasion_segment_left = 0
-        evasion_segment_command = np.zeros(3)
         for step in range(steps):
             r, rdot, eL, eLdot, V_L = los_state(rT, vT, rM, vM)
             visible = fov_visible(vT, eL, fov_half_angle)
@@ -371,17 +368,8 @@ def simulate_engagement_batch(path, conditions, steps=140, dt=.1, seed=0,
             engagement[step] = [r / 1e3, rdot / 100., *eL, *eLdot, float(visible)]
             if not evasion_on and r <= evasion_fraction * r0_actual:
                 evasion_on, evasion_started = True, step
-            if evasion_on:
-                # Held per segment (Section IV-B): the anti-LOS direction is
-                # projected at the segment transition and frozen until the
-                # next one; magnitude stays at the saturation limit.
-                if evasion_segment_left <= 0:
-                    evasion_segment_command = _evade_command(eL, vT, aT_max, aT_max)
-                    evasion_segment_left = evasion_segment_steps
-                evasion_segment_left -= 1
-                aT_cmd = evasion_segment_command
-            else:
-                aT_cmd = _command_from_overloads(vT, prim_yaw, prim_pitch)
+            aT_cmd = (_evade_command(eL, vT, aT_max, aT_max) if evasion_on
+                      else _command_from_overloads(vT, prim_yaw, prim_pitch))
             aM_cmd = _defender_command(rT, vT, rM, vM, aM_max)
             semantic[step] = semantic_label(aT_cmd, vT)
             overload_series[step] = signed_normal_overload(aT_cmd, vT)
@@ -480,12 +468,13 @@ def simulate_engagements(path, scenes=60, steps=200, dt=.1, seed=42,
     Section IV-B: "Segment duration and the nominal overload level a_bar_eva
     are sampled within predefined bounds ... The evasion maneuver is generated
     by holding a_eva(t) within each short primitive segment and updating it at
-    segment transitions."  Accordingly the *whole* evasion command -- the
-    nominal overload resampled from ``evasion_overload_range`` (fractions of
-    aT_max) and the anti-LOS direction projected from the LOS geometry at the
-    transition instant -- is frozen for ``evasion_segment_steps`` internal
-    steps and refreshed only at the next segment transition, saturated by
-    a_eva = min(a_bar_eva, aT_max).
+    segment transitions."  Here a_eva = min{a_bar_eva, aT_max} is the *scalar*
+    magnitude: it is held for ``evasion_segment_steps`` internal steps (C6
+    resamples it from ``evasion_overload_range`` at each transition), while
+    the direction template a_tilde_eva(t) = -(I - e_T e_T^T) e_L(t) remains a
+    pointwise function of the live LOS geometry, exactly as the (t)-indexed
+    formula prescribes.  (A direction-freezing variant was A/B-tested on
+    2026-10-14 and reverted -- audit 10.10.)
 
     C9 intercept termination: a complete engagement trajectory segment ends at
     interception (r <= ``intercept_radius_m``) or after a miss is certain (the
@@ -565,7 +554,6 @@ def simulate_engagements(path, scenes=60, steps=200, dt=.1, seed=42,
         # bounds (Section IV-B) and updated at segment transitions.
         evasion_segment_steps = max(1, int(round(evasion_segment_seconds / dt_int)))
         evasion_segment_left = 0
-        evasion_segment_command = np.zeros(3)
         a_bar_segment = a_bar_eva if a_bar_eva is not None else aT_max
         # C9: intercept termination bookkeeping.
         terminated_step, termination_reason = -1, "ran_to_horizon"
@@ -583,17 +571,22 @@ def simulate_engagements(path, scenes=60, steps=200, dt=.1, seed=42,
                 evasion_on, evasion_started_step = True, step
             # target acceleration command
             if evasion_on:
-                # Paper Section IV-B: the evasion command is *held* within each
-                # short primitive segment and updated only at segment
-                # transitions -- both the nominal overload level (C6, bounded
-                # sampling) and the anti-LOS direction (projected at the
-                # transition instant, then frozen until the next transition).
+                # Section IV-B: the *scalar* evasion magnitude a_eva =
+                # min{a_bar_eva, aT_max} is held within each short primitive
+                # segment and updated at segment transitions (C6 bounded
+                # resampling), while the direction template
+                # a_tilde_eva(t) = -(I - e_T e_T^T) e_L(t) is a pointwise
+                # function of the live engagement geometry (the paper indexes
+                # it with (t) and derives the lateral/vertical components from
+                # eL(t), eT(t) directly).  A 2026-10-14 A/B test of freezing
+                # the direction per segment (audit 10.10 v1) produced a
+                # memorization signature on the semantic task (train CE 0.07
+                # vs validation CE rising past 3.6) and was reverted.
                 if evasion_segment_left <= 0.:
                     a_bar_segment = aT_max * rng.uniform(*evasion_overload_range)
-                    evasion_segment_command = _evade_command(eL, vT, a_bar_segment, aT_max)
                     evasion_segment_left = evasion_segment_steps
                 evasion_segment_left -= dt_int
-                aT_cmd = evasion_segment_command
+                aT_cmd = _evade_command(eL, vT, a_bar_segment, aT_max)
             else:
                 if primitive_left <= 0.:
                     cls = sample_semantic_class(rng, class_balance)
