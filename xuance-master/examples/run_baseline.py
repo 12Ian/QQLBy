@@ -44,8 +44,13 @@ def main():
     if not config_path.is_file():
         parser.error(f"Configuration does not exist: {config_path}")
     method = yaml.safe_load(config_path.read_text())["agent"].lower()
-    if method not in ("maddpg", "matd3"):
-        parser.error("The pursuit baseline supports MADDPG or MATD3")
+    if method not in ("maddpg", "matd3", "mappo"):
+        parser.error("The pursuit baseline supports MADDPG, MATD3 or MAPPO")
+    if args.smoke and method == "mappo":
+        overrides.buffer_size = 128
+        overrides.n_epochs = 2
+        overrides.n_minibatch = 4
+        overrides.representation_hidden_size = [64]
     if (root / "outputs/results" / method / env_id).exists():
         parser.error("Experiment name already exists; choose a new --name")
     runner = get_runner(method, "uav_pursuit_coverage_3d", env_id,

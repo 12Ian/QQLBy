@@ -153,6 +153,9 @@ class MARLAgents(ABC):
                     pass  # Wait until the master process finishes creating directory.
             self.writer = SummaryWriter(log_dir)
             self.use_wandb = False
+            if getattr(config, "reward_mode", None) == "baseline":
+                from xuance.engine.uav_baseline_logging import RewardLossTensorBoard
+                self.reward_loss_tensorboard = RewardLossTensorBoard(self.writer)
         elif config.logger == "wandb":
             config_dict = vars(config)
             log_dir = config.log_dir
@@ -214,6 +217,9 @@ class MARLAgents(ABC):
         info: (dict) information to be visualized
         n_steps: current step
         """
+        if not self.use_wandb and hasattr(self, "reward_loss_tensorboard"):
+            self.reward_loss_tensorboard.log(info, x_index)
+            return
         if self.use_wandb:
             for k, v in info.items():
                 if v is None:
@@ -373,6 +379,8 @@ class MARLAgents(ABC):
         if self.use_wandb:
             wandb.finish()
         else:
+            if hasattr(self, "reward_loss_tensorboard"):
+                self.reward_loss_tensorboard.flush_rewards()
             self.writer.close()
         if self.distributed_training:
             if dist.get_rank() == 0:

@@ -11,6 +11,7 @@ from .Apollonius import geometry3d as g3
 from .Apollonius import apollonius3d as ap3
 from .uav_kinematics_3d import advance_translation, limit_norm
 from .uav_coverage_forecast_3d import forecast_target, reach_hold_coverage, coverage_preparation
+from .uav_predictive_safety_3d import PredictiveSafetyFilter3D, swept_pair_distance
 
 
 class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
@@ -339,15 +340,22 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
         self.episode_contact_seconds = {kind: 0.0 for kind in ("building", "boundary", "uav")}
         self.episode_contact_events = {kind: 0 for kind in ("building", "boundary", "uav")}
 
+        self.safety_filter_enabled = bool(getattr(config, "safety_filter_enabled", False))
+        self.safety_filter = PredictiveSafetyFilter3D(self, config) if self.safety_filter_enabled else None
+        self._safety_episode_done = False
+        self.safety_episode_checks = self.safety_episode_interventions = 0
+        self.safety_episode_uncertified = 0
+        self.safety_episode_correction = 0.0
+
     # ============================================================
     # 课程设置：从二维版本迁移，并逐步增加垂直逃逸能力
     # ============================================================
     def _default_curriculum_schedule(self, preparation_weight, new_weights):
         base = [
             # 建筑模式对应各自的地图文件：空场景、稀疏、中等和复杂场景。
-            (0, 3.0, 5.0, 1.0, 20.0, "empty", 3.0, 0.0),
-            (1, 4.0, 7.0, 2.0, 40.0, "empty", 3.5, 0.25),
-            (2, 4.0, 9.0, 3.0, 60.0, "open", 4.0, 0.5),
+            (0, 3.0, 3.0, 1.0, 20.0, "empty", 3.0, 0.0),
+            (1, 4.0, 5.0, 2.0, 40.0, "empty", 3.5, 0.25),
+            (2, 4.0, 8.0, 3.0, 60.0, "open", 4.0, 0.5),
             (3, 4.0, 10.0, 3.5, 80.0, "medium", 4.5, 0.75),
             (4, 4.0, 12.0, 4.0, 100.0, "medium", 5.0, 1.0),
         ]
@@ -465,6 +473,11 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
             "decision_dt": float(self.decision_dt),
             "physics_dt": float(self.physics_dt),
             "baseline_braking_deficit_penalty": self.baseline_braking_deficit_penalty,
+            "safety_filter_enabled": self.safety_filter_enabled,
+            "safety_checks_episode": self.safety_episode_checks,
+            "safety_interventions_episode": self.safety_episode_interventions,
+            "safety_uncertified_substeps_episode": self.safety_episode_uncertified,
+            "safety_mean_correction_episode": self.safety_episode_correction / max(1, self.safety_episode_checks),
             "target_min_speed": self.target_min_speed,
             "target_max_speed": self.target_max_speed,
             "target_accel": self.target_accel,
@@ -1053,6 +1066,10 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
     # 回合重置与状态推进
     # ============================================================
     def reset(self):
+        self._safety_episode_done = False
+        self.safety_episode_checks = self.safety_episode_interventions = 0
+        self.safety_episode_uncertified = 0
+        self.safety_episode_correction = 0.0
         if self.pending_curriculum_level is not None:
             self.set_curriculum_level(self.pending_curriculum_level,
                                       reload_buildings=not self.randomize_building_layout)
@@ -1375,6 +1392,8 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
         return (event[3], int(event[2]), cutoff) if event is not None else None
 
     def step(self, actions_dict):
+        if self.safety_filter_enabled and self._safety_episode_done:
+            raise RuntimeError("Safety task has ended; reset before executing more actions")
         self._episode_step += 1
         start_distances = np.linalg.norm(self.uav_positions - self.target_position[None, :], axis=1)
         rewards_dict = {a: 0.0 for a in self.agents}
@@ -1385,8 +1404,14 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
             raw_act = np.asarray(actions_dict[a], dtype=np.float32).reshape(-1)
             if raw_act.size != 3:
                 raise ValueError(f"Action for {a} must have three acceleration components")
+            if not np.all(np.isfinite(raw_act)):
+                raise ValueError(f"Action for {a} must be finite")
             act = np.clip(raw_act, -1.0, 1.0)
             acceleration_commands.append(limit_norm(act * self.max_accel, self.max_accel))
+        proposed_commands = np.asarray(acceleration_commands)
+        safety_info = dict(enabled=self.safety_filter_enabled, action_semantics="network_proposal",
+                           certified=None, intervened_agents=[False] * self.num_agents,
+                           proposed_commands=proposed_commands.tolist(), executed_commands=[])
         substeps = max(1, int(np.ceil(self.decision_dt / self.physics_dt)))
         dt = self.decision_dt / substeps
         collision_penalties = np.zeros(self.num_agents, dtype=np.float32)
@@ -1396,7 +1421,20 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
         capture_event = None
         capture_time = None
         step_min_uav_gap = float("inf")
+        elapsed_physics = 0.0
         for substep_index in range(substeps):
+            if self.safety_filter_enabled:
+                acceleration_commands, certificate = self.safety_filter.filter(proposed_commands)
+                safety_info["executed_commands"].append(acceleration_commands.tolist())
+                safety_info["certified"] = (certificate["certified"] and
+                                            safety_info["certified"] is not False)
+                safety_info["intervened_agents"] = [old or new for old, new in zip(
+                    safety_info["intervened_agents"], certificate["intervened"])]
+                self.safety_episode_checks += self.num_agents
+                self.safety_episode_interventions += sum(certificate["intervened"])
+                self.safety_episode_uncertified += int(not certificate["certified"])
+                self.safety_episode_correction += float(np.linalg.norm(
+                    acceleration_commands - proposed_commands, axis=-1).sum())
             substep_sources = [[] for _ in self.agents]
             old_positions = self.uav_positions.copy()
             old_velocities = self.uav_velocities.copy()
@@ -1428,9 +1466,17 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
             if self.num_agents > 1:
                 pair_gaps = np.linalg.norm(self.uav_positions[:, None, :] -
                                            self.uav_positions[None, :, :], axis=-1)
+                if self.safety_filter_enabled:
+                    # Endpoint-only checks can miss two aircraft crossing within a substep.
+                    for first in range(self.num_agents):
+                        for second in range(first):
+                            distance = float(swept_pair_distance(
+                                np.stack([old_positions[first], self.uav_positions[first]]),
+                                np.stack([old_positions[second], self.uav_positions[second]])))
+                            pair_gaps[first, second] = pair_gaps[second, first] = distance
                 np.fill_diagonal(pair_gaps, np.inf)
                 step_min_uav_gap = min(step_min_uav_gap, float(np.min(pair_gaps)))
-                if self.uav_collision_enabled:
+                if self.uav_collision_enabled or self.safety_filter_enabled:
                     for i in range(self.num_agents):
                         if float(np.min(pair_gaps[i])) <= self.uav_collision_distance:
                             hit_flags[i] = True
@@ -1451,6 +1497,11 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
                     self.episode_contact_seconds[kind] += dt
                 self.active_contact_kinds[i] = kinds
             self._advance_evader_substep(target_command, dt)
+            elapsed_physics += dt
+            if self.safety_filter_enabled and any(hit_flags):
+                # Real contact invalidates the mission, including simultaneous capture.
+                capture_event = None
+                break
             old_relative = old_positions - old_target[None, :]
             new_relative = self.uav_positions - self.target_position[None, :]
             capture_event = self._capture_event(old_relative, new_relative, dt)
@@ -1479,7 +1530,8 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
         else:
             min_uav_gap = float("inf")
         self.episode_min_uav_gap = min(self.episode_min_uav_gap, min_uav_gap)
-        uav_conflict = bool(self.uav_collision_enabled and min_uav_gap <= self.uav_collision_distance)
+        uav_conflict = bool((self.uav_collision_enabled or self.safety_filter_enabled) and
+                            min_uav_gap <= self.uav_collision_distance)
         if uav_conflict:
             self.episode_uav_conflicts += 1
         if self.uav_collision_enabled and uav_conflict:
@@ -1507,6 +1559,7 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
                             for src in collision_sources.get(a, []))
                         for a in self.agents)
         terminate_for_crash = bool(
+            (self.safety_filter_enabled and any(hit_flags)) or
             (boundary_crash and self.terminate_on_boundary_collision) or
             (uav_crash and self.terminate_on_collision) or
             (building_crash and self.terminate_on_building_collision))
@@ -1516,7 +1569,8 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
             current_match_scores = np.zeros(self.num_agents, dtype=np.float32)
             min_route_time = float("inf")
             elapsed_step = (capture_time - (self._episode_step - 1) * self.decision_dt
-                            if capture_time is not None else self.decision_dt)
+                            if capture_time is not None else (
+                                elapsed_physics if self.safety_filter_enabled else self.decision_dt))
             self.episode_elapsed_seconds += elapsed_step
             rewards_dict = self._baseline_rewards(cur_dists, building_min, collision_penalties,
                                                   is_caught, elapsed_step, previous_distances=start_distances,
@@ -1631,6 +1685,7 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
         is_crashed = any(hit_flags)
         terminated = {a: bool(is_caught or terminate_for_crash) for a in self.agents}
         truncated = (self._episode_step >= self.max_episode_steps) if not terminated[self.agents[0]] else False
+        self._safety_episode_done = bool(terminated[self.agents[0]] or truncated)
         info = {
             "infos": self.get_curriculum_info(),
             "individual_episode_rewards": self.individual_episode_reward,
@@ -1653,6 +1708,8 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
             "is_uav_collision": bool(uav_crash),
             "is_building_collision": bool(building_crash),
             "is_hard_collision": bool(hard_crash),
+            "safety_filter": safety_info,
+            "damaged_agents": [a for i, a in enumerate(self.agents) if hit_flags[i]],
         }
         info.update({
             "collision_agents": [agent for agent in self.agents if agent in collision_sources],

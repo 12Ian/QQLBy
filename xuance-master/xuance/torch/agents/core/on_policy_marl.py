@@ -476,6 +476,8 @@ class OnPolicyMARLAgents(MARLAgents):
                         }
                     self.log_infos(episode_info, self.current_step)
                     train_info.update(episode_info)
+                    if getattr(self, "baseline_monitor", None) is not None:
+                        self.baseline_monitor.record_episode(self.current_step + self.n_envs, i, info[i])
                     self.callback.on_train_episode_info(envs=self.train_envs, policy=self.policy, env_id=i,
                                                         infos=info, rank=self.rank, use_wandb=self.use_wandb,
                                                         current_step=self.current_step,
@@ -491,7 +493,8 @@ class OnPolicyMARLAgents(MARLAgents):
                      n_episodes: int = 1,
                      run_envs: Optional[DummyVecMultiAgentEnv | SubprocVecMultiAgentEnv] = None,
                      test_mode: bool = False,
-                     close_envs: bool = True) -> list:
+                     close_envs: bool = True,
+                     curriculum_level: Optional[int] = None) -> list:
         """Run vectorized multi-agent episodes for rollout collection or evaluation.
 
         This method steps a vectorized multi-agent environment using the current actor-critic policy until `n_episodes`
@@ -514,8 +517,11 @@ class OnPolicyMARLAgents(MARLAgents):
         """
         envs = self.train_envs if run_envs is None else run_envs
         num_envs = envs.num_envs
+        if test_mode and curriculum_level is not None:
+            envs.env_method("set_curriculum_level", curriculum_level)
         videos, episode_videos, images = [[] for _ in range(num_envs)], [], None
         _current_episode, _current_step, scores, best_score = 0, 0, [], -np.inf
+        outcomes = []
         obs_dict, info = envs.reset()
         avail_actions = envs.buf_avail_actions if self.use_actions_mask else None
         state = envs.buf_state if self.use_global_state else None
@@ -561,10 +567,20 @@ class OnPolicyMARLAgents(MARLAgents):
 
             for i in range(num_envs):
                 if all(terminated_dict[i].values()) or truncated[i]:
+                    if test_mode and _current_episode >= n_episodes:
+                        continue
                     _current_episode += 1
                     episode_score = float(np.mean(itemgetter(*self.agent_keys)(info[i]["episode_score"])))
                     scores.append(episode_score)
                     if test_mode:
+                        diagnostics = info[i].get("infos", {})
+                        building = bool(diagnostics.get("building_contact_events_episode", 0))
+                        boundary = bool(diagnostics.get("boundary_contact_events_episode", 0))
+                        uav = bool(diagnostics.get("uav_contact_events_episode", 0) or
+                                   info[i].get("episode_uav_conflicts", 0))
+                        collision = bool(building or boundary or uav or info[i].get("is_collision", False))
+                        outcomes.append((bool(info[i].get("is_success", False)), collision,
+                                         building, boundary, uav, float(info[i].get("episode_step", 0))))
                         if self.use_rnn:
                             rnn_hidden_actor, _ = self.init_hidden_item(i, rnn_hidden_actor)
                         if best_score < episode_score:
@@ -609,6 +625,17 @@ class OnPolicyMARLAgents(MARLAgents):
             _current_step += num_envs
 
         if test_mode:
+            if outcomes:
+                self.last_test_metrics = {
+                    "episodes": len(outcomes),
+                    "success_rate": float(np.mean([x[0] for x in outcomes])),
+                    "safe_success_rate": float(np.mean([x[0] and not x[1] for x in outcomes])),
+                    "collision_rate": float(np.mean([x[1] for x in outcomes])),
+                    "building_collision_rate": float(np.mean([x[2] for x in outcomes])),
+                    "boundary_collision_rate": float(np.mean([x[3] for x in outcomes])),
+                    "uav_collision_rate": float(np.mean([x[4] for x in outcomes])),
+                    "mean_episode_steps": float(np.mean([x[5] for x in outcomes])),
+                }
             if self.config.render_mode == "rgb_array" and self.render:
                 # time, height, width, channel -> time, channel, height, width
                 videos_info = {"Videos_Test": np.array([episode_videos], dtype=np.uint8).transpose((0, 1, 4, 2, 3))}
@@ -657,6 +684,8 @@ class OnPolicyMARLAgents(MARLAgents):
             self.callback.on_train_epochs_end(self.current_step, policy=self.policy, memory=self.memory,
                                               current_episode=self.current_episode, n_epochs=n_epochs,
                                               buffer_size=self.buffer_size, update_info=info_train)
+            if getattr(self, "baseline_monitor", None) is not None:
+                self.baseline_monitor.record_update(self.current_step, info_train)
             self.memory.clear()
         return info_train
 

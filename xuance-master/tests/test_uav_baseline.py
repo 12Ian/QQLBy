@@ -264,7 +264,7 @@ def test_fixed_maps_quotas_and_geometry():
             assert all(centers.count(x) == count // 10 for x in range(50, 1000, 100))
 
 
-@pytest.mark.parametrize("level,count,speed,radius", [(0,20,5,30),(1,40,6,25),(2,60,7,20),(3,80,8,18),(4,100,9,15)])
+@pytest.mark.parametrize("level,count,speed,radius", [(0,20,3,30),(1,40,5,25),(2,60,8,20),(3,80,10,18),(4,100,12,15)])
 def test_level_applies_only_at_reset_and_maps_stay_fixed(level, count, speed, radius):
     env = make_env()
     env.reset()
@@ -365,7 +365,7 @@ def test_curriculum_spawn_changes_on_reset_and_final_task_keeps_original_difficu
     assert env.spawn_radius == 100
     env.reset()
     assert env.spawn_radius == 200 and env.spawn_vertical_radius == 70
-    assert len(env.buildings) == 100 and env.target_max_speed == 9 and env.catch_radius == 15
+    assert len(env.buildings) == 100 and env.target_max_speed == 12 and env.catch_radius == 15
 
 
 def test_clearance_rewards_include_roofs_boundaries_and_teammates():
@@ -726,9 +726,10 @@ def test_runner_trains_networks_and_applies_curriculum(tmp_path, monkeypatch):
             reader = EventAccumulator(str(event), size_guidance={"scalars": 0})
             reader.Reload()
             for tag in reader.Tags()["scalars"]:
-                if tag.endswith(("loss_actor", "loss_critic", "predictQ")):
+                if tag in ("Loss/loss_actor", "Loss/loss_critic"):
                     metrics[tag] = [v.value for v in reader.Scalars(tag)]
-        assert len(metrics) == 3
+                assert tag.startswith(("Loss/", "Train-Returns/", "Train-Rewards/", "Eval-Rewards/"))
+        assert len(metrics) == 2
         assert all(values and all(math.isfinite(v) for v in values) for values in metrics.values())
     finally:
         torch.set_num_threads(previous_threads)

@@ -175,7 +175,8 @@ class MAPPO_Agents(IPPO_Agents):
 
         if self.use_parameter_sharing:
             key = self.agent_keys[0]
-            actions_sample = pi_dists[key].stochastic_sample()
+            actions_sample = (pi_dists[key].deterministic_sample() if test_mode
+                              else pi_dists[key].stochastic_sample())
             if self.continuous_control:
                 actions_out = actions_sample.reshape(n_env, self.n_agents, -1)
             else:
@@ -189,7 +190,8 @@ class MAPPO_Agents(IPPO_Agents):
                 values_out[key] = values_out[key].reshape(n_env, self.n_agents)
                 values_dict = {k: values_out[key][:, i].cpu().detach().numpy() for i, k in enumerate(self.agent_keys)}
         else:
-            actions_sample = {k: pi_dists[k].stochastic_sample() for k in self.agent_keys}
+            actions_sample = {k: (pi_dists[k].deterministic_sample() if test_mode
+                                  else pi_dists[k].stochastic_sample()) for k in self.agent_keys}
             if self.continuous_control:
                 actions_dict = [{k: actions_sample[k].cpu().detach().numpy()[e].reshape([-1]) for k in self.agent_keys}
                                 for e in range(n_env)]

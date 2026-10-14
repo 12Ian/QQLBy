@@ -1,0 +1,301 @@
+agent: MAPPO
+env_name: uav_pursuit_coverage_3d
+env_id: baseline_exp016_mappo_safety
+env_seed: 1
+continuous_action: true
+learner: MAPPO_Clip_Learner
+policy: Gaussian_MAAC_Policy
+representation: Basic_MLP
+vectorize: SubprocVecMultiAgentEnv
+runner: MARL
+num_agents: 4
+z_min: 50.0
+z_max: 350.0
+uav_initial_speed: 1.0
+uav_max_speed: 11.0
+max_accel: 3.0
+acceleration_lag: 0.5
+uav_jerk_max: 6.0
+target_jerk_max: 8.0
+target_velocity_response: 1.0
+target_min_speed: 3.0
+target_max_speed: 12.0
+target_accel: 4.0
+decision_dt: 0.5
+physics_dt: 0.1
+episode_length: 800
+capture_radius: 15.0
+direct_intercept_radius: 5.0
+capture_hold_required: 2.0
+escape_num_dirs: 200
+use_nearest_building_obs: true
+nearest_building_k: 5
+use_target_prediction_obs: false
+future_prediction_steps: 5
+preparation_time_scale: 12.0
+closure_time_scale: 30.0
+match_distance: 40.0
+match_distance_width: 10.0
+match_speed_scale: 3.0
+building_mode: uniform_20
+spawn_offset: 100.0
+randomize_building_layout: false
+curriculum_enabled: true
+curriculum_auto_advance_by_steps: false
+curriculum_min_steps_per_level: 100000
+curriculum_max_level: 4
+criterion_mode: euclidean
+spawn_safety_enabled: true
+spawn_safety_margin: 1.5
+spawn_search_resolution: 1.0
+spawn_vertical_radius: 70.0
+spawn_boundary_margin: 30.0
+evader_center_pull: 1.5
+evader_sense: 200.0
+w_prep: 15.0
+w_cov: 4.0
+w_close: 60.0
+w_match: 8.0
+w_hold: 1.0
+w_step: 0.1
+w_safe: 1.0
+w_terminal: 240.0
+w_direct_terminal: 300.0
+building_collision_penalty: 80.0
+boundary_collision_penalty: 100.0
+uav_collision_penalty: 80.0
+collision_contact_penalty_per_second: 20.0
+boundary_warning_distance: 50.0
+terminate_on_boundary_collision: true
+uav_collision_enabled: false
+separation_weight: 0.0
+separation_distance: 20.0
+terminate_on_collision: false
+terminate_on_building_collision: true
+representation_hidden_size:
+- 256
+actor_hidden_size:
+- 512
+- 512
+critic_hidden_size:
+- 512
+- 512
+activation: leaky_relu
+activation_action: tanh
+use_parameter_sharing: true
+use_actions_mask: false
+render: false
+seed: 1
+parallels: 16
+buffer_size: 3200
+gamma: 0.99
+running_steps: 6000000
+use_graph_module: false
+graph_hidden_dim: 128
+graph_alpha: 0.2
+use_obstacle_gat: false
+obstacle_gat_k: 5
+obstacle_gat_feat_dim: 6
+obstacle_gat_hidden: 32
+obstacle_gat_heads: 2
+use_grad_clip: true
+grad_clip_norm: 10.0
+eval_interval: 50000
+test_episode: 100
+baseline_eval_parallels: 8
+log_dir: outputs/logs/mappo/
+model_dir: outputs/models/mappo/
+reward_mode: baseline
+curriculum_context_obs: true
+curriculum_success_threshold: 0.8
+curriculum_collision_threshold: 0.1
+curriculum_required_passes: 2
+curriculum_start_level: 0
+curriculum_eval_all_levels: true
+test_curriculum_level: 0
+baseline_success_reward: 300.0
+baseline_distance_weight: 0.0
+baseline_distance_scale: 1000.0
+baseline_obstacle_weight: 5.0
+baseline_boundary_weight: 5.0
+baseline_teammate_weight: 0.0
+baseline_teammate_range: 10.0
+obstacle_avoid_range: 50.0
+evader_rep_coef: 40.0
+evader_obstacle_range: 20.0
+evader_obstacle_coef: 40.0
+evader_boundary_range: 100.0
+evader_boundary_coef: 50.0
+evader_center_xy_range: 150.0
+evader_center_z_range: 75.0
+evader_blend_center: true
+surround_spawn: false
+pursuer_spawn_positions:
+- - 100.0
+  - 350.0
+  - 180.0
+- - 100.0
+  - 450.0
+  - 200.0
+- - 100.0
+  - 550.0
+  - 220.0
+- - 100.0
+  - 650.0
+  - 200.0
+target_spawn_box:
+- - 650.0
+  - 350.0
+  - 150.0
+- - 750.0
+  - 650.0
+  - 250.0
+spawn_min_target_distance: 450.0
+initial_velocity_toward_target: true
+spawn_radius: 200.0
+curriculum_schedule:
+- level: 0
+  building_mode: uniform_20
+  target_min_speed: 1
+  target_max_speed: 3.0
+  target_accel: 4.0
+  capture_radius: 50
+  spawn_offset: 100.0
+  reward_weights:
+    w_cov: 0.0
+    w_prep: 0.0
+    w_close: 0.0
+    w_match: 0.0
+    w_hold: 0.0
+    w_step: 0.0
+    w_safe: 1.0
+    w_terminal: 300.0
+    w_direct_terminal: 300.0
+  spawn_radius: 100
+  spawn_vertical_radius: 30
+- level: 1
+  building_mode: uniform_40
+  target_min_speed: 2
+  target_max_speed: 5.0
+  target_accel: 4.0
+  capture_radius: 35
+  spawn_offset: 100.0
+  reward_weights:
+    w_cov: 0.0
+    w_prep: 0.0
+    w_close: 0.0
+    w_match: 0.0
+    w_hold: 0.0
+    w_step: 0.0
+    w_safe: 1.0
+    w_terminal: 300.0
+    w_direct_terminal: 300.0
+  spawn_radius: 125
+  spawn_vertical_radius: 40
+- level: 2
+  building_mode: uniform_60
+  target_min_speed: 3
+  target_max_speed: 8.0
+  target_accel: 4.0
+  capture_radius: 25
+  spawn_offset: 100.0
+  reward_weights:
+    w_cov: 0.0
+    w_prep: 0.0
+    w_close: 0.0
+    w_match: 0.0
+    w_hold: 0.0
+    w_step: 0.0
+    w_safe: 1.0
+    w_terminal: 300.0
+    w_direct_terminal: 300.0
+  spawn_radius: 150
+  spawn_vertical_radius: 50
+- level: 3
+  building_mode: uniform_80
+  target_min_speed: 3
+  target_max_speed: 10.0
+  target_accel: 4.0
+  capture_radius: 20
+  spawn_offset: 100.0
+  reward_weights:
+    w_cov: 0.0
+    w_prep: 0.0
+    w_close: 0.0
+    w_match: 0.0
+    w_hold: 0.0
+    w_step: 0.0
+    w_safe: 1.0
+    w_terminal: 300.0
+    w_direct_terminal: 300.0
+  spawn_radius: 175
+  spawn_vertical_radius: 60
+- level: 4
+  building_mode: uniform_100
+  target_min_speed: 3
+  target_max_speed: 12.0
+  target_accel: 4.0
+  capture_radius: 15
+  spawn_offset: 100.0
+  reward_weights:
+    w_cov: 0.0
+    w_prep: 0.0
+    w_close: 0.0
+    w_match: 0.0
+    w_hold: 0.0
+    w_step: 0.0
+    w_safe: 1.0
+    w_terminal: 300.0
+    w_direct_terminal: 300.0
+  spawn_radius: 200
+  spawn_vertical_radius: 70
+baseline_progress_weight: 0.0
+baseline_progress_scale: 10.0
+baseline_reward_scale: 0.1
+baseline_failure_penalty: 300.0
+baseline_evaluate_full_episode: true
+baseline_init_actor: null
+baseline_final_eval_interval: 250000
+baseline_init_checkpoint: null
+baseline_braking_safety: true
+baseline_braking_reaction_time: 1.5
+end_factor_lr_decay: 0.5
+baseline_braking_deficit_penalty: true
+direct_intercept_enabled: false
+baseline_pursuit_weight: 1.0
+baseline_formation_weight: 0.0
+baseline_evaluate_previous_levels: true
+baseline_save_initial_model: true
+safety_filter_enabled: true
+safety_margin: 2.0
+safety_horizon_seconds: 8.0
+use_rnn: false
+rnn: GRU
+fc_hidden_sizes:
+- 256
+- 256
+recurrent_hidden_size: 64
+N_recurrent_layers: 1
+dropout: 0
+normalize: LayerNorm
+initialize: orthogonal
+gain: 0.01
+n_epochs: 10
+n_minibatch: 4
+learning_rate: 0.0005
+weight_decay: 0
+vf_coef: 0.5
+ent_coef: 0.01
+target_kl: 0.25
+clip_range: 0.2
+clip_type: 1
+use_linear_lr_decay: false
+use_global_state: false
+use_value_clip: true
+value_clip_range: 0.2
+use_value_norm: true
+use_huber_loss: true
+huber_delta: 10.0
+use_advnorm: true
+use_gae: true
+gae_lambda: 0.95

@@ -22,7 +22,7 @@ uav_jerk_max: 6.0
 target_jerk_max: 8.0
 target_velocity_response: 1.0
 target_min_speed: 3.0
-target_max_speed: 5.0
+target_max_speed: 12.0
 target_accel: 1.0
 decision_dt: 1.0
 physics_dt: 0.1

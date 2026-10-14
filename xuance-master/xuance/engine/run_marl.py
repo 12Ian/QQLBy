@@ -233,11 +233,14 @@ class RunnerMARL(RunnerBase):
             raise ValueError("Training and evaluation budgets must be positive")
         if final_eval_interval <= 0:
             raise ValueError("Final task evaluation interval must be positive")
-        noise_decay_steps = int(getattr(self.config, "noise_decay_steps", running_steps))
-        if noise_decay_steps <= 0:
-            raise ValueError("Noise decay steps must be positive")
-        if self.agent.noise_scale is not None:
-            self.agent.delta_noise = (self.agent.start_noise - self.agent.end_noise) / noise_decay_steps
+        if running_steps % self.n_envs:
+            raise ValueError("Training budget must be divisible by the number of parallel environments")
+        if hasattr(self.agent, "noise_scale"):
+            noise_decay_steps = int(getattr(self.config, "noise_decay_steps", running_steps))
+            if noise_decay_steps <= 0:
+                raise ValueError("Noise decay steps must be positive")
+            if self.agent.noise_scale is not None:
+                self.agent.delta_noise = (self.agent.start_noise - self.agent.end_noise) / noise_decay_steps
         initialization = initialize_baseline_policy(self.agent, self.config)
         if initialization:
             self.rprint(f"[policy initialization] {initialization['kind']}: {initialization['path']}; "
@@ -348,10 +351,13 @@ class RunnerMARL(RunnerBase):
                 self.agent.writer.flush() if not self.agent.use_wandb else None
                 self.agent.save_model(model_name="latest_train_model.pth")
             self.agent.save_model(model_name="final_train_model.pth")
+            final_all_levels = ([evaluate(level, "final_all_levels") for level in range(final_level + 1)]
+                                if bool(getattr(self.config, "curriculum_eval_all_levels", False)) else [])
             summary = {
                 "reward_mode": "baseline", "curriculum_level": gate.level,
                 "transitions": transitions, "best_final_task": best_final,
                 "best_by_stage": best_stages, "environment_steps": int(self.agent.current_step) - start_step,
+                "final_all_levels": final_all_levels,
                 "elapsed_seconds": round(time.time() - started, 3),
             }
             with open(os.path.join(result_dir, "baseline_summary.json"), "w", encoding="utf-8") as stream:

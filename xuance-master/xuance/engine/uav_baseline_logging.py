@@ -6,6 +6,49 @@ from collections import defaultdict, deque
 from pathlib import Path
 
 
+class RewardLossTensorBoard:
+    """Average episode rewards in small batches; expose only rewards and losses."""
+    reward_parts = {"r_purs", "r_obstacle", "r_boundary", "r_collision", "r_terminal", "r_failure"}
+
+    def __init__(self, writer):
+        self.writer = writer
+        self.reward_sums = defaultdict(float)
+        self.reward_count = 0
+        self.level = None
+        self.last_step = 0
+
+    def log(self, info, step):
+        if "Train-Returns/team_mean" in info:
+            level = info["Train-Curriculum/Level"]
+            if self.level is not None and self.level != level:
+                self.flush_rewards()
+            self.level = level
+            self.last_step = step
+            for name, value in info.items():
+                if (name.startswith("Train-Returns/") or
+                        (name.startswith("Train-Rewards/") and name.rsplit("/", 1)[-1] in self.reward_parts)):
+                    self.reward_sums[name] += float(value)
+            self.reward_count += 1
+            if self.reward_count == 20:
+                self.flush_rewards()
+        for metric in ("actor", "critic"):
+            value = info.get(f"Train-Learning/loss_{metric}_mean")
+            if value is not None:
+                self.writer.add_scalar(f"Loss/loss_{metric}", float(value), step)
+        prefix = "Test-Results/Episode-Rewards-Level-"
+        for name, value in info.items():
+            if name.startswith(prefix):
+                level = int(name[len(prefix):]) + 1
+                self.writer.add_scalar(f"Eval-Rewards/Level-{level}", float(value), step)
+
+    def flush_rewards(self):
+        if self.reward_count:
+            for name, total in self.reward_sums.items():
+                self.writer.add_scalar(name, total / self.reward_count, self.last_step)
+            self.reward_sums.clear()
+            self.reward_count = 0
+
+
 class BaselineTrainingLog:
     def __init__(self, directory, log_infos):
         self.directory = Path(directory)
@@ -23,12 +66,15 @@ class BaselineTrainingLog:
                            "r_distance", "r_obstacle", "r_boundary", "r_teammate", "r_collision", "r_terminal",
                            "r_progress", "r_failure", "r_purs", "r_form", "episode_seconds",
                            "pursuit_raw_mean", "formation_raw_mean", "initial_target_distance_mean", "final_target_distance_mean",
-                           "target_speed_mean", "target_speed_max", "target_sensed_fraction"]
+                           "target_speed_mean", "target_speed_max", "target_sensed_fraction",
+                           "safety_checks", "safety_interventions", "safety_uncertified_substeps",
+                           "safety_mean_correction"]
         self.episodes = csv.DictWriter(self.episode_stream, fieldnames=episode_fields)
         self.updates = csv.DictWriter(self.update_stream, fieldnames=[
             "step", "updates", "window_updates", "actor_updates", "window_actor_updates",
             "loss_actor_mean", "loss_critic_mean",
-            "predictQ_mean", "loss_critic_max", "predictQ_min", "predictQ_max", "noise_scale"])
+            "predictQ_mean", "loss_critic_max", "predictQ_min", "predictQ_max", "noise_scale",
+            "predict_value_mean"])
         self.episodes.writeheader()
         self.updates.writeheader()
 
@@ -60,7 +106,11 @@ class BaselineTrainingLog:
                    target_sensed_fraction=diagnostics.get("target_sensed_fraction_episode"),
                    episode_seconds=diagnostics.get("episode_elapsed_seconds"),
                    pursuit_raw_mean=diagnostics.get("pursuit_raw_mean_episode"),
-                   formation_raw_mean=diagnostics.get("formation_raw_mean_episode"))
+                   formation_raw_mean=diagnostics.get("formation_raw_mean_episode"),
+                   safety_checks=diagnostics.get("safety_checks_episode", 0),
+                   safety_interventions=diagnostics.get("safety_interventions_episode", 0),
+                   safety_uncertified_substeps=diagnostics.get("safety_uncertified_substeps_episode", 0),
+                   safety_mean_correction=diagnostics.get("safety_mean_correction_episode", 0.))
         self.episodes.writerow(row)
         self.episode_stream.flush()
         self.episode_count += 1
@@ -161,11 +211,17 @@ class BaselineTrainingLog:
                         if value is not None and math.isfinite(float(value))}, step)
 
     def record_update(self, step, info):
-        actor = next((float(v) for k, v in info.items() if k.endswith('/loss_actor')), None)
-        values = [actor] + [float(next(v for k, v in info.items() if k.endswith('/' + metric)))
-                            for metric in ("loss_critic", "predictQ")]
+        def metric(*names):
+            return next((float(v) for k, v in info.items()
+                         if any(k.endswith('/' + name) for name in names)), None)
+
+        actor = metric("loss_actor", "actor_loss")
+        critic = metric("loss_critic", "critic_loss")
+        if critic is None:
+            raise ValueError("Baseline update has no critic loss")
+        values = [actor, critic, metric("predictQ"), metric("predict_value")]
         if not all(value is None or math.isfinite(value) for value in values):
-            raise FloatingPointError(f"Nonfinite baseline loss/Q at step {step}: {values}")
+            raise FloatingPointError(f"Nonfinite baseline update at step {step}: {values}")
         self.update_count += 1
         self.actor_update_count += int(actor is not None)
         self.pending_updates.append(values)
@@ -178,13 +234,18 @@ class BaselineTrainingLog:
             return
         values = self.pending_updates
         actor_values = [v[0] for v in values if v[0] is not None]
+        q_values = [v[2] for v in values if v[2] is not None]
+        value_predictions = [v[3] for v in values if v[3] is not None]
         row = dict(step=self.last_update_step, updates=self.update_count, window_updates=len(values),
                    actor_updates=self.actor_update_count, window_actor_updates=len(actor_values),
                    loss_actor_mean=sum(actor_values) / len(actor_values) if actor_values else None,
                    loss_critic_mean=sum(v[1] for v in values) / len(values),
-                   predictQ_mean=sum(v[2] for v in values) / len(values),
-                   loss_critic_max=max(v[1] for v in values), predictQ_min=min(v[2] for v in values),
-                   predictQ_max=max(v[2] for v in values), noise_scale=self.last_noise)
+                   predictQ_mean=sum(q_values) / len(q_values) if q_values else None,
+                   loss_critic_max=max(v[1] for v in values),
+                   predictQ_min=min(q_values) if q_values else None,
+                   predictQ_max=max(q_values) if q_values else None, noise_scale=self.last_noise,
+                   predict_value_mean=(sum(value_predictions) / len(value_predictions)
+                                       if value_predictions else None))
         self.updates.writerow(row)
         self.update_stream.flush()
         self.pending_updates.clear()
@@ -192,9 +253,12 @@ class BaselineTrainingLog:
                         if name != "step" and value is not None and math.isfinite(float(value))},
                        self.last_update_step)
         actor_text = f"{row['loss_actor_mean']:.3f}" if actor_values else "skipped"
+        prediction = (f"Q={row['predictQ_mean']:.3f}" if q_values else
+                      f"value={row['predict_value_mean']:.3f}" if value_predictions else "prediction=n/a")
+        noise = f"{row['noise_scale']:.3f}" if row['noise_scale'] is not None else "n/a"
         print(f"[training updates] step={row['step']} updates={self.update_count} "
               f"actor_updates={self.actor_update_count} actor={actor_text} critic={row['loss_critic_mean']:.3f} "
-              f"Q={row['predictQ_mean']:.3f} noise={row['noise_scale']:.3f}", flush=True)
+              f"{prediction} noise={noise}", flush=True)
 
     def close(self):
         self.flush_updates()

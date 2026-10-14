@@ -20,7 +20,7 @@ uav_jerk_max: 6.0
 target_jerk_max: 8.0
 target_velocity_response: 1.0
 target_min_speed: 3.0
-target_max_speed: 5.0
+target_max_speed: 12.0
 target_accel: 1.0
 decision_dt: 1.0
 physics_dt: 0.1
@@ -144,7 +144,7 @@ curriculum_schedule:
 - level: 0
   building_mode: uniform_20
   target_min_speed: 3.0
-  target_max_speed: 5.0
+  target_max_speed: 3.0
   target_accel: 1.0
   capture_radius: 30.0
   spawn_offset: 100.0
@@ -161,7 +161,7 @@ curriculum_schedule:
 - level: 1
   building_mode: uniform_40
   target_min_speed: 3.0
-  target_max_speed: 6.0
+  target_max_speed: 5.0
   target_accel: 1.0
   capture_radius: 25.0
   spawn_offset: 100.0
@@ -178,7 +178,7 @@ curriculum_schedule:
 - level: 2
   building_mode: uniform_60
   target_min_speed: 3.0
-  target_max_speed: 7.0
+  target_max_speed: 8.0
   target_accel: 1.0
   capture_radius: 20.0
   spawn_offset: 100.0
@@ -195,7 +195,7 @@ curriculum_schedule:
 - level: 3
   building_mode: uniform_80
   target_min_speed: 3.0
-  target_max_speed: 8.0
+  target_max_speed: 10.0
   target_accel: 1.0
   capture_radius: 18.0
   spawn_offset: 100.0
@@ -212,7 +212,7 @@ curriculum_schedule:
 - level: 4
   building_mode: uniform_100
   target_min_speed: 3.0
-  target_max_speed: 9.0
+  target_max_speed: 12.0
   target_accel: 1.0
   capture_radius: 15.0
   spawn_offset: 100.0

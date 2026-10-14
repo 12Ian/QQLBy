@@ -62,6 +62,9 @@ class Learner(ABC):
         return total_iters
 
     def save_model(self, model_path):
+        value_normalizer = getattr(self, 'value_normalizer', None)
+        normalizer_state = ({key: module.state_dict() for key, module in value_normalizer.items()}
+                            if isinstance(value_normalizer, dict) else None)
         if type(self.optimizer) is dict:
             torch.save(
                 {
@@ -69,6 +72,7 @@ class Learner(ABC):
                     'optimizer': {k: v.state_dict() for k, v in self.optimizer.items()},
                     'rng_state': torch.get_rng_state(),
                     'cuda_rng_state': torch.cuda.get_rng_state_all(),
+                    'value_normalizer': normalizer_state,
                 },
                 model_path)
         else:
@@ -78,6 +82,7 @@ class Learner(ABC):
                     'optimizer': self.optimizer.state_dict(),
                     'rng_state': torch.get_rng_state(),
                     'cuda_rng_state': torch.cuda.get_rng_state_all(),
+                    'value_normalizer': normalizer_state,
                 },
                 model_path)
         if self.distributed_training:
@@ -111,6 +116,14 @@ class Learner(ABC):
         checkpoint = torch.load(str(model_path), map_location={f"cuda:{i}": self.device
                                                                     for i in range(MAX_GPUs)}, weights_only=True)
         self.policy.load_state_dict(checkpoint['policy'], strict=False)
+
+        saved_normalizer = checkpoint.get('value_normalizer')
+        value_normalizer = getattr(self, 'value_normalizer', None)
+        if saved_normalizer is not None and isinstance(value_normalizer, dict):
+            if set(saved_normalizer) != set(value_normalizer):
+                raise ValueError('Checkpoint value normalizer keys do not match this policy')
+            for key, module in value_normalizer.items():
+                module.load_state_dict(saved_normalizer[key], strict=True)
 
         if 'optimizer' in checkpoint and self.optimizer is not None:
             if type(self.optimizer) is dict:
@@ -390,6 +403,9 @@ class LearnerMAS(Learner):
         raise NotImplementedError
 
     def save_model(self, model_path):
+        value_normalizer = getattr(self, 'value_normalizer', None)
+        normalizer_state = ({key: module.state_dict() for key, module in value_normalizer.items()}
+                            if isinstance(value_normalizer, dict) else None)
         if type(self.optimizer) is dict:
             if type(list(self.optimizer.values())[0]) is dict:
                 torch.save(
@@ -399,6 +415,7 @@ class LearnerMAS(Learner):
                                       for k_a, v_a in self.optimizer.items()},  # agent-wise
                         'rng_state': torch.get_rng_state(),
                         'cuda_rng_state': torch.cuda.get_rng_state_all(),
+                        'value_normalizer': normalizer_state,
                     },
                     model_path)
             else:
@@ -408,6 +425,7 @@ class LearnerMAS(Learner):
                         'optimizer': {k: v.state_dict() for k, v in self.optimizer.items()},
                         'rng_state': torch.get_rng_state(),
                         'cuda_rng_state': torch.cuda.get_rng_state_all(),
+                        'value_normalizer': normalizer_state,
                     },
                     model_path)
         else:
@@ -417,6 +435,7 @@ class LearnerMAS(Learner):
                     'optimizer': self.optimizer.state_dict(),
                     'rng_state': torch.get_rng_state(),
                     'cuda_rng_state': torch.cuda.get_rng_state_all(),
+                    'value_normalizer': normalizer_state,
                 },
                 model_path)
 
@@ -448,6 +467,14 @@ class LearnerMAS(Learner):
         checkpoint = torch.load(str(model_path), map_location={f"cuda:{i}": self.device
                                                                     for i in range(MAX_GPUs)}, weights_only=True)
         self.policy.load_state_dict(checkpoint['policy'], strict=False)
+
+        saved_normalizer = checkpoint.get('value_normalizer')
+        value_normalizer = getattr(self, 'value_normalizer', None)
+        if saved_normalizer is not None and isinstance(value_normalizer, dict):
+            if set(saved_normalizer) != set(value_normalizer):
+                raise ValueError('Checkpoint value normalizer keys do not match this policy')
+            for key, module in value_normalizer.items():
+                module.load_state_dict(saved_normalizer[key], strict=True)
 
         if 'optimizer' in checkpoint and self.optimizer is not None:
             if type(self.optimizer) is dict:
