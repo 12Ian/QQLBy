@@ -11,6 +11,36 @@ from xuance.environment import DummyVecMultiAgentEnv, SubprocVecMultiAgentEnv, m
 from xuance.engine import RunnerBase
 
 
+def initialize_baseline_policy(agent, config):
+    """Load actor-only or full policy weights; keep this run's fresh optimizers."""
+    actor_path = getattr(config, "baseline_init_actor", None)
+    full_path = getattr(config, "baseline_init_checkpoint", None)
+    if actor_path and full_path:
+        raise ValueError("Actor and full checkpoint initialization are exclusive")
+    path = full_path or actor_path
+    if not path:
+        return None
+    import hashlib
+    import torch
+    from pathlib import Path
+
+    checkpoint = torch.load(path, map_location=agent.device, weights_only=False)
+    current = agent.policy.state_dict()
+    prefixes = ("actor.", "target_actor.")
+    selected = {key: value for key, value in checkpoint["policy"].items()
+                if full_path or key.startswith(prefixes)}
+    expected = set(current) if full_path else {key for key in current if key.startswith(prefixes)}
+    if set(selected) != expected or any(selected[key].shape != current[key].shape for key in selected):
+        raise ValueError("Baseline initialization has incompatible parameters")
+    if any(not torch.isfinite(value).all().item() for value in selected.values()):
+        raise ValueError("Baseline initialization has non-finite parameters")
+    current.update(selected)
+    agent.policy.load_state_dict(current)
+    return dict(kind="full_policy" if full_path else "actor_only", path=str(Path(path).resolve()),
+                sha256=hashlib.sha256(Path(path).read_bytes()).hexdigest(), tensors=len(selected),
+                optimizer_restored=False)
+
+
 class RunnerMARL(RunnerBase):
     def __init__(self,
                  config: Namespace,
@@ -67,6 +97,8 @@ class RunnerMARL(RunnerBase):
             print("Finish testing.")
 
     def _run_benchmark(self, **kwargs):
+        if getattr(self.config, "reward_mode", "coverage") == "baseline":
+            return self._run_baseline_benchmark(**kwargs)
         running_steps = kwargs.get('running_steps', self.config.running_steps)
         eval_interval = kwargs.get('eval_interval', self.config.eval_interval)
         test_episodes = kwargs.get('test_episodes', self.config.test_episode)
@@ -184,3 +216,147 @@ class RunnerMARL(RunnerBase):
         self.rprint("Best Model Score: %.2f, std=%.2f. "
                     "Best Step: %d" % (best_scores_info["mean"], best_scores_info["std"],
                                        best_scores_info["step"]))
+
+    def _run_baseline_benchmark(self, **kwargs):
+        from .uav_curriculum import PerformanceCurriculum
+        from .uav_baseline_logging import BaselineTrainingLog
+
+        if self.agent.distributed_training:
+            raise ValueError("The UAV baseline benchmark uses a single learner")
+        if bool(getattr(self.config, "curriculum_auto_advance_by_steps", False)):
+            raise ValueError("Baseline curriculum must advance by evaluation performance")
+        running_steps = int(kwargs.get("running_steps", self.config.running_steps))
+        interval = int(kwargs.get("eval_interval", self.config.eval_interval))
+        episodes = int(kwargs.get("test_episodes", self.config.test_episode))
+        final_eval_interval = int(getattr(self.config, "baseline_final_eval_interval", interval))
+        if min(running_steps, interval, episodes) < 1:
+            raise ValueError("Training and evaluation budgets must be positive")
+        if final_eval_interval <= 0:
+            raise ValueError("Final task evaluation interval must be positive")
+        noise_decay_steps = int(getattr(self.config, "noise_decay_steps", running_steps))
+        if noise_decay_steps <= 0:
+            raise ValueError("Noise decay steps must be positive")
+        if self.agent.noise_scale is not None:
+            self.agent.delta_noise = (self.agent.start_noise - self.agent.end_noise) / noise_decay_steps
+        initialization = initialize_baseline_policy(self.agent, self.config)
+        if initialization:
+            self.rprint(f"[policy initialization] {initialization['kind']}: {initialization['path']}; "
+                        f"loaded {initialization['tensors']} tensors")
+        if bool(getattr(self.config, "baseline_save_initial_model", False)):
+            self.agent.save_model(model_name="initial_random_model.pth")
+        result_dir = os.path.abspath(kwargs.get("benchmark_result_path", self.config.result_dir))
+        create_directory(result_dir)
+        if initialization:
+            with open(os.path.join(result_dir, "initialization_audit.json"), "w", encoding="utf-8") as stream:
+                json.dump(initialization, stream, indent=2)
+        best_dir = os.path.join(result_dir, "best_model")
+        create_directory(best_dir)
+        final_level = len(self.config.curriculum_schedule) - 1
+        gate = PerformanceCurriculum(
+            level=int(getattr(self.config, "curriculum_start_level", 0)), max_level=final_level,
+            min_steps=int(self.config.curriculum_min_steps_per_level), min_episodes=episodes,
+            success_threshold=float(getattr(self.config, "curriculum_success_threshold", 0.8)),
+            collision_threshold=float(getattr(self.config, "curriculum_collision_threshold", 0.1)),
+            required_passes=int(getattr(self.config, "curriculum_required_passes", 2)),
+            level_start_step=int(self.agent.current_step))
+        config_test = deepcopy(self.config)
+        config_test.parallels = min(episodes, int(getattr(self.config, "baseline_eval_parallels", 1)))
+        if config_test.parallels < 1:
+            raise ValueError("Evaluation parallel count must be positive")
+        config_test.seed = int(self.config.seed) + 10000
+        config_test.env_seed = int(self.config.env_seed) + 10000
+        if bool(getattr(self.config, "baseline_evaluate_full_episode", False)):
+            # Evaluation retains the original 400-step collision accounting.
+            config_test.terminate_on_boundary_collision = False
+            config_test.terminate_on_collision = False
+            config_test.terminate_on_building_collision = False
+        test_envs = make_envs(config_test)
+        fields = ["step", "phase", "level", "episodes", "success_rate", "safe_success_rate",
+                  "collision_rate", "building_collision_rate", "boundary_collision_rate",
+                  "uav_collision_rate", "mean_episode_steps", "mean_return"]
+        history_path = os.path.join(result_dir, "curriculum_eval.csv")
+        with open(history_path, "w", newline="", encoding="utf-8") as stream:
+            csv.DictWriter(stream, fieldnames=fields).writeheader()
+        best_final = None
+        best_stages = {}
+        transitions = []
+        start_step = int(self.agent.current_step)
+        started = time.time()
+        config_dict = vars(self.agent.config).copy()
+        for key in ("observation_space", "action_space", "state_space"):
+            config_dict.pop(key, None)
+        config_dict["evaluation_env_seed"] = config_test.env_seed
+        with open(os.path.join(result_dir, "config.json"), "w", encoding="utf-8") as stream:
+            json.dump(config_dict, stream, indent=2, ensure_ascii=False, default=str)
+        monitor = BaselineTrainingLog(result_dir, self.agent.log_infos)
+        self.agent.baseline_monitor = monitor
+
+        def evaluate(level, phase):
+            # Reuse a separate deterministic evaluation seed stream for comparisons.
+            test_envs.env_method("seed")
+            scores = self.agent.run_episodes(n_episodes=episodes, run_envs=test_envs,
+                                            test_mode=True, close_envs=False, curriculum_level=level)
+            metrics = dict(self.agent.last_test_metrics)
+            metrics.update(step=int(self.agent.current_step), phase=phase, level=level,
+                           mean_return=float(np.mean(scores)))
+            with open(history_path, "a", newline="", encoding="utf-8") as stream:
+                csv.DictWriter(stream, fieldnames=fields).writerow(metrics)
+            self.agent.log_infos({f"Baseline-Eval/{phase}/Level-{level + 1}/{name}": float(metrics[name])
+                                  for name in ("success_rate", "safe_success_rate", "collision_rate",
+                                               "building_collision_rate", "boundary_collision_rate")},
+                                 self.agent.current_step)
+            self.rprint(f"[baseline eval] step={metrics['step']} level={level} {phase}: "
+                        f"success={metrics['success_rate']:.3f} "
+                        f"safe_success={metrics['safe_success_rate']:.3f} "
+                        f"collision={metrics['collision_rate']:.3f}")
+            return metrics
+
+        def checkpoint_key(metrics):
+            return (metrics["safe_success_rate"], -metrics["collision_rate"], metrics["mean_return"])
+
+        try:
+            while True:
+                current = evaluate(gate.level, "current")
+                if bool(getattr(self.config, "baseline_evaluate_previous_levels", False)):
+                    for previous_level in range(gate.level):
+                        evaluate(previous_level, "retention")
+                previous = best_stages.get(gate.level)
+                if previous is None or checkpoint_key(current) > checkpoint_key(previous):
+                    best_stages[gate.level] = current
+                    self.agent.save_model(model_name=f"best_stage_{gate.level}.pth", model_path=best_dir)
+                remaining = running_steps - (int(self.agent.current_step) - start_step)
+                final = current if gate.level == final_level else None
+                if final is None and ((int(self.agent.current_step) - start_step) % final_eval_interval == 0
+                                      or remaining <= 0):
+                    final = evaluate(final_level, "final_task")
+                if final is not None and (best_final is None or checkpoint_key(final) > checkpoint_key(best_final)):
+                    best_final = final
+                    self.agent.save_model(model_name="best_model.pth", model_path=best_dir)
+                next_level = (gate.observe(int(self.agent.current_step), current)
+                              if remaining > 0 and self.config.curriculum_enabled else None)
+                if next_level is not None:
+                    # Training workers apply the requested map/radius/speed on their next reset.
+                    self.agent.train_envs.env_method("schedule_curriculum_level", next_level)
+                    transitions.append({"step": int(self.agent.current_step), "level": next_level})
+                    self.agent.log_infos({"Curriculum/Requested-Level": next_level}, self.agent.current_step)
+                    self.rprint(f"[curriculum] requested level {next_level}; apply on reset")
+                if remaining <= 0:
+                    break
+                vector_steps = min(max(1, interval // self.n_envs), max(1, remaining // self.n_envs))
+                self.agent.train(train_steps=vector_steps)
+                monitor.flush_updates()
+                self.agent.writer.flush() if not self.agent.use_wandb else None
+                self.agent.save_model(model_name="latest_train_model.pth")
+            self.agent.save_model(model_name="final_train_model.pth")
+            summary = {
+                "reward_mode": "baseline", "curriculum_level": gate.level,
+                "transitions": transitions, "best_final_task": best_final,
+                "best_by_stage": best_stages, "environment_steps": int(self.agent.current_step) - start_step,
+                "elapsed_seconds": round(time.time() - started, 3),
+            }
+            with open(os.path.join(result_dir, "baseline_summary.json"), "w", encoding="utf-8") as stream:
+                json.dump(summary, stream, indent=2, ensure_ascii=False)
+        finally:
+            self.agent.baseline_monitor = None
+            monitor.close()
+            test_envs.close()

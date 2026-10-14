@@ -16,6 +16,8 @@ from .uav_coverage_forecast_3d import forecast_target, reach_hold_coverage, cove
 class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
     def __init__(self, config):
         super(UAVPursuitCoverage3DEnv, self).__init__()
+        self.env_seed = getattr(config, "env_seed", getattr(config, "seed", None))
+        self.rng = np.random.RandomState(self.env_seed)
 
         # ---------------- 1. 物理参数 ----------------
         self.map_size = 1000.0
@@ -58,13 +60,28 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
         # 防止逃逸机利用地图边缘；具体逻辑见 _evader_step。
         self.evader_center_pull = float(getattr(config, "evader_center_pull", 1.5))
         self.evader_sense = float(getattr(config, "evader_sense", 60.0))
+        self.evader_rep_coef = float(getattr(config, "evader_rep_coef", 40.0))
+        self.evader_obstacle_range = float(getattr(config, "evader_obstacle_range", 20.0))
+        self.evader_obstacle_coef = float(getattr(config, "evader_obstacle_coef", 40.0))
+        self.evader_boundary_range = float(getattr(config, "evader_boundary_range", 100.0))
+        self.evader_boundary_coef = float(getattr(config, "evader_boundary_coef", 50.0))
+        self.evader_center_xy_range = float(getattr(config, "evader_center_xy_range", 150.0))
+        self.evader_center_z_range = float(getattr(config, "evader_center_z_range", 75.0))
+        self.evader_blend_center = bool(getattr(config, "evader_blend_center", False))
+        if (min(self.evader_sense, self.evader_obstacle_range, self.evader_boundary_range,
+                self.evader_center_xy_range, self.evader_center_z_range) <= 0.0 or
+                min(self.evader_rep_coef, self.evader_obstacle_coef,
+                    self.evader_boundary_coef, self.evader_center_pull) < 0.0):
+            raise ValueError("Invalid evader potential-field configuration")
         self.target_accel = float(getattr(config, "target_accel", 4.0))
         self.target_speed = self.target_min_speed
         self.target_radius = 0.5
         self.catch_radius = float(getattr(config, "capture_radius", 15.0))
         self.direct_intercept_radius = float(getattr(config, "direct_intercept_radius", 5.0))
+        self.direct_intercept_enabled = bool(getattr(config, "direct_intercept_enabled", True))
         self.capture_hold_required = float(getattr(config, "capture_hold_required", 2.0))
-        if not (0.0 < self.direct_intercept_radius < self.catch_radius and self.capture_hold_required > 0.0):
+        if (self.catch_radius <= 0.0 or self.capture_hold_required <= 0.0 or
+                (self.direct_intercept_enabled and not 0.0 < self.direct_intercept_radius < self.catch_radius)):
             raise ValueError("Capture thresholds must satisfy 0 < direct < capture and hold > 0")
         self.cartesian_lambda_cap = getattr(config, "cartesian_lambda_cap", 0.8)
         # 可选欧氏距离或可见性判据；可见性判据不计入被建筑遮挡的追捕机。
@@ -82,7 +99,40 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
                                       self.obstacle_gat_k != self.nearest_building_k or
                                       int(getattr(config, "obstacle_gat_feat_dim", 6)) != 6):
             raise ValueError("Obstacle attention requires matching K and six building features")
-        self.obstacle_avoid_range = 100.0
+        self.obstacle_avoid_range = float(getattr(config, "obstacle_avoid_range", 100.0))
+        self.reward_mode = getattr(config, "reward_mode", "coverage")
+        if self.reward_mode not in ("coverage", "baseline"):
+            raise ValueError("reward_mode must be coverage or baseline")
+        self.curriculum_context_obs = bool(getattr(config, "curriculum_context_obs", False))
+        self.baseline_success_reward = float(getattr(config, "baseline_success_reward", 300.0))
+        self.baseline_distance_weight = float(getattr(config, "baseline_distance_weight", 1.0))
+        self.baseline_distance_scale = float(getattr(config, "baseline_distance_scale", 1000.0))
+        self.baseline_obstacle_weight = float(getattr(config, "baseline_obstacle_weight", 1.0))
+        self.baseline_boundary_weight = float(getattr(config, "baseline_boundary_weight", 1.0))
+        self.baseline_teammate_weight = float(getattr(config, "baseline_teammate_weight", 1.0))
+        self.baseline_teammate_range = float(getattr(config, "baseline_teammate_range", 10.0))
+        self.baseline_progress_weight = float(getattr(config, "baseline_progress_weight", 0.0))
+        self.baseline_progress_scale = float(getattr(config, "baseline_progress_scale", 10.0))
+        self.baseline_pursuit_weight = float(getattr(config, "baseline_pursuit_weight", 0.0))
+        self.baseline_formation_weight = float(getattr(config, "baseline_formation_weight", 0.0))
+        if not all(np.isfinite(value) and value >= 0.0 for value in
+                   (self.baseline_pursuit_weight, self.baseline_formation_weight)):
+            raise ValueError("Pursuit and formation weights must be finite and nonnegative")
+        self.baseline_reward_scale = float(getattr(config, "baseline_reward_scale", 1.0))
+        self.baseline_failure_penalty = float(getattr(config, "baseline_failure_penalty", 0.0))
+        self.baseline_braking_safety = bool(getattr(config, "baseline_braking_safety", False))
+        self.baseline_braking_deficit_penalty = bool(getattr(config, "baseline_braking_deficit_penalty", False))
+        if self.baseline_braking_deficit_penalty and not self.baseline_braking_safety:
+            raise ValueError("Braking deficit penalty requires braking safety")
+        self.baseline_braking_reaction_time = float(getattr(
+            config, "baseline_braking_reaction_time", self.decision_dt + self.acceleration_lag))
+        if (not np.isfinite(self.baseline_braking_reaction_time) or self.baseline_braking_reaction_time < 0):
+            raise ValueError("Braking reaction time must be finite and nonnegative")
+        if (min(self.baseline_progress_scale, self.baseline_reward_scale) <= 0 or
+                min(self.baseline_progress_weight, self.baseline_failure_penalty) < 0):
+            raise ValueError("Invalid baseline shaping or reward scale")
+        if min(self.obstacle_avoid_range, self.baseline_distance_scale, self.baseline_teammate_range) <= 0:
+            raise ValueError("Baseline distance ranges must be positive")
         # 环境内部进行短时目标轨迹预测；此处为启发式外推，
         # 不依赖学习网络或目标轨迹数据集。
         self.use_target_prediction_obs = bool(getattr(config, "use_target_prediction_obs", True))
@@ -174,6 +224,29 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
         ys = np.linspace(150.0, 850.0, self.num_agents)
         self.init_uav_positions = np.array(
             [[100.0, float(y), z_mid] for y in ys], dtype=np.float32)
+        if getattr(config, "pursuer_spawn_positions", None) is not None:
+            self.init_uav_positions = np.asarray(config.pursuer_spawn_positions, dtype=np.float32)
+            if (self.init_uav_positions.shape != (self.num_agents, 3) or
+                    not np.all(np.isfinite(self.init_uav_positions))):
+                raise ValueError("pursuer_spawn_positions must have one finite xyz point per agent")
+        self.target_spawn_box = getattr(config, "target_spawn_box", None)
+        if self.target_spawn_box is not None:
+            self.target_spawn_box = np.asarray(self.target_spawn_box, dtype=np.float32)
+            lower = np.array([self.spawn_boundary_margin, self.spawn_boundary_margin,
+                              self.z_min + self.spawn_boundary_margin])
+            upper = np.array([self.map_size - self.spawn_boundary_margin,
+                              self.map_size - self.spawn_boundary_margin,
+                              self.z_max - self.spawn_boundary_margin])
+            if (self.target_spawn_box.shape != (2, 3) or
+                    not np.all(np.isfinite(self.target_spawn_box)) or
+                    not np.all(self.target_spawn_box[0] < self.target_spawn_box[1]) or
+                    not np.all(self.target_spawn_box[0] >= lower) or
+                    not np.all(self.target_spawn_box[1] <= upper)):
+                raise ValueError("target_spawn_box must define an interior lower/upper xyz box")
+        self.spawn_min_target_distance = float(getattr(config, "spawn_min_target_distance", 0.0))
+        if not np.isfinite(self.spawn_min_target_distance) or self.spawn_min_target_distance < 0.0:
+            raise ValueError("spawn_min_target_distance must be finite and nonnegative")
+        self.initial_velocity_toward_target = bool(getattr(config, "initial_velocity_toward_target", False))
 
         plot_config = getattr(config, "plot_config", {})
         self.uav_plot_radius = plot_config.get("uav_radius", 4)
@@ -188,10 +261,22 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
             self.obs_dim += self.nearest_building_k * self.nearest_building_feat_dim
         if self.use_target_prediction_obs:
             self.obs_dim += self.future_prediction_steps * 3
-        self.observation_space = {a: gym.spaces.Box(low=-1.0, high=1.0, shape=(self.obs_dim,), dtype=np.float32)
+        if self.curriculum_context_obs:
+            self.obs_dim += 4
+        obs_high = np.ones(self.obs_dim, dtype=np.float32)
+        if self.curriculum_context_obs:
+            # Keep the actual speed ratio (which can exceed one for a stronger
+            # evader) and declare its bound without clipping the observation.
+            context_start = 27 + 6 * (self.num_agents - 1)
+            maximum_target_speed = max([self.target_max_speed] + [
+                float(level.get("target_max_speed", self.target_max_speed)) for level in self.curriculum_schedule])
+            obs_high[context_start + 2] = max(1.0, maximum_target_speed / self.uav_max_speed)
+        self.observation_space = {a: gym.spaces.Box(low=-1.0, high=obs_high, dtype=np.float32)
                                   for a in self.agents}
         # 全局状态含运动状态和每架追捕机的捕获保持进度。
         self.state_dim = 9 * (self.num_agents + 1) + self.num_agents
+        if self.curriculum_context_obs:
+            self.state_dim += 4
         self.state_space = gym.spaces.Box(low=-np.inf, high=np.inf, shape=(self.state_dim,), dtype=np.float32)
 
         # ---------------- 3. 运行时状态 ----------------
@@ -209,6 +294,9 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
         self.target_acceleration = np.zeros(3, dtype=np.float32)
         self.capture_hold_times = np.zeros(self.num_agents, dtype=np.float64)
         self.episode_target_speed_max = self.target_speed
+        self.episode_target_speed_sum = 0.0
+        self.episode_target_sensed_steps = 0
+        self.initial_target_distances = np.zeros(self.num_agents, dtype=np.float32)
 
         self.uav_trails = {a: deque(maxlen=100) for a in self.agents}
         self.target_trail = deque(maxlen=100)
@@ -219,6 +307,18 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
                 "r_safe": 0.0, "r_terminal": 0.0}
             for a in self.agents
         }
+        if self.reward_mode == "baseline":
+            self.episode_sub_rewards = {
+                a: {key: 0.0 for key in ("r_distance", "r_obstacle", "r_boundary",
+                                         "r_teammate", "r_collision", "r_terminal",
+                                         "r_progress", "r_failure")}
+                for a in self.agents}
+            if self.baseline_pursuit_weight or self.baseline_formation_weight:
+                for components in self.episode_sub_rewards.values():
+                    components.update(r_purs=0.0, r_form=0.0)
+        self.episode_elapsed_seconds = 0.0
+        self.episode_pursuit_integral = self.episode_formation_integral = 0.0
+        self.pursuit_diagnostics = {}
         self.apollonius_escape = {}
         self.apollonius_margin_ema = None
         self.apollonius_dangerous_prev = None
@@ -311,10 +411,20 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
                 self.target_velocity, self.target_max_speed).astype(np.float32)
             self.target_speed = float(np.linalg.norm(self.target_velocity))
         self.spawn_offset = float(self.curriculum_config["spawn_offset"])
+        self.spawn_radius = float(self.curriculum_config.get("spawn_radius", self.spawn_radius))
+        self.spawn_vertical_radius = float(self.curriculum_config.get(
+            "spawn_vertical_radius", self.spawn_vertical_radius))
+        if not 0 <= self.spawn_vertical_radius <= self.spawn_radius:
+            raise ValueError("Curriculum vertical spawn radius must fit the surround radius")
+        self.catch_radius = float(self.curriculum_config.get("capture_radius", self.catch_radius))
+        if (self.catch_radius <= 0 or
+                (self.direct_intercept_enabled and not 0 < self.direct_intercept_radius < self.catch_radius)):
+            raise ValueError("Curriculum capture radius must exceed direct intercept radius")
         self.building_mode = self.curriculum_config["building_mode"]
         self.reward_weights = copy.deepcopy(self.curriculum_config["reward_weights"])
         if reload_buildings and hasattr(self, "buildings"):
             self.buildings = self._as_building_array(self._generate_city_blocks())
+            self._safe_spawn_cache.clear()
         return self.curriculum_level
 
     def update_curriculum(self, success_rate, global_step):
@@ -354,15 +464,28 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
             "target_jerk_max": float(self.target_jerk_max),
             "decision_dt": float(self.decision_dt),
             "physics_dt": float(self.physics_dt),
+            "baseline_braking_deficit_penalty": self.baseline_braking_deficit_penalty,
             "target_min_speed": self.target_min_speed,
             "target_max_speed": self.target_max_speed,
             "target_accel": self.target_accel,
             "capture_radius": self.catch_radius,
             "direct_intercept_radius": self.direct_intercept_radius,
+            "direct_intercept_enabled": self.direct_intercept_enabled,
             "capture_hold_required": self.capture_hold_required,
+            "episode_elapsed_seconds": self.episode_elapsed_seconds,
+            "pursuit_raw_mean_episode": self.episode_pursuit_integral / max(self.episode_elapsed_seconds, 1e-9),
+            "formation_raw_mean_episode": self.episode_formation_integral / max(self.episode_elapsed_seconds, 1e-9),
+            "pursuit_diagnostics": copy.deepcopy(self.pursuit_diagnostics),
             "target_speed_current": float(getattr(self, "target_speed", self.target_min_speed)),
             "target_speed_max_episode": float(getattr(self, "episode_target_speed_max",
                                                        getattr(self, "target_speed", self.target_min_speed))),
+            "target_speed_mean_episode": float(self.episode_target_speed_sum / max(self._episode_step, 1)),
+            "target_sensed_fraction_episode": float(self.episode_target_sensed_steps / max(self._episode_step, 1)),
+            "initial_target_distance_min": float(np.min(self.initial_target_distances)),
+            "initial_target_distances": self.initial_target_distances.tolist(),
+            "target_distances_current": np.linalg.norm(self.uav_positions - self.target_position, axis=1).tolist(),
+            "uav_speeds_current": np.linalg.norm(self.uav_velocities, axis=1).tolist(),
+            "uav_accelerations_current": np.linalg.norm(self.uav_accelerations, axis=1).tolist(),
             "coverage_mean_episode": float(self.episode_coverage_sum / max(self._episode_step, 1)),
             "coverage_max_episode": float(self.episode_coverage_max),
             "preparation_mean_episode": float(self.episode_preparation_sum / max(self._episode_step, 1)),
@@ -384,6 +507,11 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
             "separation_distance": float(self.separation_distance),
             "evader_center_pull": float(self.evader_center_pull),
             "evader_sense": float(self.evader_sense),
+            "reward_mode": self.reward_mode,
+            "evader_rep_coef": self.evader_rep_coef,
+            "evader_obstacle_range": self.evader_obstacle_range,
+            "evader_obstacle_coef": self.evader_obstacle_coef,
+            "evader_blend_center": self.evader_blend_center,
             "terminate_on_collision": bool(self.terminate_on_collision),
             "terminate_on_boundary_collision": bool(self.terminate_on_boundary_collision),
             "terminate_on_building_collision": bool(self.terminate_on_building_collision),
@@ -434,7 +562,7 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
         valid_values = np.all(np.isfinite(array))
         valid_extents = valid_shape and np.all(array[:, 0] < array[:, 1]) and np.all(array[:, 2] < array[:, 3])
         valid_xy_bounds = valid_shape and np.all(array[:, :4] >= 0.0) and np.all(array[:, :4] <= self.map_size)
-        valid_heights = valid_shape and np.all(array[:, 4] >= self.z_min) and np.all(array[:, 4] <= self.z_max)
+        valid_heights = valid_shape and np.all(array[:, 4] > 0.0) and np.all(array[:, 4] <= self.z_max)
         valid_bounds = valid_xy_bounds and valid_heights
         if not (valid_shape and valid_values and valid_extents and valid_bounds):
             raise ValueError(f"Invalid obstacle prisms in {config_file}: shape={array.shape}")
@@ -448,20 +576,20 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
 
         # 保留场景的建筑密度级别，同时在每回合改变数量、位置、长宽和高度。
         base_count = len(templates)
-        count = int(np.random.randint(max(0, int(np.floor(base_count * 0.75))),
+        count = int(self.rng.randint(max(0, int(np.floor(base_count * 0.75))),
                                       int(np.ceil(base_count * 1.25)) + 1))
         blocks = []
         for _ in range(count):
-            template = templates[np.random.randint(base_count)]
-            width = float(np.clip((template[1] - template[0]) * np.random.uniform(0.8, 1.2),
+            template = templates[self.rng.randint(base_count)]
+            width = float(np.clip((template[1] - template[0]) * self.rng.uniform(0.8, 1.2),
                                   20.0, self.map_size * 0.25))
-            depth = float(np.clip((template[3] - template[2]) * np.random.uniform(0.8, 1.2),
+            depth = float(np.clip((template[3] - template[2]) * self.rng.uniform(0.8, 1.2),
                                   20.0, self.map_size * 0.25))
             top = float(np.clip(self.z_min + (template[4] - self.z_min) *
-                                np.random.uniform(0.8, 1.2), self.z_min + 10.0, self.z_max))
+                                self.rng.uniform(0.8, 1.2), self.z_min + 10.0, self.z_max))
             for _attempt in range(100):
-                xmin = float(np.random.uniform(0.0, self.map_size - width))
-                ymin = float(np.random.uniform(0.0, self.map_size - depth))
+                xmin = float(self.rng.uniform(0.0, self.map_size - width))
+                ymin = float(self.rng.uniform(0.0, self.map_size - depth))
                 xmax, ymax = xmin + width, ymin + depth
                 if all(xmax + 5.0 <= b[0] or xmin >= b[1] + 5.0 or
                        ymax + 5.0 <= b[2] or ymin >= b[3] + 5.0 for b in blocks):
@@ -582,32 +710,44 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
         for i in indices:
             self.uav_speeds[i] = float(np.linalg.norm(self.uav_velocities[i]))
 
+    def _building_segment_entries(self, pos, displacement, radius):
+        """Vectorized first entry times into radius-expanded building prisms."""
+        if len(self.buildings) == 0:
+            return np.empty(0, dtype=np.float64)
+        blocks = self.buildings
+        lower = np.column_stack((blocks[:, 0] - radius, blocks[:, 2] - radius,
+                                 np.full(len(blocks), -np.inf)))
+        upper = np.column_stack((blocks[:, 1] + radius, blocks[:, 3] + radius,
+                                 blocks[:, 4] + radius))
+        enter, leave = np.zeros(len(blocks)), np.full(len(blocks), np.inf)
+        valid = np.ones(len(blocks), dtype=bool)
+        for axis in range(3):
+            if abs(float(displacement[axis])) < 1e-12:
+                valid &= (pos[axis] > lower[:, axis]) & (pos[axis] < upper[:, axis])
+                continue
+            first = (lower[:, axis] - pos[axis]) / displacement[axis]
+            last = (upper[:, axis] - pos[axis]) / displacement[axis]
+            enter = np.maximum(enter, np.minimum(first, last))
+            leave = np.minimum(leave, np.maximum(first, last))
+        # Contact exactly at the endpoint must also stop before a roof surface.
+        valid &= (leave > enter) & (enter <= 1.0) & (leave > 0.0)
+        return np.where(valid, enter, np.inf)
+
     def _move_velocity_with_clip_3d(self, pos, velocity, radius):
-        next_pos = (pos + velocity).astype(np.float32)
-        hit = False
-        if next_pos[0] < radius:
-            next_pos[0] = radius; hit = True
-        elif next_pos[0] > self.map_size - radius:
-            next_pos[0] = self.map_size - radius; hit = True
-        if next_pos[1] < radius:
-            next_pos[1] = radius; hit = True
-        elif next_pos[1] > self.map_size - radius:
-            next_pos[1] = self.map_size - radius; hit = True
-        if next_pos[2] < self.z_min or next_pos[2] > self.z_max:
+        """Stop before the first building hit, including roofs and crossed segments."""
+        pos = np.asarray(pos, dtype=np.float64)
+        candidate = pos + np.asarray(velocity, dtype=np.float64)
+        next_pos = np.clip(candidate, [radius, radius, self.z_min],
+                           [self.map_size - radius, self.map_size - radius, self.z_max])
+        hit = bool(np.any(candidate != next_pos))
+        displacement = next_pos - pos
+        entries = self._building_segment_entries(pos, displacement, radius)
+        if len(entries) and np.any(np.isfinite(entries)):
+            # A millimetre clearance survives float32 position rounding on a 1 km map.
+            fraction = max(0.0, min(entries) - 1e-3 / max(float(np.linalg.norm(displacement)), 1e-9))
+            next_pos = pos + fraction * displacement
             hit = True
-            next_pos[2] = np.clip(next_pos[2], self.z_min, self.z_max)
-        for b in self.buildings:
-            xmin, xmax, ymin, ymax = b[:4]
-            if self._point_hits_building(next_pos, radius, b):
-                hit = True
-                px = np.array([next_pos[0], pos[1], next_pos[2]], dtype=np.float32)
-                if not self._point_hits_building(px, radius, b):
-                    next_pos = px; break
-                py = np.array([pos[0], next_pos[1], next_pos[2]], dtype=np.float32)
-                if not self._point_hits_building(py, radius, b):
-                    next_pos = py; break
-                next_pos = np.array([pos[0], pos[1], next_pos[2]], dtype=np.float32); break
-        return next_pos, hit
+        return next_pos.astype(np.float32), hit
 
     def _prospective_collision_sources_velocity(self, pos, velocity, radius):
         candidate = np.asarray(pos, np.float32) + np.asarray(velocity, np.float32)
@@ -624,9 +764,8 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
             sources.append("boundary:z_min")
         if candidate[2] > self.z_max:
             sources.append("boundary:z_max")
-        for index, b in enumerate(self.buildings):
-            if self._point_hits_building(candidate, radius, b):
-                sources.append(f"building:{index}")
+        entries = self._building_segment_entries(np.asarray(pos), np.asarray(velocity), radius)
+        sources.extend(f"building:{index}" for index in np.flatnonzero(np.isfinite(entries)))
         return sources
 
     def _building_distances_3d(self, pos):
@@ -751,6 +890,8 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
                       self.target_velocity / self.target_max_speed,
                       self.target_acceleration / self.target_accel]
             parts = own + [rel_mates, boundary] + target
+            if self.curriculum_context_obs:
+                parts.append(self._curriculum_context())
             if self.use_target_prediction_obs:
                 parts.append(self._predict_target_future(pos).flatten())
             # 建筑节点固定放在末尾，供 Actor 的障碍注意力按 K×6 读取。
@@ -760,11 +901,21 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
         return obs
 
     def state(self):
-        return np.concatenate([
+        parts = [
             self.uav_positions.flatten(), self.uav_velocities.flatten(),
             self.uav_accelerations.flatten(), self.target_position,
             self.target_velocity, self.target_acceleration,
-            np.clip(self.capture_hold_times / self.capture_hold_required, 0.0, 1.0)]).astype(np.float32)
+            np.clip(self.capture_hold_times / self.capture_hold_required, 0.0, 1.0)]
+        if self.curriculum_context_obs:
+            parts.append(self._curriculum_context())
+        return np.concatenate(parts).astype(np.float32)
+
+    def _curriculum_context(self):
+        return np.array([
+            self.curriculum_level / max(len(self.curriculum_schedule) - 1, 1),
+            len(self.buildings) / 100.0,
+            self.target_max_speed / self.uav_max_speed,
+            self.catch_radius / 100.0], dtype=np.float32)
 
     def _closure_score(self, route_time):
         if not np.isfinite(route_time):
@@ -778,8 +929,122 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
             (distances - self.match_distance) / self.match_distance_width, -40.0, 40.0)))
         return (gate / (1.0 + relative_speeds / self.match_speed_scale)).astype(np.float32)
 
+    def _braking_clearances(self, index):
+        """Approximate clearance after reaction/braking; optionally retain a deficit."""
+        pos, velocity = self.uav_positions[index], self.uav_velocities[index]
+
+        def braking_distance(closing):
+            closing = np.maximum(closing, 0.0)
+            return closing * self.baseline_braking_reaction_time + closing ** 2 / (2.0 * self.max_accel)
+
+        boundary = np.array([pos[0] - self.uav_radius, self.map_size - self.uav_radius - pos[0],
+                             pos[1] - self.uav_radius, self.map_size - self.uav_radius - pos[1],
+                             pos[2] - self.z_min, self.z_max - pos[2]])
+        closing = np.array([-velocity[0], velocity[0], -velocity[1], velocity[1], -velocity[2], velocity[2]])
+        boundary_clearance = float(np.min(boundary - braking_distance(closing)))
+        building_clearance = float('inf')
+        if len(self.buildings):
+            b = self.buildings
+            closest = np.stack([np.clip(pos[0], b[:, 0], b[:, 1]),
+                                np.clip(pos[1], b[:, 2], b[:, 3]),
+                                np.clip(pos[2], self.z_min, b[:, 4])], axis=1)
+            offset = closest - pos
+            distance = np.linalg.norm(offset, axis=1)
+            directions = offset / np.maximum(distance[:, None], 1e-6)
+            closing = directions @ velocity
+            building_clearance = float(np.min(distance - self.uav_radius - braking_distance(closing)))
+        if not self.baseline_braking_deficit_penalty:
+            building_clearance = max(0.0, building_clearance)
+            boundary_clearance = max(0.0, boundary_clearance)
+        return building_clearance, boundary_clearance
+
+    def _pursuit_reward_terms(self):
+        """Shared closing speed and nearest-teammate angle, in m/s and radians.
+
+        Coincident points have no direction: use zero closing speed/angle for
+        those entries. np.argmin resolves nearest-neighbor ties by agent index.
+        """
+        relative = self.target_position[None, :] - self.uav_positions
+        distances = np.linalg.norm(relative, axis=1)
+        valid_target = distances > 1e-6
+        directions = relative / np.maximum(distances[:, None], 1e-6)
+        closing = np.sum((self.uav_velocities - self.target_velocity[None, :]) * directions, axis=1)
+        closing[~valid_target] = 0.0
+        angles = np.zeros(self.num_agents, dtype=np.float32)
+        nearest = np.full(self.num_agents, -1, dtype=int)
+        if self.num_agents > 1:
+            offsets = self.uav_positions[None, :, :] - self.uav_positions[:, None, :]
+            gaps = np.linalg.norm(offsets, axis=-1)
+            np.fill_diagonal(gaps, np.inf)
+            nearest = np.argmin(gaps, axis=1)
+            selected = offsets[np.arange(self.num_agents), nearest]
+            lengths = gaps[np.arange(self.num_agents), nearest]
+            mate_directions = selected / np.maximum(lengths[:, None], 1e-6)
+            valid = valid_target & (lengths > 1e-6)
+            angles[valid] = np.arccos(np.clip(np.sum(mate_directions[valid] * directions[valid], axis=1), -1.0, 1.0))
+        pursuit = float(np.mean(closing) + np.min(closing))
+        formation = float(np.mean(angles))
+        diagnostics = dict(closing_speeds=closing.tolist(), closing_mean=float(np.mean(closing)),
+                           closing_min=float(np.min(closing)), angles_radians=angles.tolist(),
+                           nearest_teammates=nearest.tolist(), r_purs_raw=pursuit, r_form_raw=formation)
+        return pursuit, formation, diagnostics
+
+    def _baseline_rewards(self, distances, building_min, collision_penalties, success, elapsed,
+                          previous_distances=None, terminal=False, failed=False):
+        """Sparse capture, shared pursuit/formation and individual safety rewards."""
+        rewards = {}
+        pursuit = formation = 0.0
+        if self.baseline_pursuit_weight or self.baseline_formation_weight:
+            pursuit, formation, self.pursuit_diagnostics = self._pursuit_reward_terms()
+            self.episode_pursuit_integral += pursuit * elapsed
+            self.episode_formation_integral += formation * elapsed
+        for i, agent in enumerate(self.agents):
+            pos = self.uav_positions[i]
+            clearance = min(pos[0] - self.uav_radius, self.map_size - self.uav_radius - pos[0],
+                            pos[1] - self.uav_radius, self.map_size - self.uav_radius - pos[1],
+                            pos[2] - self.z_min, self.z_max - pos[2])
+            teammate_distances = np.linalg.norm(np.delete(self.uav_positions, i, axis=0) - pos, axis=1)
+            teammate_clearance = (max(0.0, float(np.min(teammate_distances)) - self.uav_collision_distance)
+                                  if len(teammate_distances) else self.baseline_teammate_range)
+            obstacle_clearance = max(0.0, building_min[i] - self.uav_radius)
+            if self.baseline_braking_safety:
+                obstacle_clearance, clearance = self._braking_clearances(i)
+            progress = 0.0
+            if self.baseline_progress_weight:
+                if previous_distances is None:
+                    raise ValueError("Potential shaping requires the pre-action target distances")
+                previous_potential = -float(previous_distances[i]) / self.baseline_progress_scale
+                potential = 0.0 if success or terminal else -float(distances[i]) / self.baseline_progress_scale
+                progress = self.baseline_progress_weight * (
+                    self.discount_gamma * potential - previous_potential)
+            components = {
+                "r_distance": -self.baseline_distance_weight * float(distances[i]) / self.baseline_distance_scale * elapsed,
+                "r_obstacle": -self.baseline_obstacle_weight * max(0.0, 1.0 - obstacle_clearance / self.obstacle_avoid_range) ** 2 * elapsed,
+                "r_boundary": -self.baseline_boundary_weight * max(0.0, 1.0 - clearance / self.boundary_warning_distance) ** 2 * elapsed,
+                "r_teammate": -self.baseline_teammate_weight * max(0.0, 1.0 - teammate_clearance / self.baseline_teammate_range) ** 2 * elapsed,
+                "r_collision": float(collision_penalties[i]),
+                "r_terminal": self.baseline_success_reward if success and not failed else 0.0,
+                "r_progress": progress,
+                "r_failure": -self.baseline_failure_penalty if failed else 0.0,
+            }
+            if self.baseline_pursuit_weight or self.baseline_formation_weight:
+                components.update(r_purs=self.baseline_pursuit_weight * pursuit * elapsed,
+                                  r_form=self.baseline_formation_weight * formation * elapsed)
+            components = {key: value * self.baseline_reward_scale for key, value in components.items()}
+            rewards[agent] = float(sum(components.values()))
+            for key, value in components.items():
+                self.episode_sub_rewards[agent][key] += value
+        return rewards
+
     def agent_mask(self):
         return {a: True for a in self.agents}
+
+    def seed(self, seed=None):
+        """Reset this environment's RNG without affecting other workers or replay."""
+        if seed is not None:
+            self.env_seed = int(seed)
+        self.rng = np.random.RandomState(self.env_seed)
+        return [self.env_seed]
 
     def avail_actions(self):
         return None
@@ -790,9 +1055,14 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
     def reset(self):
         if self.pending_curriculum_level is not None:
             self.set_curriculum_level(self.pending_curriculum_level,
-                                      reload_buildings=False)
+                                      reload_buildings=not self.randomize_building_layout)
             self.pending_curriculum_level = None
         self._episode_step = 0
+        self.episode_elapsed_seconds = 0.0
+        self.episode_pursuit_integral = self.episode_formation_integral = 0.0
+        self.pursuit_diagnostics = {}
+        self.episode_target_speed_sum = 0.0
+        self.episode_target_sensed_steps = 0
         self.individual_episode_reward = {k: 0.0 for k in self.agents}
         for a in self.agents:
             for k in self.episode_sub_rewards[a]:
@@ -807,7 +1077,7 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
         self.capture_hold_times.fill(0.0)
 
         if self.randomize_density:
-            mode = str(np.random.choice(self.randomize_density))
+            mode = str(self.rng.choice(self.randomize_density))
             self.building_mode = mode
         if self.randomize_building_layout:
             self.buildings = self._as_building_array(self._generate_city_blocks())
@@ -822,16 +1092,20 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
         z_low = self.z_min + self.spawn_boundary_margin + self.spawn_vertical_radius
         z_high = self.z_max - self.spawn_boundary_margin - self.spawn_vertical_radius
         for attempt in range(200):
-            if attempt < 100:
-                xy = np.random.uniform(center - so, center + so, size=2).astype(np.float32)
-                z = np.random.uniform(z_low, z_high) if self.surround_spawn else np.random.uniform(
+            if self.target_spawn_box is not None:
+                t = self.rng.uniform(self.target_spawn_box[0], self.target_spawn_box[1]).astype(np.float32)
+            elif attempt < 100:
+                xy = self.rng.uniform(center - so, center + so, size=2).astype(np.float32)
+                z = self.rng.uniform(z_low, z_high) if self.surround_spawn else self.rng.uniform(
                     max(self.z_min, z_mid - so), min(self.z_max, z_mid + so))
+                t = np.array([xy[0], xy[1], z], np.float32)
             else:
-                xy = np.random.uniform(0.0, self.map_size, size=2).astype(np.float32)
-                z = np.random.uniform(z_low, z_high) if self.surround_spawn else np.random.uniform(
+                xy = self.rng.uniform(0.0, self.map_size, size=2).astype(np.float32)
+                z = self.rng.uniform(z_low, z_high) if self.surround_spawn else self.rng.uniform(
                     self.z_min, self.z_max)
-            t = np.array([xy[0], xy[1], z], np.float32)
-            if not self._is_in_building(t, self.target_radius):
+                t = np.array([xy[0], xy[1], z], np.float32)
+            separated = np.all(np.linalg.norm(self.uav_positions - t, axis=1) >= self.spawn_min_target_distance)
+            if separated and not self._is_in_building(t, self.target_radius):
                 self.target_position = t
                 break
         else:
@@ -846,18 +1120,18 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
             self._validate_pursuer_spawns(self.uav_positions)
         else:
             self.spawn_offsets = np.zeros(self.num_agents, dtype=np.float32)
-        if self.surround_spawn:
+        if self.surround_spawn or self.initial_velocity_toward_target:
             directions = self.target_position[None, :] - self.uav_positions
             norms = np.maximum(np.linalg.norm(directions, axis=1, keepdims=True), 1e-6)
             directions = directions / norms
         else:
-            angles = np.random.uniform(0.0, 2.0 * np.pi, size=self.num_agents)
+            angles = self.rng.uniform(0.0, 2.0 * np.pi, size=self.num_agents)
             directions = np.column_stack([np.cos(angles), np.sin(angles),
                                           np.zeros(self.num_agents)])
         self.uav_velocities = (directions * self.uav_initial_speed).astype(np.float32)
         self._sync_uav_kinematics_from_velocity()
         self.target_speed = self.target_min_speed
-        target_angle = float(np.random.uniform(0.0, 2.0 * np.pi))
+        target_angle = float(self.rng.uniform(0.0, 2.0 * np.pi))
         self.target_velocity = (self.target_speed * np.array(
             [np.cos(target_angle), np.sin(target_angle), 0.0], np.float32))
         self.target_acceleration.fill(0.0)
@@ -865,13 +1139,21 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
 
         initial_distances = np.linalg.norm(
             self.uav_positions - self.target_position[None, :], axis=1)
+        if np.min(initial_distances) < self.spawn_min_target_distance:
+            raise RuntimeError("Safe-spawn relocation violated spawn_min_target_distance")
+        self.initial_target_distances = initial_distances.copy()
         for i, a in enumerate(self.agents):
             self.uav_trails[a].append(self.uav_positions[i].copy())
         self.target_trail.append(self.target_position.copy())
 
-        self.target_forecast = forecast_target(self)
-        self.last_coverage = reach_hold_coverage(self, self.target_forecast)
-        self.last_preparation, route_time = coverage_preparation(self, self.target_forecast)
+        if self.reward_mode == "baseline":
+            self.target_forecast = None
+            self.last_coverage = self.last_preparation = 0.0
+            route_time = float("inf")
+        else:
+            self.target_forecast = forecast_target(self)
+            self.last_coverage = reach_hold_coverage(self, self.target_forecast)
+            self.last_preparation, route_time = coverage_preparation(self, self.target_forecast)
         self.last_closure = self._closure_score(route_time)
         self.last_match_scores = self._terminal_match_scores()
         self.last_hold_progress = 0.0
@@ -893,7 +1175,7 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
     def _place_pursuers_around_target(self):
         """随机旋转水平队形，在保持初距的同时压缩垂直展开并留出上下机动余量。"""
         dirs = g3.fibonacci_sphere(self.num_agents)
-        angle = float(np.random.uniform(0.0, 2.0 * np.pi))
+        angle = float(self.rng.uniform(0.0, 2.0 * np.pi))
         ca, sa = np.cos(angle), np.sin(angle)
         for i in range(self.num_agents):
             z_offset = self.spawn_vertical_radius * float(dirs[i, 2])
@@ -912,7 +1194,7 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
                            self.z_max - self.spawn_boundary_margin)
             tries = 0
             while self._is_in_building(p, self.uav_radius) and tries < 12:
-                p = p + np.random.uniform(-40, 40, 3).astype(np.float32)
+                p = p + self.rng.uniform(-40, 40, 3).astype(np.float32)
                 p[0] = np.clip(p[0], self.spawn_boundary_margin,
                                self.map_size - self.spawn_boundary_margin)
                 p[1] = np.clip(p[1], self.spawn_boundary_margin,
@@ -942,19 +1224,19 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
                     rep += (vec / dist) * (rep_coef / (dist + 5.0))
         desired_speed = self.target_max_speed if is_sensed else self.target_min_speed
 
-        wall = 100.0
+        wall = self.evader_boundary_range
         if tx < wall:
-            rep[0] += 50.0 / (max(tx, 0.1) ** 1.5)
+            rep[0] += self.evader_boundary_coef / (max(tx, 0.1) ** 1.5)
         if self.map_size - tx < wall:
-            rep[0] -= 50.0 / (max(self.map_size - tx, 0.1) ** 1.5)
+            rep[0] -= self.evader_boundary_coef / (max(self.map_size - tx, 0.1) ** 1.5)
         if ty < wall:
-            rep[1] += 50.0 / (max(ty, 0.1) ** 1.5)
+            rep[1] += self.evader_boundary_coef / (max(ty, 0.1) ** 1.5)
         if self.map_size - ty < wall:
-            rep[1] -= 50.0 / (max(self.map_size - ty, 0.1) ** 1.5)
+            rep[1] -= self.evader_boundary_coef / (max(self.map_size - ty, 0.1) ** 1.5)
         if tz - self.z_min < wall:
-            rep[2] += 50.0 / (max(tz - self.z_min, 0.1) ** 1.5)
+            rep[2] += self.evader_boundary_coef / (max(tz - self.z_min, 0.1) ** 1.5)
         if self.z_max - tz < wall:
-            rep[2] -= 50.0 / (max(self.z_max - tz, 0.1) ** 1.5)
+            rep[2] -= self.evader_boundary_coef / (max(self.z_max - tz, 0.1) ** 1.5)
 
         if len(self.buildings) > 0:
             xmins, xmaxs = self.buildings[:, 0], self.buildings[:, 1]
@@ -964,17 +1246,17 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
             cy = np.clip(ty, ymins, ymaxs)
             vx, vy = tx - cx, ty - cy
             dists = np.hypot(vx, vy)
-            active = tz <= tops + self.target_radius + 20.0
-            m = active & (dists < 20.0) & (dists > 0.1)
+            active = tz <= tops + self.target_radius + self.evader_obstacle_range
+            m = active & (dists < self.evader_obstacle_range) & (dists > 0.1)
             if np.any(m):
-                s = 40.0 / (dists[m] ** 1.5)
+                s = self.evader_obstacle_coef / (dists[m] ** 1.5)
                 rep[0] += float(np.sum((vx[m] / dists[m]) * s))
                 rep[1] += float(np.sum((vy[m] / dists[m]) * s))
             if np.any(active & (dists <= 0.1)):
                 if deterministic:
                     rep[:2] += np.array([1.0, 0.0], np.float32) * 100.0
                 else:
-                    rep[:2] += np.random.randn(2).astype(np.float32) * 100.0
+                    rep[:2] += self.rng.randn(2).astype(np.float32) * 100.0
 
         # 中心偏置仅在接近空域边缘时提前转向，不能在中心附近覆盖原有航向。
         centre_bias = np.zeros(3, np.float32)
@@ -990,15 +1272,20 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
             m = float(np.linalg.norm(u))
             xy_clearance = min(tx, self.map_size - tx, ty, self.map_size - ty)
             z_clearance = min(tz - self.z_min, self.z_max - tz)
-            edge_fraction = max(0.0, 1.0 - xy_clearance / 150.0,
-                                1.0 - z_clearance / 75.0)
+            edge_fraction = max(0.0, 1.0 - xy_clearance / self.evader_center_xy_range,
+                                 1.0 - z_clearance / self.evader_center_z_range)
             if m > 1e-6 and edge_fraction > 0.0:
                 centre_bias = self.evader_center_pull * edge_fraction * u * min(1.0, 1.5 / m)
 
         # 有明确威胁时按排斥势场避让；平时保持惯性航向并缓慢修正回中心。
         rep_norm = float(np.linalg.norm(rep))
         velocity_norm = float(np.linalg.norm(velocity))
-        if rep_norm > 1e-3:
+        if self.evader_blend_center:
+            cruise = (velocity / velocity_norm if velocity_norm > 1e-6
+                      else np.array([1.0, 0.0, 0.0], np.float32))
+            heading = (rep if rep_norm > 1e-3 else cruise * desired_speed) + centre_bias
+            direction = heading / max(float(np.linalg.norm(heading)), 1e-6)
+        elif rep_norm > 1e-3:
             direction = rep / rep_norm
         else:
             cruise = (velocity / velocity_norm if velocity_norm > 1e-6
@@ -1064,7 +1351,8 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
         hold_intervals = []
         for i in range(self.num_agents):
             start, end = old_relative[i], new_relative[i]
-            direct = self._segment_inside_interval(start, end, self.direct_intercept_radius)
+            direct = (self._segment_inside_interval(start, end, self.direct_intercept_radius)
+                      if self.direct_intercept_enabled else None)
             if direct is not None:
                 candidates.append((direct[0], 0, i, "direct"))
             hold = self._segment_inside_interval(start, end, self.catch_radius)
@@ -1088,6 +1376,7 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
 
     def step(self, actions_dict):
         self._episode_step += 1
+        start_distances = np.linalg.norm(self.uav_positions - self.target_position[None, :], axis=1)
         rewards_dict = {a: 0.0 for a in self.agents}
         hit_flags = [False] * self.num_agents
         collision_sources = {}
@@ -1190,7 +1479,7 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
         else:
             min_uav_gap = float("inf")
         self.episode_min_uav_gap = min(self.episode_min_uav_gap, min_uav_gap)
-        uav_conflict = bool(min_uav_gap <= self.uav_collision_distance)
+        uav_conflict = bool(self.uav_collision_enabled and min_uav_gap <= self.uav_collision_distance)
         if uav_conflict:
             self.episode_uav_conflicts += 1
         if self.uav_collision_enabled and uav_conflict:
@@ -1201,10 +1490,12 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
                     if "uav:teammate" not in sources:
                         sources.append("uav:teammate")
 
-        building_min = [float(np.min(d)) if len(d) else self.obstacle_avoid_range
+        building_min = [float(np.min(d)) if len(d) else self.obstacle_avoid_range + self.uav_radius
                         for d in (self._building_distances_3d(pos) for pos in self.uav_positions)]
 
         cur_dists = np.linalg.norm(self.uav_positions - self.target_position[None, :], axis=1)
+        self.episode_target_speed_sum += float(self.target_speed)
+        self.episode_target_sensed_steps += int(float(np.min(cur_dists)) < self.evader_sense)
         is_caught = capture_event is not None
         building_crash = any(any(str(src).startswith("building:")
                                  for src in collision_sources.get(a, []))
@@ -1220,105 +1511,118 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
             (uav_crash and self.terminate_on_collision) or
             (building_crash and self.terminate_on_building_collision))
 
-        w = self.reward_weights
-        min_new = float(np.min(cur_dists))
-        previous_coverage = self.last_coverage
-        self.target_forecast = forecast_target(self)
-        current_coverage = reach_hold_coverage(self, self.target_forecast)
-        current_preparation, min_route_time = coverage_preparation(self, self.target_forecast)
-        current_closure = self._closure_score(min_route_time)
-        current_match_scores = self._terminal_match_scores()
-        terminal_state = (is_caught or terminate_for_crash or
-                          self._episode_step >= self.max_episode_steps)
-        # 接近与匹配采用真实进展差值；折扣势函数差在终止势值归零时
-        # 折扣累计只取决于初态，无法奖励最终更接近目标。
-        r_preparation = current_preparation - self.last_preparation
-        self.last_preparation = current_preparation
-        r_closure = current_closure - self.last_closure
-        self.last_closure = current_closure
-        r_match = current_match_scores - self.last_match_scores
-        self.last_match_scores = current_match_scores
-        self.episode_preparation_sum += current_preparation
-        if np.isfinite(min_route_time):
-            self.episode_safe_route_time_sum += min_route_time
-            self.episode_safe_route_time_count += 1
-        # 折扣势函数差分给出进展，小的水平项鼓励维持已有覆盖。
-        r_coverage = (self.discount_gamma * (0.0 if terminal_state else current_coverage)
-                      - previous_coverage
-                      + 0.02 * current_coverage)
-        self.last_coverage = current_coverage
-        self.episode_coverage_sum += current_coverage
-        self.episode_coverage_max = max(self.episode_coverage_max, current_coverage)
-        self.episode_min_target_distance = min(self.episode_min_target_distance, min_new)
-        hold_progress = float(np.max(self.capture_hold_times) / self.capture_hold_required)
-        r_hold = hold_progress - self.last_hold_progress
-        self.last_hold_progress = hold_progress
-        elapsed_step = (capture_time - (self._episode_step - 1) * self.decision_dt
-                        if capture_time is not None else self.decision_dt)
+        if self.reward_mode == "baseline":
+            previous_coverage = current_coverage = current_preparation = current_closure = 0.0
+            current_match_scores = np.zeros(self.num_agents, dtype=np.float32)
+            min_route_time = float("inf")
+            elapsed_step = (capture_time - (self._episode_step - 1) * self.decision_dt
+                            if capture_time is not None else self.decision_dt)
+            self.episode_elapsed_seconds += elapsed_step
+            rewards_dict = self._baseline_rewards(cur_dists, building_min, collision_penalties,
+                                                  is_caught, elapsed_step, previous_distances=start_distances,
+                                                  terminal=is_caught or terminate_for_crash,
+                                                  failed=terminate_for_crash)
+            self.episode_min_target_distance = min(self.episode_min_target_distance, float(np.min(cur_dists)))
+        else:
+            w = self.reward_weights
+            min_new = float(np.min(cur_dists))
+            previous_coverage = self.last_coverage
+            self.target_forecast = forecast_target(self)
+            current_coverage = reach_hold_coverage(self, self.target_forecast)
+            current_preparation, min_route_time = coverage_preparation(self, self.target_forecast)
+            current_closure = self._closure_score(min_route_time)
+            current_match_scores = self._terminal_match_scores()
+            terminal_state = (is_caught or terminate_for_crash or
+                              self._episode_step >= self.max_episode_steps)
+            # 接近与匹配采用真实进展差值；折扣势函数差在终止势值归零时
+            # 折扣累计只取决于初态，无法奖励最终更接近目标。
+            r_preparation = current_preparation - self.last_preparation
+            self.last_preparation = current_preparation
+            r_closure = current_closure - self.last_closure
+            self.last_closure = current_closure
+            r_match = current_match_scores - self.last_match_scores
+            self.last_match_scores = current_match_scores
+            self.episode_preparation_sum += current_preparation
+            if np.isfinite(min_route_time):
+                self.episode_safe_route_time_sum += min_route_time
+                self.episode_safe_route_time_count += 1
+            # 折扣势函数差分给出进展，小的水平项鼓励维持已有覆盖。
+            r_coverage = (self.discount_gamma * (0.0 if terminal_state else current_coverage)
+                          - previous_coverage
+                          + 0.02 * current_coverage)
+            self.last_coverage = current_coverage
+            self.episode_coverage_sum += current_coverage
+            self.episode_coverage_max = max(self.episode_coverage_max, current_coverage)
+            self.episode_min_target_distance = min(self.episode_min_target_distance, min_new)
+            hold_progress = float(np.max(self.capture_hold_times) / self.capture_hold_required)
+            r_hold = hold_progress - self.last_hold_progress
+            self.last_hold_progress = hold_progress
+            elapsed_step = (capture_time - (self._episode_step - 1) * self.decision_dt
+                            if capture_time is not None else self.decision_dt)
 
-        for i, a in enumerate(self.agents):
-            dist = float(cur_dists[i])
-            proximity = max(0.0, 1.0 - building_min[i] / self.obstacle_avoid_range)
-            r_obs = -0.5 * self.obs_avoid_weight * proximity ** 2
-            action = np.asarray(actions_dict[a], dtype=np.float32).reshape(-1)
-            accel_effort = float(np.mean(np.clip(action[:3], -1.0, 1.0) ** 2))
-            r_accel = -accel_effort
-            r_mate = 0.0
-            for j in range(self.num_agents):
-                if i == j:
-                    continue
-                dmate = float(np.linalg.norm(self.uav_positions[i] - self.uav_positions[j]))
-                if dmate < 10.0:
-                    r_mate -= (10.0 - dmate) / 10.0
-            r_separation = self._teammate_separation_penalty(i)
-            z = float(self.uav_positions[i, 2])
-            thr = 30.0
-            r_zlimit = 0.0
-            if z - self.z_min < thr:
-                r_zlimit -= (thr - (z - self.z_min)) / thr
-            if self.z_max - z < thr:
-                r_zlimit -= (thr - (self.z_max - z)) / thr
-            xy_clearance = min(
-                float(self.uav_positions[i, 0]) - self.uav_radius,
-                self.map_size - self.uav_radius - float(self.uav_positions[i, 0]),
-                float(self.uav_positions[i, 1]) - self.uav_radius,
-                self.map_size - self.uav_radius - float(self.uav_positions[i, 1]),
-            )
-            boundary_fraction = np.clip(
-                (self.boundary_warning_distance - xy_clearance) /
-                max(self.boundary_warning_distance, 1e-6), 0.0, 1.0)
-            r_xy_boundary = -float(boundary_fraction ** 2)
-            # 动作为三轴加速度指令，各轴采用相同惩罚。
-            r_safe = (r_obs + 0.5 * r_mate + 0.2 * r_accel
-                      + 0.5 * r_zlimit + 0.5 * r_xy_boundary
-                      + self.separation_weight * r_separation
-                      + collision_penalties[i])
+            for i, a in enumerate(self.agents):
+                dist = float(cur_dists[i])
+                proximity = max(0.0, 1.0 - building_min[i] / self.obstacle_avoid_range)
+                r_obs = -0.5 * self.obs_avoid_weight * proximity ** 2
+                action = np.asarray(actions_dict[a], dtype=np.float32).reshape(-1)
+                accel_effort = float(np.mean(np.clip(action[:3], -1.0, 1.0) ** 2))
+                r_accel = -accel_effort
+                r_mate = 0.0
+                for j in range(self.num_agents):
+                    if i == j:
+                        continue
+                    dmate = float(np.linalg.norm(self.uav_positions[i] - self.uav_positions[j]))
+                    if dmate < 10.0:
+                        r_mate -= (10.0 - dmate) / 10.0
+                r_separation = self._teammate_separation_penalty(i)
+                z = float(self.uav_positions[i, 2])
+                thr = 30.0
+                r_zlimit = 0.0
+                if z - self.z_min < thr:
+                    r_zlimit -= (thr - (z - self.z_min)) / thr
+                if self.z_max - z < thr:
+                    r_zlimit -= (thr - (self.z_max - z)) / thr
+                xy_clearance = min(
+                    float(self.uav_positions[i, 0]) - self.uav_radius,
+                    self.map_size - self.uav_radius - float(self.uav_positions[i, 0]),
+                    float(self.uav_positions[i, 1]) - self.uav_radius,
+                    self.map_size - self.uav_radius - float(self.uav_positions[i, 1]),
+                )
+                boundary_fraction = np.clip(
+                    (self.boundary_warning_distance - xy_clearance) /
+                    max(self.boundary_warning_distance, 1e-6), 0.0, 1.0)
+                r_xy_boundary = -float(boundary_fraction ** 2)
+                # 动作为三轴加速度指令，各轴采用相同惩罚。
+                r_safe = (r_obs + 0.5 * r_mate + 0.2 * r_accel
+                          + 0.5 * r_zlimit + 0.5 * r_xy_boundary
+                          + self.separation_weight * r_separation
+                          + collision_penalties[i])
 
-            wr_cov = 0.0 if "r_cov" in self.reward_disable else w["w_cov"] * r_coverage
-            wr_prep = (0.0 if "r_prep" in self.reward_disable
-                       else w["w_prep"] * r_preparation)
-            wr_close = (0.0 if "r_close" in self.reward_disable
-                        else w.get("w_close", 0.0) * r_closure)
-            wr_match = (0.0 if "r_match" in self.reward_disable
-                        else w.get("w_match", 0.0) * float(r_match[i]))
-            wr_hold = 0.0 if "r_hold" in self.reward_disable else w["w_hold"] * r_hold
-            wr_step = (0.0 if "r_step" in self.reward_disable
-                       else -w.get("w_step", 0.0) * elapsed_step)
-            wr_safe = 0.0 if "r_safe" in self.reward_disable else w["w_safe"] * r_safe
-            wr_terminal = (0.0 if "r_terminal" in self.reward_disable or not is_caught
-                           else (w.get("w_direct_terminal", w["w_terminal"])
-                                 if capture_event[0] == "direct" else w["w_terminal"]))
-            rewards_dict[a] = (wr_cov + wr_prep + wr_close + wr_match + wr_hold +
-                               wr_step + wr_safe + wr_terminal)
-            sr = self.episode_sub_rewards[a]
-            sr["r_cov"] += wr_cov
-            sr["r_prep"] += wr_prep
-            sr["r_close"] += wr_close
-            sr["r_match"] += wr_match
-            sr["r_hold"] += wr_hold
-            sr["r_step"] += wr_step
-            sr["r_safe"] += wr_safe
-            sr["r_terminal"] += wr_terminal
+                wr_cov = 0.0 if "r_cov" in self.reward_disable else w["w_cov"] * r_coverage
+                wr_prep = (0.0 if "r_prep" in self.reward_disable
+                           else w["w_prep"] * r_preparation)
+                wr_close = (0.0 if "r_close" in self.reward_disable
+                            else w.get("w_close", 0.0) * r_closure)
+                wr_match = (0.0 if "r_match" in self.reward_disable
+                            else w.get("w_match", 0.0) * float(r_match[i]))
+                wr_hold = 0.0 if "r_hold" in self.reward_disable else w["w_hold"] * r_hold
+                wr_step = (0.0 if "r_step" in self.reward_disable
+                           else -w.get("w_step", 0.0) * elapsed_step)
+                wr_safe = 0.0 if "r_safe" in self.reward_disable else w["w_safe"] * r_safe
+                wr_terminal = (0.0 if "r_terminal" in self.reward_disable or not is_caught
+                               else (w.get("w_direct_terminal", w["w_terminal"])
+                                     if capture_event[0] == "direct" else w["w_terminal"]))
+                rewards_dict[a] = (wr_cov + wr_prep + wr_close + wr_match + wr_hold +
+                                   wr_step + wr_safe + wr_terminal)
+                sr = self.episode_sub_rewards[a]
+                sr["r_cov"] += wr_cov
+                sr["r_prep"] += wr_prep
+                sr["r_close"] += wr_close
+                sr["r_match"] += wr_match
+                sr["r_hold"] += wr_hold
+                sr["r_step"] += wr_step
+                sr["r_safe"] += wr_safe
+                sr["r_terminal"] += wr_terminal
 
         for k, v in rewards_dict.items():
             self.individual_episode_reward[k] += v

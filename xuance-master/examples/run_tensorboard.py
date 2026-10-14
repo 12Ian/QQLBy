@@ -1,54 +1,43 @@
-import os
+"""Start TensorBoard at an experiment or seed root without selecting a metric folder."""
 import argparse
+from pathlib import Path
 import subprocess
+import sys
 
-# 把你的日志基础路径配置在这里
-BASE_LOG_DIR = r"/home/ryy/UAV_Mine/xuance-master/outputs/logs/crlg_3d/crlg_3d_crlg_dynamic_te_3m_16p_20260924_141240"  # 修改为你的实际路径
+
+BASE_LOG_DIR = str(Path(__file__).resolve().parents[1] / "outputs/logs/matd3")
+
 
 def get_latest_log_dir(base_dir):
-    """获取指定目录下最新的文件夹"""
-    # 获取该目录下所有文件夹的完整路径
-    dirs = [os.path.join(base_dir, d) for d in os.listdir(base_dir) if os.path.isdir(os.path.join(base_dir, d))]
-
-    if not dirs:
+    base = Path(base_dir).expanduser()
+    if not base.is_dir():
         return None
+    # A seed root already contains events; its children may be add_scalars series.
+    if any(base.glob("events.out.tfevents.*")):
+        return str(base)
+    candidates = [path for path in base.iterdir()
+                  if path.is_dir() and any(path.rglob("events.out.tfevents.*"))]
+    return str(max(candidates, key=lambda path: path.stat().st_mtime)) if candidates else None
 
-    # 按照文件夹的修改时间进行排序，排在最后的就是最新的
-    dirs.sort(key=os.path.getmtime)
-    return dirs[-1]
 
 def main():
-    # 设置命令行参数解析
-    parser = argparse.ArgumentParser(description="一键启动 TensorBoard")
-    parser.add_argument("--base-dir", type=str, default=BASE_LOG_DIR,
-                        help="本次实验的日志根目录；默认读取脚本顶部配置的路径")
-    parser.add_argument("-n", "--name", type=str, default="",
-                        help="日志根目录下的子目录名称；不填则自动选择最新子目录")
-
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--base-dir", default=BASE_LOG_DIR,
+                        help="Experiment, seed, or MATD3 log root")
+    parser.add_argument("-n", "--name", default="", help="Explicit child directory of --base-dir")
+    parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument("--port", type=int, default=6006)
     args = parser.parse_args()
-
-    # 判断是用户指定了名称，还是自动寻找最新
-    if args.name:
-        target_dir = os.path.join(args.base_dir, args.name)
-        if not os.path.exists(target_dir):
-            print(f"❌ 找不到指定的目录: {target_dir}")
-            return
-    else:
-        target_dir = get_latest_log_dir(args.base_dir)
-        if not target_dir:
-            print(f"❌ 在 {args.base_dir} 中没有找到任何日志。")
-            return
-
-    print(f"🚀 准备启动 TensorBoard...")
-    print(f"📂 正在读取日志: {target_dir}")
-    print("-" * 50)
-
-    # 启动 TensorBoard
-    # 注意：运行此脚本的终端必须已经激活了 xuance_marl 环境
+    target = str(Path(args.base_dir) / args.name) if args.name else get_latest_log_dir(args.base_dir)
+    if target is None or not Path(target).is_dir():
+        parser.error("No TensorBoard log directory found")
+    print(f"TensorBoard log root: {Path(target).resolve()}", flush=True)
     try:
-        subprocess.run(["tensorboard", "--logdir", target_dir])
+        subprocess.run([sys.executable, "-m", "tensorboard.main", "--logdir", target,
+                        "--host", args.host, "--port", str(args.port)], check=True)
     except KeyboardInterrupt:
-        print("\n⏹️ 已手动关闭 TensorBoard。")
+        pass
+
 
 if __name__ == "__main__":
     main()

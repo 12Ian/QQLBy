@@ -20,6 +20,9 @@ class MADDPG_Learner(LearnerMAS):
                  policy: nn.Module,
                  callback):
         super(MADDPG_Learner, self).__init__(config, model_keys, agent_keys, policy, callback)
+        self.actor_update_delay = int(getattr(config, "maddpg_actor_update_delay", 1))
+        if self.actor_update_delay < 1:
+            raise ValueError("MADDPG actor update delay must be positive")
         self.optimizer = {
             key: {'actor': torch.optim.Adam(self.policy.parameters_actor[key], self.config.learning_rate_actor, eps=1e-5),
                   'critic': torch.optim.Adam(self.policy.parameters_critic[key], self.config.learning_rate_critic, eps=1e-5)}
@@ -28,7 +31,8 @@ class MADDPG_Learner(LearnerMAS):
             key: {'actor': torch.optim.lr_scheduler.LinearLR(self.optimizer[key]['actor'],
                                                              start_factor=1.0,
                                                              end_factor=self.end_factor_lr_decay,
-                                                             total_iters=self.total_iters),
+                                                             total_iters=max(1, (self.total_iters + self.actor_update_delay - 1)
+                                                                             // self.actor_update_delay)),
                   'critic': torch.optim.lr_scheduler.LinearLR(self.optimizer[key]['critic'],
                                                               start_factor=1.0,
                                                               end_factor=self.end_factor_lr_decay,
@@ -134,13 +138,14 @@ class MADDPG_Learner(LearnerMAS):
                                               agent_ids=IDs, agent_key=key)
             q_policy_i = q_policy[key].reshape(bs)
             loss_a = -(q_policy_i * mask_values).sum() / mask_values.sum()
-            self.optimizer[key]['actor'].zero_grad()
-            loss_a.backward()
-            if self.use_grad_clip:
-                torch.nn.utils.clip_grad_norm_(self.policy.parameters_actor[key], self.grad_clip_norm)
-            self.optimizer[key]['actor'].step()
-            if self.scheduler[key]['actor'] is not None:
-                self.scheduler[key]['actor'].step()
+            if self.iterations % self.actor_update_delay == 0:
+                self.optimizer[key]['actor'].zero_grad()
+                loss_a.backward()
+                if self.use_grad_clip:
+                    torch.nn.utils.clip_grad_norm_(self.policy.parameters_actor[key], self.grad_clip_norm)
+                self.optimizer[key]['actor'].step()
+                if self.scheduler[key]['actor'] is not None:
+                    self.scheduler[key]['actor'].step()
 
             learning_rate_actor = self.optimizer[key]['actor'].state_dict()['param_groups'][0]['lr']
             learning_rate_critic = self.optimizer[key]['critic'].state_dict()['param_groups'][0]['lr']
@@ -148,10 +153,12 @@ class MADDPG_Learner(LearnerMAS):
             info.update({
                 f"{key}/learning_rate_actor": learning_rate_actor,
                 f"{key}/learning_rate_critic": learning_rate_critic,
-                f"{key}/loss_actor": loss_a.item(),
                 f"{key}/loss_critic": loss_c.item(),
                 f"{key}/predictQ": q_eval[key].mean().item()
             })
+
+            if self.iterations % self.actor_update_delay == 0:
+                info[f"{key}/loss_actor"] = loss_a.item()
 
             info.update(self.callback.on_update_agent_wise(self.iterations, key, info=info, method="update",
                                                            mask_values=mask_values, q_policy_i=q_policy_i,
@@ -246,13 +253,14 @@ class MADDPG_Learner(LearnerMAS):
                                               agent_key=key, agent_ids=IDs_t, rnn_hidden=rnn_hidden_critic)
             q_policy_i = q_policy[key].reshape(bs_rnn, seq_len)
             loss_a = -(q_policy_i * mask_values).sum() / mask_values.sum()
-            self.optimizer[key]['actor'].zero_grad()
-            loss_a.backward()
-            if self.use_grad_clip:
-                torch.nn.utils.clip_grad_norm_(self.policy.parameters_actor[key], self.grad_clip_norm)
-            self.optimizer[key]['actor'].step()
-            if self.scheduler[key]['actor'] is not None:
-                self.scheduler[key]['actor'].step()
+            if self.iterations % self.actor_update_delay == 0:
+                self.optimizer[key]['actor'].zero_grad()
+                loss_a.backward()
+                if self.use_grad_clip:
+                    torch.nn.utils.clip_grad_norm_(self.policy.parameters_actor[key], self.grad_clip_norm)
+                self.optimizer[key]['actor'].step()
+                if self.scheduler[key]['actor'] is not None:
+                    self.scheduler[key]['actor'].step()
 
             learning_rate_actor = self.optimizer[key]['actor'].state_dict()['param_groups'][0]['lr']
             learning_rate_critic = self.optimizer[key]['critic'].state_dict()['param_groups'][0]['lr']
@@ -260,10 +268,12 @@ class MADDPG_Learner(LearnerMAS):
             info.update({
                 f"{key}/learning_rate_actor": learning_rate_actor,
                 f"{key}/learning_rate_critic": learning_rate_critic,
-                f"{key}/loss_actor": loss_a.item(),
                 f"{key}/loss_critic": loss_c.item(),
                 f"{key}/predictQ": q_eval[key].mean().item()
             })
+
+            if self.iterations % self.actor_update_delay == 0:
+                info[f"{key}/loss_actor"] = loss_a.item()
 
             info.update(self.callback.on_update_agent_wise(self.iterations, key, info=info, method="update_rnn",
                                                            mask_values=mask_values, q_policy_i=q_policy_i,

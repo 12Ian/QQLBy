@@ -1892,6 +1892,10 @@ class MATD3_Policy(MADDPG_Policy, Module):
                                                  self.model_keys}
         self.lstm = True if kwargs["rnn"] == "LSTM" else False
         self.use_rnn = True if kwargs["use_rnn"] else False
+        # Inherited actor helpers also need the disabled optional modules.
+        self.use_graph_module = self.use_obstacle_gat = False
+        self.graph_comm = self.target_graph_comm = None
+        self.obstacle_gat = self.target_obstacle_gat = None
 
         self.actor_representation = actor_representation
         self.critic_A_representation = critic_representation

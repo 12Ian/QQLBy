@@ -210,10 +210,7 @@ class OffPolicyMARLAgents(MARLAgents):
             else:
                 self.e_greedy = self.end_greedy
         elif self.noise_scale is not None:
-            if self.noise_scale >= self.end_noise:
-                self.noise_scale = self.start_noise - self.delta_noise * self.current_step
-            else:
-                self.noise_scale = self.end_noise
+            self.noise_scale = max(self.end_noise, self.start_noise - self.delta_noise * self.current_step)
         else:
             return
 
@@ -381,6 +378,8 @@ class OffPolicyMARLAgents(MARLAgents):
                                   **{'state': state, 'next_state': next_state})
             if self.current_step >= self.start_training and self.current_step % self.training_frequency == 0:
                 update_info = self.train_epochs(n_epochs=self.n_epochs)
+                if getattr(self, "baseline_monitor", None) is not None:
+                    self.baseline_monitor.record_update(self.current_step, update_info)
                 self.log_infos(update_info, self.current_step)
                 train_info.update(update_info)
                 self.callback.on_train_epochs_end(self.current_step, policy=self.policy, memory=self.memory,
@@ -395,6 +394,8 @@ class OffPolicyMARLAgents(MARLAgents):
 
             for i in range(self.n_envs):
                 if all(terminated_dict[i].values()) or truncated[i]:
+                    if getattr(self, "baseline_monitor", None) is not None:
+                        self.baseline_monitor.record_episode(self.current_step + self.n_envs, i, info[i])
                     obs_dict[i] = info[i]["reset_obs"]
                     self.train_envs.buf_obs[i] = info[i]["reset_obs"]
                     if self.use_global_state:
@@ -630,6 +631,8 @@ class OffPolicyMARLAgents(MARLAgents):
 
             for i in range(num_envs):
                 if all(terminated_dict[i].values()) or truncated[i]:
+                    if test_mode and _current_episode >= n_episodes:
+                        continue
                     _current_episode += 1
 
                     obs_dict[i] = info[i]["reset_obs"]
@@ -783,6 +786,19 @@ class OffPolicyMARLAgents(MARLAgents):
             }
 
             if len(test_wins_list) > 0:
+                safe_wins = [win * (1.0 - collision) for win, collision in
+                             zip(test_wins_list, test_collision_flags_list)]
+                self.last_test_metrics = {
+                    "episodes": len(test_wins_list),
+                    "success_rate": float(np.mean(test_wins_list)),
+                    "safe_success_rate": float(np.mean(safe_wins)),
+                    "collision_rate": float(np.mean(test_collision_flags_list)),
+                    "building_collision_rate": float(np.mean(test_building_collision_flags_list)),
+                    "boundary_collision_rate": float(np.mean(test_boundary_collision_flags_list)),
+                    "uav_collision_rate": float(np.mean(test_uav_conflict_flags_list)),
+                    "mean_episode_steps": float(np.mean(test_episode_steps)),
+                }
+                test_info[f"Test-Results/Safe-Success-Rate{tag_suffix}"] = self.last_test_metrics["safe_success_rate"]
                 test_info[f"Test-Results/Win-Rate{tag_suffix}"] = np.mean(test_wins_list)
                 test_info[f"Test-Results/Collision-Rate{tag_suffix}"] = np.mean(
                     test_collision_flags_list)

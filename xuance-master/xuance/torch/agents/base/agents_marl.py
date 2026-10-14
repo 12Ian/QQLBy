@@ -223,6 +223,11 @@ class MARLAgents(ABC):
             for k, v in info.items():
                 if v is None:
                     continue
+                if getattr(self.config, "reward_mode", None) == "baseline" and isinstance(v, dict):
+                    for series, value in v.items():
+                        if value is not None:
+                            self.writer.add_scalar(f"{k}/{series}", value, x_index)
+                    continue
                 try:
                     self.writer.add_scalar(k, v, x_index)
                 except:

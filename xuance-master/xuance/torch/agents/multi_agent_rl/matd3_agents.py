@@ -1,4 +1,5 @@
 import torch
+import numpy as np
 from argparse import Namespace
 from gymnasium.spaces import Space
 from xuance.common import List, Optional, MultiAgentBaseCallback
@@ -32,6 +33,17 @@ class MATD3_Agents(IDDPG_Agents):
         super(MATD3_Agents, self).__init__(
             config, envs, num_agents, agent_keys, state_space, observation_space, action_space, callback
         )
+
+    def action(self, *args, **kwargs):
+        result = super().action(*args, **kwargs)
+        if getattr(self.config, "matd3_clip_actions", False):
+            # Exploration happens after tanh. Bound the command before both
+            # environment execution and replay storage see it.
+            for commands in result["actions"]:
+                for key, command in commands.items():
+                    space = self.action_space[key]
+                    commands[key] = np.clip(command, space.low, space.high)
+        return result
 
     def _build_policy(self) -> Module:
         """

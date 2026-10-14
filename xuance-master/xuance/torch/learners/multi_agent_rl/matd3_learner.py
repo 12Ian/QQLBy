@@ -2,6 +2,7 @@
 Multi-Agent TD3
 """
 import torch
+import math
 from torch import nn
 from xuance.common import List
 from argparse import Namespace
@@ -16,6 +17,13 @@ class MATD3_Learner(LearnerMAS):
                  policy: nn.Module,
                  callback):
         super(MATD3_Learner, self).__init__(config, model_keys, agent_keys, policy, callback)
+        self.actor_update_delay = int(config.actor_update_delay)
+        self.target_policy_noise = float(getattr(config, "target_policy_noise", 0.0))
+        self.target_noise_clip = float(getattr(config, "target_noise_clip", 0.5))
+        self.actor_use_first_critic = bool(getattr(config, "td3_actor_use_first_critic", False))
+        if (self.actor_update_delay < 1 or not math.isfinite(self.target_policy_noise) or
+                not math.isfinite(self.target_noise_clip) or min(self.target_policy_noise, self.target_noise_clip) < 0):
+            raise ValueError("Invalid MATD3 policy delay or target smoothing noise")
         self.optimizer = {
             key: {'actor': torch.optim.Adam(self.policy.parameters_actor[key], self.config.learning_rate_actor, eps=1e-5),
                   'critic': torch.optim.Adam(self.policy.parameters_critic[key], self.config.learning_rate_critic, eps=1e-5)}
@@ -24,7 +32,8 @@ class MATD3_Learner(LearnerMAS):
             key: {'actor': torch.optim.lr_scheduler.LinearLR(self.optimizer[key]['actor'],
                                                              start_factor=1.0,
                                                              end_factor=self.end_factor_lr_decay,
-                                                             total_iters=self.total_iters),
+                                                             total_iters=max(1, (self.total_iters + self.actor_update_delay - 1)
+                                                                             // self.actor_update_delay)),
                   'critic': torch.optim.lr_scheduler.LinearLR(self.optimizer[key]['critic'],
                                                               start_factor=1.0,
                                                               end_factor=self.end_factor_lr_decay,
@@ -33,7 +42,20 @@ class MATD3_Learner(LearnerMAS):
         self.gamma = config.gamma
         self.tau = config.tau
         self.mse_loss = nn.MSELoss()
-        self.actor_update_delay = config.actor_update_delay
+
+    @torch.no_grad()
+    def _smooth_target_actions(self, actions):
+        if self.target_policy_noise == 0.0:
+            return actions
+        smoothed = {}
+        for key, action in actions.items():
+            noise = (torch.randn_like(action) * self.target_policy_noise).clamp(
+                -self.target_noise_clip, self.target_noise_clip)
+            space = self.policy.action_space[key]
+            lower = torch.as_tensor(space.low, dtype=action.dtype, device=action.device)
+            upper = torch.as_tensor(space.high, dtype=action.dtype, device=action.device)
+            smoothed[key] = (action + noise).clamp(min=lower, max=upper)
+        return smoothed
 
     def update(self, sample):
         self.iterations += 1
@@ -70,6 +92,7 @@ class MATD3_Learner(LearnerMAS):
 
         # get values
         _, actions_next = self.policy.Atarget(next_observation=obs_next, agent_ids=IDs)
+        actions_next = self._smooth_target_actions(actions_next)
         if self.use_parameter_sharing:
             key = self.model_keys[0]
             actions_next_joint = actions_next[key].reshape(batch_size, self.n_agents, -1).reshape(batch_size, -1)
@@ -102,7 +125,8 @@ class MATD3_Learner(LearnerMAS):
                 f"{key}/learning_rate_critic": learning_rate_critic,
                 f"{key}/loss_critic": loss_c.item(),
                 f"{key}/predictQ_A": q_eval_A[key].mean().item(),
-                f"{key}/predictQ_B": q_eval_B[key].mean().item()
+                f"{key}/predictQ_B": q_eval_B[key].mean().item(),
+                f"{key}/predictQ": torch.minimum(q_eval_A[key], q_eval_B[key]).mean().item()
             })
 
             info.update(self.callback.on_update_agent_wise(self.iterations, key, info=info, method="update_critic",
@@ -121,8 +145,10 @@ class MATD3_Learner(LearnerMAS):
                 else:
                     a_joint = {k: actions_eval[k] if k == key else actions[k] for k in self.agent_keys}
                     act_eval = self.get_joint_input(a_joint, (batch_size, -1))
-                _, _, q_policy = self.policy.Qpolicy(joint_observation=obs_joint, joint_actions=act_eval, agent_ids=IDs,
+                q_policy_A, _, q_policy = self.policy.Qpolicy(joint_observation=obs_joint, joint_actions=act_eval, agent_ids=IDs,
                                                      agent_key=key)
+                if self.actor_use_first_critic:
+                    q_policy = q_policy_A
                 q_policy_i = q_policy[key].reshape(bs)
                 loss_a = -(q_policy_i * mask_values).sum() / mask_values.sum()
                 self.optimizer[key]['actor'].zero_grad()
@@ -190,6 +216,7 @@ class MATD3_Learner(LearnerMAS):
 
         # get q values
         _, actions_next = self.policy.Atarget(next_observation=obs, agent_ids=IDs, rnn_hidden=rnn_hidden_actor)
+        actions_next = self._smooth_target_actions(actions_next)
         if self.use_parameter_sharing:
             next_actions_joint = actions_next[self.model_keys[0]].reshape(
                 batch_size, self.n_agents, seq_len + 1, -1).transpose(1, 2).reshape(batch_size, seq_len + 1, -1)
@@ -223,7 +250,8 @@ class MATD3_Learner(LearnerMAS):
                 f"{key}/learning_rate_critic": learning_rate_critic,
                 f"{key}/loss_critic": loss_c.item(),
                 f"{key}/predictQ_A": q_eval_A[key].mean().item(),
-                f"{key}/predictQ_B": q_eval_B[key].mean().item()
+                f"{key}/predictQ_B": q_eval_B[key].mean().item(),
+                f"{key}/predictQ": torch.minimum(q_eval_A[key], q_eval_B[key]).mean().item()
             })
 
             info.update(self.callback.on_update_agent_wise(self.iterations, key, info=info, method="update_rnn_critic",
@@ -243,8 +271,10 @@ class MATD3_Learner(LearnerMAS):
                 else:
                     a_joint = {k: actions_eval[k][:, :-1] if k == key else actions[k] for k in self.agent_keys}
                     act_eval = self.get_joint_input(a_joint, (batch_size, seq_len, -1))
-                _, _, q_policy = self.policy.Qpolicy(joint_observation=obs_joint[:, :-1], joint_actions=act_eval,
+                q_policy_A, _, q_policy = self.policy.Qpolicy(joint_observation=obs_joint[:, :-1], joint_actions=act_eval,
                                                      agent_key=key, agent_ids=IDs_t, rnn_hidden=rnn_hidden_critic)
+                if self.actor_use_first_critic:
+                    q_policy = q_policy_A
                 q_policy_i = q_policy[key].reshape(bs_rnn, seq_len)
                 loss_a = -(q_policy_i * mask_values).sum() / mask_values.sum()
                 self.optimizer[key]['actor'].zero_grad()
