@@ -1,0 +1,864 @@
+{
+  "archive": "baseline_final_delivery_2026-10-13.zip",
+  "size": 9440735,
+  "sha256": "62bee401314e886880bf3fcf9d462c2cf111bff6ad10dd9c76908c141feabedc",
+  "file_count": 171,
+  "entries": [
+    {
+      "path": "docs/baseline_change_history_and_videos_2026-10-13.json",
+      "size": 261538,
+      "sha256": "b704546b558004a186c91b87510b38f11894b70997faa6bb977f42ef561ff629"
+    },
+    {
+      "path": "docs/baseline_change_history_and_videos_2026-10-13.md",
+      "size": 14930,
+      "sha256": "1ca2048a3f73a1918f139ef021b3a4213d009808a70eb79db651648f867a0500"
+    },
+    {
+      "path": "docs/baseline_change_history_progress_2026-10-13.png",
+      "size": 181544,
+      "sha256": "08e5ea5a3e7d58fcb9141d1b9a88a3ee02bb5cec89416ae889ce0897b3e23e61"
+    },
+    {
+      "path": "docs/baseline_exp006_status_2026-10-13.json",
+      "size": 1038,
+      "sha256": "2b5fc8fb9fc78201233602395c23442eef4e7cdfbe0def861ac1a9231ed1845a"
+    },
+    {
+      "path": "docs/baseline_exp007_status_2026-10-13.json",
+      "size": 1036,
+      "sha256": "d4e9db6d92cd3a10f79a535d142da0de19de4205d7f28d099f71a8cacb626f21"
+    },
+    {
+      "path": "docs/baseline_final_summary_2026-10-13.json",
+      "size": 309109,
+      "sha256": "5435df8ff48c78533c81d56720dc48e3f3656b8dbfea2c5a0a3d1536fe06f04b"
+    },
+    {
+      "path": "docs/baseline_final_summary_2026-10-13.md",
+      "size": 25219,
+      "sha256": "7469f1e5b5079b91958ce029ba0e7c0be62b6e8843c75c161b485e7700028c03"
+    },
+    {
+      "path": "examples/evaluate_baseline_checkpoint.py",
+      "size": 3654,
+      "sha256": "b9d7380c26d1b31a5fd79d04c989ec348cedf6793efe7fb4c099974975ad5005"
+    },
+    {
+      "path": "experiments/baseline_exp001.yaml",
+      "size": 4998,
+      "sha256": "0a33bfd98ec0bde571cb9dcb3ec861db68622f092aef9ff5c4d1001f2c148aca"
+    },
+    {
+      "path": "experiments/baseline_exp002.yaml",
+      "size": 4999,
+      "sha256": "36f71485eb61add66eca61f30032d4a3ba86681b7d0ee532151b83ee0e1f9322"
+    },
+    {
+      "path": "experiments/baseline_exp003.yaml",
+      "size": 5565,
+      "sha256": "4095ea82e51739cdd5b6b7cdd6c366f208efd01354b15e1f61b5b0253e10ec21"
+    },
+    {
+      "path": "experiments/baseline_exp004.yaml",
+      "size": 5594,
+      "sha256": "47023d90cb95831ae950f421e9f0dbfebc0432ac8cacb23be8fc77bb0414363a"
+    },
+    {
+      "path": "experiments/baseline_exp005.yaml",
+      "size": 5663,
+      "sha256": "90dc236a614044c89f764975db2204cf45e14781d329998c721a74e5ca170a23"
+    },
+    {
+      "path": "experiments/baseline_exp006.yaml",
+      "size": 5784,
+      "sha256": "be6f54b4302f93c25d97fca0cdef66a8595877aa12c25992b80a7d3865400dde"
+    },
+    {
+      "path": "experiments/baseline_exp007.yaml",
+      "size": 5823,
+      "sha256": "fd0103c6acbd166f677165fed489d728033f9a09424fc926d4def1b819205c1f"
+    },
+    {
+      "path": "outputs/acceptance/exp007_final_acceptance_v1/audit.json",
+      "size": 1807,
+      "sha256": "82e5cde66eb1733a978abadfe749f4fe99ad8d82725388eece6960766603ae60"
+    },
+    {
+      "path": "outputs/acceptance/exp007_final_acceptance_v1/config.yaml",
+      "size": 5823,
+      "sha256": "fd0103c6acbd166f677165fed489d728033f9a09424fc926d4def1b819205c1f"
+    },
+    {
+      "path": "outputs/acceptance/exp007_final_acceptance_v1/holdout_seed40001.json",
+      "size": 22599,
+      "sha256": "c4f9bd050c6469db781a663407f5b2ef270f1cdad1187c71709b8dd721b7c8e0"
+    },
+    {
+      "path": "outputs/acceptance/exp007_final_acceptance_v1/holdout_seed40001.log",
+      "size": 512,
+      "sha256": "3178a1133c0c14415bc8ecb7fe894c42b8a864306cb632c30ff144ff8583289d"
+    },
+    {
+      "path": "outputs/acceptance/exp007_final_acceptance_v1/holdout_seed50001.json",
+      "size": 22474,
+      "sha256": "67342175046d098261bc8d0dabd63a2f04021ca1f570c7fd3ac73821915bd860"
+    },
+    {
+      "path": "outputs/acceptance/exp007_final_acceptance_v1/holdout_seed50001.log",
+      "size": 510,
+      "sha256": "3ca04456910d79989d7667479ee2c62b2e3e3419e727656a3d4c637f263b7fdb"
+    },
+    {
+      "path": "outputs/acceptance/exp007_final_acceptance_v1/process.json",
+      "size": 1915,
+      "sha256": "c7efbfb4e10878c77708aff5721c75f97ca80577ba6d2e9d86ceb7cb27e14682"
+    },
+    {
+      "path": "outputs/acceptance/exp007_final_acceptance_v1/provenance.json",
+      "size": 1210,
+      "sha256": "354657eb69561f104f6ec0faf76e6eb91c38c94acb1dff385290391d21307511"
+    },
+    {
+      "path": "outputs/acceptance/exp007_final_acceptance_v1/supervisor.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "outputs/acceptance/exp007_final_acceptance_v1/supervisor.py",
+      "size": 2501,
+      "sha256": "c13a68c16ae2ea9e34c23664e50274d9d7acb06c77d3436b018afb0fb3e7f512"
+    },
+    {
+      "path": "outputs/acceptance/exp007_final_acceptance_v1/training_config.json",
+      "size": 7878,
+      "sha256": "bed8b91f5696dd9e665387b2ad83b17430d0e95c1be7c8abff85b63f7988ad9e"
+    },
+    {
+      "path": "outputs/acceptance/exp007_final_validation_v1/audit.json",
+      "size": 1809,
+      "sha256": "676bac0b6e3aa67a3dd31690a0ce83489eca31e16a36747470e8fe146fba3e87"
+    },
+    {
+      "path": "outputs/acceptance/exp007_final_validation_v1/config.yaml",
+      "size": 5823,
+      "sha256": "fd0103c6acbd166f677165fed489d728033f9a09424fc926d4def1b819205c1f"
+    },
+    {
+      "path": "outputs/acceptance/exp007_final_validation_v1/holdout_seed20001.json",
+      "size": 22476,
+      "sha256": "ad472753e41d373492d9f714e842851b65c83c4b4444b86caff1a6abbe331a42"
+    },
+    {
+      "path": "outputs/acceptance/exp007_final_validation_v1/holdout_seed20001.log",
+      "size": 512,
+      "sha256": "fda8b84a268da1f241800d388d7d85a7cf4b49b0a99924280f11f2c5e41e49a1"
+    },
+    {
+      "path": "outputs/acceptance/exp007_final_validation_v1/holdout_seed30001.json",
+      "size": 22585,
+      "sha256": "43ca0d97f03e7ce03a65db002668b3d04db683fa79a72f78d8c0ecaba17f6998"
+    },
+    {
+      "path": "outputs/acceptance/exp007_final_validation_v1/holdout_seed30001.log",
+      "size": 510,
+      "sha256": "a54b4ad155e9dd260e39223b50e43e780643763d0ad99193ea0a8f2d91874540"
+    },
+    {
+      "path": "outputs/acceptance/exp007_final_validation_v1/process.json",
+      "size": 1915,
+      "sha256": "e6882f5c8db9268b3b17ad5d02852b99c3d9e27868dc2b4db765b8502f839748"
+    },
+    {
+      "path": "outputs/acceptance/exp007_final_validation_v1/provenance.json",
+      "size": 1069,
+      "sha256": "7574ad17bef818d1b613fb5f630a948629d2d9a216de1606b661be25505b1550"
+    },
+    {
+      "path": "outputs/acceptance/exp007_final_validation_v1/supervisor.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "outputs/acceptance/exp007_final_validation_v1/supervisor.py",
+      "size": 2501,
+      "sha256": "c4e595e63ec95fdc20329d5398117a57a078b6a97fc0e3674c56e9e364b4dc13"
+    },
+    {
+      "path": "outputs/acceptance/exp007_final_validation_v1/training_config.json",
+      "size": 7878,
+      "sha256": "bed8b91f5696dd9e665387b2ad83b17430d0e95c1be7c8abff85b63f7988ad9e"
+    },
+    {
+      "path": "outputs/experiments/exp001/metadata.json",
+      "size": 2556,
+      "sha256": "7793546616372fd50e1b4ba9a668aae281f4eb2d967e2cd1d547ab1a29defb06"
+    },
+    {
+      "path": "outputs/experiments/exp001/process.json",
+      "size": 603,
+      "sha256": "049833e14c7a247aecfa8eb79ca13db3eb6361e273bd137968e3169d03493b0c"
+    },
+    {
+      "path": "outputs/experiments/exp001/source_snapshot.zip",
+      "size": 66522,
+      "sha256": "6cdb6499f16cf7b783338d0ba2d614cf19c35cd245dc284c0c10da262adc1710"
+    },
+    {
+      "path": "outputs/experiments/exp002/metadata.json",
+      "size": 3003,
+      "sha256": "8726fe00029bd0a52cc8e6b34fe0ef6b2b6e5cb54f9f6ef5c07287899a4246b8"
+    },
+    {
+      "path": "outputs/experiments/exp002/process.json",
+      "size": 603,
+      "sha256": "4746b43d4983ae2073ee2e1ce6d6618666405c6f33c546b8abe5a6fca8af26b8"
+    },
+    {
+      "path": "outputs/experiments/exp002/source_snapshot.zip",
+      "size": 66524,
+      "sha256": "2f916b7a953d012079649d7209b26b76bc5f003efb3c25a07ec9baf96fb95c01"
+    },
+    {
+      "path": "outputs/experiments/exp003/metadata.json",
+      "size": 3454,
+      "sha256": "39526bf6a44681bb2faedd00acd63bb4e826b2cc11e4cdf97ad7ffe4929babd3"
+    },
+    {
+      "path": "outputs/experiments/exp003/process.json",
+      "size": 604,
+      "sha256": "05f7637eca9427fcbaa05b5e4c3f115def5ccf02b18dfb4177513e28fef477b5"
+    },
+    {
+      "path": "outputs/experiments/exp003/source_snapshot.zip",
+      "size": 67644,
+      "sha256": "f3371ef03ccb1cbb68c433231a61cf4506e21b5558693c4810a1d899993f064d"
+    },
+    {
+      "path": "outputs/experiments/exp004/metadata.json",
+      "size": 4378,
+      "sha256": "b2861adec45eb446acc0e2c525db1ef194bcaa2d309a5b18cb3a4d9e1e150a86"
+    },
+    {
+      "path": "outputs/experiments/exp004/process.json",
+      "size": 604,
+      "sha256": "bb9bb4bea91cf03fe5ddcd64180928dd3418e1205de3876997565ffb6516d356"
+    },
+    {
+      "path": "outputs/experiments/exp004/source_snapshot.zip",
+      "size": 78636,
+      "sha256": "d9d47501ce78cc166badd5dd1434f408f72fd42e4d77d56c222d5e338ef81343"
+    },
+    {
+      "path": "outputs/experiments/exp005/metadata.json",
+      "size": 4202,
+      "sha256": "da619035c95c7cf324be8a4f30424217942c086058ae71acbf47af587cb510c3"
+    },
+    {
+      "path": "outputs/experiments/exp005/process.json",
+      "size": 604,
+      "sha256": "fe6c388920bce2c864c03730f3301e8afa374c0e967b2ec65e4a8c0fd7469286"
+    },
+    {
+      "path": "outputs/experiments/exp005/source_snapshot.zip",
+      "size": 83963,
+      "sha256": "47a2ac7e3f6d0f65c22c3c654fa871437290ca20917e8506196a65e8d9feca8a"
+    },
+    {
+      "path": "outputs/experiments/exp006/metadata.json",
+      "size": 4449,
+      "sha256": "0879b24f4ad6ee3ccc2fd315081442bf40541633d12341bbe3b4d3bb82b08468"
+    },
+    {
+      "path": "outputs/experiments/exp006/process.json",
+      "size": 634,
+      "sha256": "ffb39485a300513749c113a108c49d05ca89ed65d657804ae2628d8f1b099c80"
+    },
+    {
+      "path": "outputs/experiments/exp006/source_snapshot.zip",
+      "size": 88128,
+      "sha256": "91010b915855901e6b1e5c2000867e9c2b9405e7cbd0ecc8fd90b25d277a9e4d"
+    },
+    {
+      "path": "outputs/experiments/exp007/metadata.json",
+      "size": 7233,
+      "sha256": "19d236d43f50a22683f33eaef98d24fec018e86f7f85a66f31a38bdad80a2fd4"
+    },
+    {
+      "path": "outputs/experiments/exp007/process.json",
+      "size": 634,
+      "sha256": "9f676d8b111d023b55898961837248529b2a96e59d64e470d7407037b326fd4b"
+    },
+    {
+      "path": "outputs/experiments/exp007/source_snapshot.zip",
+      "size": 89085,
+      "sha256": "f72ad31d59548a7661c55262988ffd0569eeb2a8b7d2643ea64dcb2340afb000"
+    },
+    {
+      "path": "outputs/results/maddpg/baseline_exp001/baseline_summary.json",
+      "size": 921,
+      "sha256": "adb0532dbaeab0e50874b9236449cf14db03e94e3966659dab702dafe2518b28"
+    },
+    {
+      "path": "outputs/results/maddpg/baseline_exp001/config.json",
+      "size": 6900,
+      "sha256": "4a0dfeb3f31bcf9c8706cd2c9f7928807992734bb5bd491bf89a8571154a5bf0"
+    },
+    {
+      "path": "outputs/results/maddpg/baseline_exp001/curriculum_eval.csv",
+      "size": 1237,
+      "sha256": "9754367d662e17d2622be92a6edf5e4348b62df2d0f8a365f83b48eed3683d92"
+    },
+    {
+      "path": "outputs/results/maddpg/baseline_exp001/training_updates.csv",
+      "size": 3606,
+      "sha256": "03d957ca6dbc85230f792ab58d10c230a4dc9e2a1ac9f957914afbd5056ffe2d"
+    },
+    {
+      "path": "outputs/results/maddpg/baseline_exp002/baseline_summary.json",
+      "size": 921,
+      "sha256": "c5fdac07dcc762b7873d28f1f2fda108cf33ba08f5e00167d5d5555859508f79"
+    },
+    {
+      "path": "outputs/results/maddpg/baseline_exp002/config.json",
+      "size": 6901,
+      "sha256": "5d0c50eaffc0af89a34ce33b3aeb6c61c93fbdc8018bcc2a0d303e47be0559ad"
+    },
+    {
+      "path": "outputs/results/maddpg/baseline_exp002/curriculum_eval.csv",
+      "size": 1242,
+      "sha256": "08a9b1c8a633f7aabe9818b6307848e9ef286f5c4e7158f398025588cbed4e92"
+    },
+    {
+      "path": "outputs/results/maddpg/baseline_exp002/training_updates.csv",
+      "size": 3595,
+      "sha256": "388c20e3b5f04a1cc9e64931e76a5a12ec4f22a5fbb9a5943a6932f12fb68a55"
+    },
+    {
+      "path": "outputs/results/maddpg/baseline_exp003/baseline_summary.json",
+      "size": 1361,
+      "sha256": "ee90d4e504f1648b90e1ef786ebc64024382a7b0b3c7b3e4d90de3accac6d6d4"
+    },
+    {
+      "path": "outputs/results/maddpg/baseline_exp003/config.json",
+      "size": 7577,
+      "sha256": "57ab2fbbc52070ac188895765e8aaed14f60f800e002cc87ee2d8d43cb0d87fe"
+    },
+    {
+      "path": "outputs/results/maddpg/baseline_exp003/curriculum_eval.csv",
+      "size": 3100,
+      "sha256": "9fb9caa9f6e68bfae25e40a626e5b162a6aa7c8db773448e6ac8d083d968393a"
+    },
+    {
+      "path": "outputs/results/maddpg/baseline_exp003/training_updates.csv",
+      "size": 16492,
+      "sha256": "913ac1df1df57734e30757ac28ef3742cca3ae8d797ab13684ea3b8e2aadeb01"
+    },
+    {
+      "path": "outputs/results/maddpg/baseline_exp004/baseline_summary.json",
+      "size": 1358,
+      "sha256": "13bfe193f689c1f719b745a51ed57a2a6d7fd06dbd45fe7c59c84e53fd8d4a13"
+    },
+    {
+      "path": "outputs/results/maddpg/baseline_exp004/config.json",
+      "size": 7611,
+      "sha256": "7b99a89b33401001e97f6c2ea41d5aeecf556a898d48e2e02f2c80a51dd89e83"
+    },
+    {
+      "path": "outputs/results/maddpg/baseline_exp004/curriculum_eval.csv",
+      "size": 3089,
+      "sha256": "0b1f6965ce89a89ab674b959706c2cfd8f4f6b35d1be2abd3f8c3b6160fd3acb"
+    },
+    {
+      "path": "outputs/results/maddpg/baseline_exp004/training_updates.csv",
+      "size": 17602,
+      "sha256": "31cfc1ae138baf158c38826cb6dfdd6b4db15bcc6312fb567898486bb9fe05c5"
+    },
+    {
+      "path": "outputs/results/matd3/baseline_exp005/baseline_summary.json",
+      "size": 1794,
+      "sha256": "56a3e8916967ab5c7204d52da2a44baba6429786f2f491ec57776e88054fad6a"
+    },
+    {
+      "path": "outputs/results/matd3/baseline_exp005/config.json",
+      "size": 7693,
+      "sha256": "4424494dd4813cd9f9de197ef023105c135cc5b4cddcc8779f1317642a54551e"
+    },
+    {
+      "path": "outputs/results/matd3/baseline_exp005/curriculum_eval.csv",
+      "size": 3097,
+      "sha256": "6fc5e6cc9d84735fee4c567cd3d82b1fef58aeb05bb340f8452cd514bbde155a"
+    },
+    {
+      "path": "outputs/results/matd3/baseline_exp005/training_updates.csv",
+      "size": 17630,
+      "sha256": "63dcd32ec03a46a0c018ff7d02da6e3cb84cf128d55b3298f3343409d925acd1"
+    },
+    {
+      "path": "outputs/results/matd3/baseline_exp006/baseline_summary.json",
+      "size": 1787,
+      "sha256": "ded07632ed0d26d69f50cfc10819d8d86859d2bb57b736019d005f77c196cc0e"
+    },
+    {
+      "path": "outputs/results/matd3/baseline_exp006/config.json",
+      "size": 7834,
+      "sha256": "f7d0d038ca1f353963392309a96d9bb5aff4b5a3e31a982f01c45f3f05905624"
+    },
+    {
+      "path": "outputs/results/matd3/baseline_exp006/curriculum_eval.csv",
+      "size": 5557,
+      "sha256": "1a8f29024770c7ffae5ff0bf906df37d225f98b73eb169d8bd210e2e6ebd8b41"
+    },
+    {
+      "path": "outputs/results/matd3/baseline_exp006/initialization_audit.json",
+      "size": 285,
+      "sha256": "b7912d945e019e7c86fdfd556159783e1d896e5be0abf446478058e37587c27a"
+    },
+    {
+      "path": "outputs/results/matd3/baseline_exp006/training_updates.csv",
+      "size": 35528,
+      "sha256": "7812aeeebe97ad2d6adcbdb2fbea268bab66d56d9eddd37dc86d10bb3dfd11bc"
+    },
+    {
+      "path": "outputs/results/matd3/baseline_exp007/baseline_summary.json",
+      "size": 915,
+      "sha256": "48f43974267e02acfa09054b358e6dfe711188cc55008db72bdaac443936b8a2"
+    },
+    {
+      "path": "outputs/results/matd3/baseline_exp007/config.json",
+      "size": 7878,
+      "sha256": "bed8b91f5696dd9e665387b2ad83b17430d0e95c1be7c8abff85b63f7988ad9e"
+    },
+    {
+      "path": "outputs/results/matd3/baseline_exp007/curriculum_eval.csv",
+      "size": 4766,
+      "sha256": "f133708bf8e5fe04d2770918cef58e6150bff26d62ab46a7f50a63e67de144bb"
+    },
+    {
+      "path": "outputs/results/matd3/baseline_exp007/initialization_audit.json",
+      "size": 285,
+      "sha256": "48d595063efd5fa16443a7d9096ee7b652b745d089b3ecd05165bec12e6d9bdf"
+    },
+    {
+      "path": "outputs/results/matd3/baseline_exp007/training_updates.csv",
+      "size": 35431,
+      "sha256": "c157506c04396b3a01ec84cb4f7551fd40380bd11a6051013992c43a3a392ac0"
+    },
+    {
+      "path": "outputs/reviews/exp007_all_levels_v1/best_level1.json",
+      "size": 22587,
+      "sha256": "7d77cb8c11e7f7c5c24f1e97fd875c8a0e6c4d2fdd8c8e50b06843f99d84f722"
+    },
+    {
+      "path": "outputs/reviews/exp007_all_levels_v1/best_level1.log",
+      "size": 498,
+      "sha256": "53f6c317eabc06aeba1faa2b239710daff755b1a64b59f9d34bd50b521366bb9"
+    },
+    {
+      "path": "outputs/reviews/exp007_all_levels_v1/best_level2.json",
+      "size": 22584,
+      "sha256": "5b362b578c6d0143f0757862c2fe62273fbd5dffdb3fffab82897934dbbd638b"
+    },
+    {
+      "path": "outputs/reviews/exp007_all_levels_v1/best_level2.log",
+      "size": 496,
+      "sha256": "bd896a784952441fc6e6481df166ebf04efbe1da2d7867e163259a11a608ae5c"
+    },
+    {
+      "path": "outputs/reviews/exp007_all_levels_v1/best_level3.json",
+      "size": 22438,
+      "sha256": "3c4db1e3cb17416cc55a1bd89584460a3169ab437262523bb156380834d91c6f"
+    },
+    {
+      "path": "outputs/reviews/exp007_all_levels_v1/best_level3.log",
+      "size": 496,
+      "sha256": "1cdab86b9f7e31333e785d46ac8f80cdfb4990a7faec6a2d86131a696f65c214"
+    },
+    {
+      "path": "outputs/reviews/exp007_all_levels_v1/best_level4.json",
+      "size": 22561,
+      "sha256": "384149c747599b420d8fb91154c6974bf1fd3d6a7fc24dd734cd5786f838f867"
+    },
+    {
+      "path": "outputs/reviews/exp007_all_levels_v1/best_level4.log",
+      "size": 496,
+      "sha256": "4ed4a1ea979a4435383ac87868ede0c4ac90280c6e024efef459143ee052dbae"
+    },
+    {
+      "path": "outputs/reviews/exp007_all_levels_v1/best_level5.json",
+      "size": 22599,
+      "sha256": "208163a48c9ba6de4c0d1dc0976c1ce5e60949abd1ea4b886f02204cfcab2d9b"
+    },
+    {
+      "path": "outputs/reviews/exp007_all_levels_v1/best_level5.log",
+      "size": 495,
+      "sha256": "daac8022e7f228fb044439074245786a4522df95ebbc119d049fd3af2477b114"
+    },
+    {
+      "path": "outputs/reviews/exp007_all_levels_v1/config.yaml",
+      "size": 5823,
+      "sha256": "fd0103c6acbd166f677165fed489d728033f9a09424fc926d4def1b819205c1f"
+    },
+    {
+      "path": "outputs/reviews/exp007_all_levels_v1/final_level1.json",
+      "size": 22555,
+      "sha256": "5ccb4abcc38bbe8317d339763adf1ae5c7afa04fc279e84654ea366c19ccf868"
+    },
+    {
+      "path": "outputs/reviews/exp007_all_levels_v1/final_level1.log",
+      "size": 497,
+      "sha256": "d436669d9308bdb9e13d974ca8278b0faca60941be79a7a291e14d8c2af6cea7"
+    },
+    {
+      "path": "outputs/reviews/exp007_all_levels_v1/final_level2.json",
+      "size": 22489,
+      "sha256": "cd2e457f1562dc883e5c22037875d73579c2cf02b53a45d7cf2c9e5787f82c42"
+    },
+    {
+      "path": "outputs/reviews/exp007_all_levels_v1/final_level2.log",
+      "size": 498,
+      "sha256": "b1b7beb1308fab6bf1bf35959afda558fd3ff048523ceeae081c88b2a6d32669"
+    },
+    {
+      "path": "outputs/reviews/exp007_all_levels_v1/final_level3.json",
+      "size": 22558,
+      "sha256": "0fc1ebff095c2f01546a4bd67bd703a9062ac84fe68811cab435b01f3bdbafff"
+    },
+    {
+      "path": "outputs/reviews/exp007_all_levels_v1/final_level3.log",
+      "size": 497,
+      "sha256": "b693667438c79f41a6d3e0dc88c360036e6d559f379e60a62442f5379accdde2"
+    },
+    {
+      "path": "outputs/reviews/exp007_all_levels_v1/final_level4.json",
+      "size": 22558,
+      "sha256": "3ccef7aee6614bc3c613fa7c726f946839cd665a4b40c21bc9de6d4de4021452"
+    },
+    {
+      "path": "outputs/reviews/exp007_all_levels_v1/final_level4.log",
+      "size": 498,
+      "sha256": "7c0cf5d4318fd78dccd20d7c32ec75e574ad5d432c9621a452174dd909eb49b0"
+    },
+    {
+      "path": "outputs/reviews/exp007_all_levels_v1/final_level5.json",
+      "size": 22529,
+      "sha256": "00e299599cd79a96e675dca81089c24ae357fd1cac59cffcf36de18e513d4fd6"
+    },
+    {
+      "path": "outputs/reviews/exp007_all_levels_v1/final_level5.log",
+      "size": 497,
+      "sha256": "c97a8dcfb361d5497c026a07f7a47f2c279ab069c369ce9c3b98ae5cb3215159"
+    },
+    {
+      "path": "outputs/reviews/exp007_all_levels_v1/process.json",
+      "size": 8925,
+      "sha256": "f1a7990b1a4af076ed4aba7eb03cbb66630e8348a70962461c5fb851940922c5"
+    },
+    {
+      "path": "outputs/reviews/exp007_all_levels_v1/provenance.json",
+      "size": 2306,
+      "sha256": "c1d863b11f14525b6053a84301bacd95d158513deba35bb01964eeceaffa1a3c"
+    },
+    {
+      "path": "outputs/videos/baseline_level_4_graduation_exp006_20261013_v1/level_4/attempts.json",
+      "size": 212,
+      "sha256": "5fb34a9541dbe323e29bf32e7b20e091a80e69d3f7e0363bc67efd4a70e343a6"
+    },
+    {
+      "path": "outputs/videos/baseline_level_4_graduation_exp006_20261013_v1/level_4/capture.png",
+      "size": 277269,
+      "sha256": "9276dfe71f4fba5a7638abe0bf303d6b167ddd594f611a455224afb7cb977168"
+    },
+    {
+      "path": "outputs/videos/baseline_level_4_graduation_exp006_20261013_v1/level_4/manifest.json",
+      "size": 4670,
+      "sha256": "a229830e1374272f35e6d5df055d748e5715a674495749bdb89891b435384bfa"
+    },
+    {
+      "path": "outputs/videos/baseline_level_4_graduation_exp006_20261013_v1/level_4/middle.png",
+      "size": 267798,
+      "sha256": "724564cf4ebd2b2a1829ee68001b6619888f88c205f3517b5009760697c365b7"
+    },
+    {
+      "path": "outputs/videos/baseline_level_4_graduation_exp006_20261013_v1/level_4/provenance.json",
+      "size": 917,
+      "sha256": "b7190353a2107ec202f2b48cebd53cc8b8effdb092cba0cd5ec82b4e63ecd5e3"
+    },
+    {
+      "path": "outputs/videos/baseline_level_4_graduation_exp006_20261013_v1/level_4/rollout_config.json",
+      "size": 7841,
+      "sha256": "5647b932449281f006b65c626ff873bd861d8120302f126bf5c7a7aed05d2845"
+    },
+    {
+      "path": "outputs/videos/baseline_level_4_graduation_exp006_20261013_v1/level_4/start.png",
+      "size": 259407,
+      "sha256": "373e16147becd1be3c8af36f7f8c6b3f14cb7f1ebcd32be7a5ea925b3d6e597d"
+    },
+    {
+      "path": "outputs/videos/baseline_level_4_graduation_exp006_20261013_v1/level_4/success.mp4",
+      "size": 1094033,
+      "sha256": "3dffec4444ecef54e3fdcbdb9c9a75d61d89393d9545bcb1d300e7f772fc4db2"
+    },
+    {
+      "path": "outputs/videos/baseline_level_4_graduation_exp006_20261013_v1/level_4/training_config.json",
+      "size": 7834,
+      "sha256": "f7d0d038ca1f353963392309a96d9bb5aff4b5a3e31a982f01c45f3f05905624"
+    },
+    {
+      "path": "outputs/videos/baseline_level_4_graduation_exp006_20261013_v1/level_4/trajectory.npz",
+      "size": 12099,
+      "sha256": "7184927c6e9cb0e47fb59db045501a7c6857844ba05f02c0e8801904fb0a54a9"
+    },
+    {
+      "path": "outputs/videos/baseline_level_5_exp007_final_20261013_v1/index.json",
+      "size": 5439,
+      "sha256": "2083d5ef8554833b6e48302b4759ac3b6d1270c201a9fe8cd0a0ce9cb0122f6c"
+    },
+    {
+      "path": "outputs/videos/baseline_level_5_exp007_final_20261013_v1/level_5/attempts.json",
+      "size": 210,
+      "sha256": "7d453b85673155e26d4e07a75bb38820eebab3fe7cdaaf0158d46d1cba542aff"
+    },
+    {
+      "path": "outputs/videos/baseline_level_5_exp007_final_20261013_v1/level_5/capture.png",
+      "size": 294505,
+      "sha256": "0f0f906a2bea2af27e32d799048e695e7839f97defdd8db2178dfebd31cd70bf"
+    },
+    {
+      "path": "outputs/videos/baseline_level_5_exp007_final_20261013_v1/level_5/manifest.json",
+      "size": 5107,
+      "sha256": "6811410bbc18940162acd9a564a110bf97ae9b327e1f316d8035dcda783473df"
+    },
+    {
+      "path": "outputs/videos/baseline_level_5_exp007_final_20261013_v1/level_5/middle.png",
+      "size": 281864,
+      "sha256": "6e6ae494c0c0f002ccd957983c8c7a5d0f336779326a9feb0301d4db3d59c8ea"
+    },
+    {
+      "path": "outputs/videos/baseline_level_5_exp007_final_20261013_v1/level_5/provenance.json",
+      "size": 1355,
+      "sha256": "9bc7e90f71d3747af56aaf0bf0f627acac06ce04a554684945d08b3e5ed05e35"
+    },
+    {
+      "path": "outputs/videos/baseline_level_5_exp007_final_20261013_v1/level_5/rollout_config.json",
+      "size": 7885,
+      "sha256": "5ddb0cdb09d37588ee7e7b23676b2d80c38e918135224c4c256d3efc6fc398c2"
+    },
+    {
+      "path": "outputs/videos/baseline_level_5_exp007_final_20261013_v1/level_5/start.png",
+      "size": 267980,
+      "sha256": "f98b7b920ea379677e5b1678f01d72f2518461a8add553102d41e66ae011d044"
+    },
+    {
+      "path": "outputs/videos/baseline_level_5_exp007_final_20261013_v1/level_5/success.mp4",
+      "size": 1225779,
+      "sha256": "0990268b49d49f843e2c6fd8f01ad3e78fdd2cbc15f16c1ee9d8572cc772a81f"
+    },
+    {
+      "path": "outputs/videos/baseline_level_5_exp007_final_20261013_v1/level_5/training_config.json",
+      "size": 7878,
+      "sha256": "bed8b91f5696dd9e665387b2ad83b17430d0e95c1be7c8abff85b63f7988ad9e"
+    },
+    {
+      "path": "outputs/videos/baseline_level_5_exp007_final_20261013_v1/level_5/trajectory.npz",
+      "size": 13493,
+      "sha256": "74ba09209c7d0a9daa3a73e71de4347016506cae0b5d0eaf61ed7ace64ca7545"
+    },
+    {
+      "path": "outputs/videos/baseline_level_5_exp007_final_20261013_v1/video_audit.json",
+      "size": 376,
+      "sha256": "98d5e4291713d06f4f0a1ebfdd60e5c41717bbb7f201f0f1163ecf6fdac3638f"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/all_levels_video_audit.json",
+      "size": 4995,
+      "sha256": "5d2d0455686acb101a60f6a3a7979d43ae14f41be5f65662028b20f81bf9095b"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/all_levels_video_index.json",
+      "size": 25158,
+      "sha256": "cac751df85ab118f71d5ed2155c166373891e3ce7b45830f50f83270b680ad74"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_1/attempts.json",
+      "size": 210,
+      "sha256": "43268441b1b8d8b1c00d50179e95ddf6aa2381f9d10e2100cc64c7b2591338af"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_1/capture.png",
+      "size": 245795,
+      "sha256": "8e8220f5f048f405718a08c8fdfce176ad8cba0ed64fe3c588d10c5a18ca0e18"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_1/manifest.json",
+      "size": 4613,
+      "sha256": "f15d5a1b136729df3d1740dad8f94b5d238753d9bf66351608346ff8985c40b3"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_1/middle.png",
+      "size": 238047,
+      "sha256": "9eb7fe2931cad9baa953e1c60aa3052dd95c85753382653a45b6462fd1cced12"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_1/provenance.json",
+      "size": 897,
+      "sha256": "c226ecf0e8a176f188596cc89f6c02b223a42bdf75b5027dc326a60d8708b4d3"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_1/rollout_config.json",
+      "size": 7700,
+      "sha256": "9050ed7a3ee97bdec2386ae7fedcf4bb5b8be264ebfaa6c7731177125e581033"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_1/start.png",
+      "size": 232047,
+      "sha256": "bd0b586183cffca793786f1424c18d2f3a3fccbbf9adbffdc00e0790d7749d49"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_1/success.mp4",
+      "size": 614250,
+      "sha256": "e162c9dad5b314a1ece1154225b77e4adbd6598510950f534bd3de5d527a2014"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_1/training_config.json",
+      "size": 7693,
+      "sha256": "4424494dd4813cd9f9de197ef023105c135cc5b4cddcc8779f1317642a54551e"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_1/trajectory.npz",
+      "size": 6596,
+      "sha256": "888e5db1cdb7ecd94ae85e5004a6d640fee1417187e4dc7ce8d5abb942c8a00b"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_2/attempts.json",
+      "size": 212,
+      "sha256": "cba9e29d4a392f1ec127b0cc9bacdc79c518e4c89731504989ae4642406e770f"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_2/capture.png",
+      "size": 265622,
+      "sha256": "57bac2898023504f5902e42f523d4df5dc9afcf3efb24b768523ecde7afabf45"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_2/manifest.json",
+      "size": 4608,
+      "sha256": "3b9ea4f9a0bc4cd53b04f35f1242471a936c9606795a6c802bf7954e69ffe3f0"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_2/middle.png",
+      "size": 257463,
+      "sha256": "be5b52778b8368b7ed62048dd33f15df2e3f1402f789891f55ac43ad29644c48"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_2/provenance.json",
+      "size": 902,
+      "sha256": "15bca0314aec959666f7b73d207684b882380227cc64f383629c5ee170ba9a63"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_2/rollout_config.json",
+      "size": 7700,
+      "sha256": "735023a5171b1fa312d07a5b9b655907eb42999f61903846ca7bf5f5f110183d"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_2/start.png",
+      "size": 248437,
+      "sha256": "20d120bccf95152cc0a9a84eea12468924572670af8eeacc4fd2b66e14b7b484"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_2/success.mp4",
+      "size": 771176,
+      "sha256": "f19635819258390a26583bbc88170fd8ef3da28233392662049668e69974d4c4"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_2/training_config.json",
+      "size": 7693,
+      "sha256": "4424494dd4813cd9f9de197ef023105c135cc5b4cddcc8779f1317642a54551e"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_2/trajectory.npz",
+      "size": 8229,
+      "sha256": "1bfeda7c5562f893a26a093ac365b77537fd8f5a220870b36dcf972743965c86"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_3/attempts.json",
+      "size": 212,
+      "sha256": "710b9dcf18747af533d48757c2c516db95910c969fdd184d6a3c2a030be7afdf"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_3/capture.png",
+      "size": 266701,
+      "sha256": "3f7c8a774a06b462a0aaed60a914fb3923026da494a82c687f62e997531c48d4"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_3/manifest.json",
+      "size": 4602,
+      "sha256": "9ced368a1254b079dbdc29ae2e88cb4cd7f15e1e3ec4a4224206e4717c902a35"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_3/middle.png",
+      "size": 258713,
+      "sha256": "c85f146c6acf0dcdc0622be0c3d8b2cc8efad06fdfd6ddb7cdf74a88e783a1eb"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_3/provenance.json",
+      "size": 897,
+      "sha256": "c07b02156f758ee03f1c9a2a874806edbd3c902bdefec79916f92a0ac88a8462"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_3/rollout_config.json",
+      "size": 7841,
+      "sha256": "cccd05916df6280b7a8c79da6d2a9e630311a42dc00c0fb302879c780ae0bbdc"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_3/start.png",
+      "size": 249549,
+      "sha256": "e396b69d59d04fab5643e3511a66008b7fee3961ee9b3b1e5bbb80a0fd68bd88"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_3/success.mp4",
+      "size": 919092,
+      "sha256": "bf7d69402a62165e7c236dd05b787ac6c58e9d45d9c694c3a754da667313e2ab"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_3/training_config.json",
+      "size": 7834,
+      "sha256": "f7d0d038ca1f353963392309a96d9bb5aff4b5a3e31a982f01c45f3f05905624"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/level_3/trajectory.npz",
+      "size": 10168,
+      "sha256": "a8c1473c91299349673cdd89cea4541d092c4a3698ee7e763a7b2a82ad372cc6"
+    },
+    {
+      "path": "outputs/videos/baseline_levels_1_4_20261013_v2/video_gallery.html",
+      "size": 3950,
+      "sha256": "db5c936b2cc76453d8cc7abbe43460986ae112a323b8f33ceff0076ab15ad2ca"
+    },
+    {
+      "path": "tools/analyze_level5_baseline.py",
+      "size": 7287,
+      "sha256": "246df55abad742b5a6e76f69fae2bafed482bc293b46d1bdb003446ff66ca055"
+    },
+    {
+      "path": "tools/evaluate_baseline_all_levels.py",
+      "size": 6526,
+      "sha256": "17fa00342118130f2887266b46347c62858063a90e89e01dfdfbfdde94d3aadc"
+    },
+    {
+      "path": "tools/render_baseline_success_videos.py",
+      "size": 22011,
+      "sha256": "e5c2a3b0871b9ade4ec87f4ec13d58c0eeef8bf9c97cfe43249d0b4b31f9d822"
+    },
+    {
+      "path": "tools/write_baseline_final_report.py",
+      "size": 15248,
+      "sha256": "74a9241154e4e41c0dca6d9abee40db79f808ddbb93b72acf586d4ab8c068eea"
+    },
+    {
+      "path": "tools/write_baseline_history_report.py",
+      "size": 29646,
+      "sha256": "4f7cc99f09fb275eecfe828fad46c5326f7518e4bb05f6f15e7d1d316c3159d9"
+    }
+  ],
+  "scope": "final reports, actual counters, full evaluations, source snapshots, selected five success videos; training checkpoints remain on server"
+}

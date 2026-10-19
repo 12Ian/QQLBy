@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "checked_unix": 1792347879.9523726,
+  "regression_tests_passed": 45,
+  "benchmark_smoke_steps": 4096,
+  "benchmark_smoke_learner_updates": 240,
+  "predictor_frozen_verified": true,
+  "changed_policy_tensor_counts": {
+    "actor.": 6,
+    "critic_A.": 6,
+    "critic_B.": 6
+  },
+  "finite_policy_verified": true,
+  "matched_initial_cases_per_mode": 10,
+  "existing_baseline_retrained": false,
+  "execution_order": [
+    "lstm_seed_1",
+    "lstm_seed_2",
+    "lstm_seed_3",
+    "cv_seed_1",
+    "cv_seed_2",
+    "cv_seed_3"
+  ],
+  "total_training_environment_steps": 36000000,
+  "frozen_python_files": 691,
+  "synthetic_report_path_verified": true
+}

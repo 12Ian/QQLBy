@@ -1,0 +1,19 @@
+{
+  "docs/baseline_test_report_2026-10-12.json": "dcc209306c0bab05165c993a7cbcd927cdb98197a572b0037af310428b3d8c2b",
+  "docs/uav_pursuit_baseline.md": "85755d007ce6c879d89f34ac50b38d2126b17790af35491d4e04a6b5a947763b",
+  "examples/run_baseline.py": "f79edf1efd17a3fefaaba35da53ec25fea20e81a0c417954e58d2f726a8b2ffc",
+  "tests/test_uav_baseline.py": "6a3aabc663b6412c408436e25721c1ca33e1f71a87c0484a6b45f03cd5d4cb91",
+  "tools/generate_uniform_city_maps.py": "16ed67edc1b926a0a000cf53775acd53989c5489449b88f7f1213944a04500d7",
+  "xuance/engine/run_marl.py": "5c8987f7d05c71352606aa1bb50aebe466409d7bb6855700caaeeb21b3e913dc",
+  "xuance/engine/uav_curriculum.py": "251809cca196825784e863f92f7c51f81f630b4a79abfe5909ba25abf2d18ba6",
+  "xuance/configs/maddpg/uav_pursuit_baseline_3d.yaml": "197b4962d0ad6d854aacaa7d3903d36032716fdd73f3f84faa45d2dd748f7f43",
+  "xuance/configs/maddpg/uav_pursuit_coverage_3d.yaml": "5d4a064f05fe8367eeaa1849742ec1639cfe841bd2a8c3b54e6630e42c1c2add",
+  "xuance/environment/multi_agent_env/uav_pursuit_coverage_3d.py": "c6ed262b7df5441fbdc89478c57f7c15cfce0b7f1b18d1580c2ae6007d663179",
+  "xuance/environment/multi_agent_env/buildings/buildings_uniform_100.json": "05cdeb03484ef0eee62fd5bdf3feb3225a1c015a576bc2ddf82ed1e6c34578d9",
+  "xuance/environment/multi_agent_env/buildings/buildings_uniform_20.json": "5817175e66452da5382934e9df7d74b824e7ad2092d370dbcdef37a62f0f1919",
+  "xuance/environment/multi_agent_env/buildings/buildings_uniform_40.json": "5262bf44c62708d0b755917eb5322afbe113327c368fc1423856c27796f6b073",
+  "xuance/environment/multi_agent_env/buildings/buildings_uniform_60.json": "96dc7f56ed3065bd0b78bcef162de76261d7cff3eab54fc94737d46dbc662c3b",
+  "xuance/environment/multi_agent_env/buildings/buildings_uniform_80.json": "2bcd0f70a9b84ea24e224bffe272b2e8f4e3709872215fe67da3dcfea7d526f2",
+  "xuance/environment/multi_agent_env/buildings/uniform_map_manifest.json": "bf68d67e80d411bde1997c17bec5722e9b86304708b32f445e91a6f0d1da90f0",
+  "xuance/torch/agents/core/off_policy_marl.py": "267532debe17fb2c4eeaaee9e4439e9c751a481b454a605f5dbe532d854b819e"
+}

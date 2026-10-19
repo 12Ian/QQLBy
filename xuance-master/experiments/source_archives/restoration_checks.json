@@ -1,0 +1,30 @@
+[
+  {
+    "archive": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/experiments/source_archives/exp020_matd3_reference_800step",
+    "destination": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/archive_restore_check_exp020_20261019",
+    "base_commit": "4ac54745a14dc1010a438ae8bd2033dbdf56b8dd",
+    "verified_source_files": 1239,
+    "passed": true
+  },
+  {
+    "archive": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/experiments/source_archives/exp024_025_validated_600step",
+    "destination": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/archive_restore_check_exp024_025_validated_600step_20261019",
+    "base_commit": "4ac54745a14dc1010a438ae8bd2033dbdf56b8dd",
+    "verified_source_files": 1247,
+    "passed": true
+  },
+  {
+    "archive": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/experiments/source_archives/lstm_matd3_integration_v1",
+    "destination": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/archive_restore_check_lstm_matd3_integration_v1_20261019",
+    "base_commit": "4ac54745a14dc1010a438ae8bd2033dbdf56b8dd",
+    "verified_source_files": 1264,
+    "passed": true
+  },
+  {
+    "archive": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/experiments/source_archives/lstm_matd3_capture_long_v1",
+    "destination": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/archive_restore_check_lstm_matd3_capture_long_v1_20261019",
+    "base_commit": "4ac54745a14dc1010a438ae8bd2033dbdf56b8dd",
+    "verified_source_files": 1268,
+    "passed": true
+  }
+]

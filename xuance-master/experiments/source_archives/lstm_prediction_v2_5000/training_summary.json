@@ -1,0 +1,13 @@
+{
+  "stage": "trained_and_evaluated",
+  "epochs": 14,
+  "best_epoch": 4,
+  "best_validation_error_m": 0.8130751727141012,
+  "elapsed_seconds": 696.0648629665375,
+  "checkpoint_sha256": "703aa6009a128d8ae23ee41922fcdd696f6cdaaf77fa3df1ab0ff17a798359a7",
+  "test_ade_m": {
+    "lstm": 2.20515775680542,
+    "cv": 6.033046245574951,
+    "ca": 5.620235443115234
+  }
+}

@@ -11,6 +11,8 @@ def worker(remote, parent_remote, env_fn_wrappers, env_seed: int = None):
         if all(terminated.values()) or truncated:
             obs_reset, info_reset = env.reset()
             info["reset_obs"] = obs_reset
+            if "prediction_context" in info_reset:
+                info["reset_prediction_context"] = info_reset["prediction_context"]
             info["reset_avail_actions"] = info_reset['avail_actions']
             info["reset_state"] = info_reset['state']
         return obs, reward_n, terminated, truncated, info

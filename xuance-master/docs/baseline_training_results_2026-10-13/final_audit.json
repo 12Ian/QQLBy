@@ -1,0 +1,70 @@
+{
+  "branch": "feat-coverage-reaward",
+  "head": "912f854862ab9cf4e395c24d5dd6f95e90781862",
+  "diff_check_passed": true,
+  "local_server_source_hashes_match": 17,
+  "original_branch": "feat-traj-prediction",
+  "original_status": " M xuance-master/examples/run_tensorboard.py\n",
+  "processes": {
+    "001": {
+      "experiment": "001",
+      "supervisor_pid": 2549184,
+      "child_pid": 2549185,
+      "command": [
+        "/home/ryy/miniconda3/envs/rl_env/bin/python",
+        "-u",
+        "examples/run_baseline.py",
+        "--name",
+        "exp001",
+        "--config",
+        "experiments/baseline_exp001.yaml",
+        "--steps",
+        "300000",
+        "--parallels",
+        "16",
+        "--seed",
+        "1",
+        "--device",
+        "cuda:0",
+        "--eval-interval",
+        "50000",
+        "--test-episodes",
+        "100"
+      ],
+      "started_at": "2026-10-12T15:58:50.744544+00:00",
+      "status": "completed",
+      "exit_code": 0,
+      "finished_at": "2026-10-12T16:10:26.194057+00:00"
+    },
+    "002": {
+      "experiment": "002",
+      "supervisor_pid": 2553867,
+      "child_pid": 2553868,
+      "command": [
+        "/home/ryy/miniconda3/envs/rl_env/bin/python",
+        "-u",
+        "examples/run_baseline.py",
+        "--name",
+        "exp002",
+        "--config",
+        "experiments/baseline_exp002.yaml",
+        "--steps",
+        "300000",
+        "--parallels",
+        "16",
+        "--seed",
+        "1",
+        "--device",
+        "cuda:0",
+        "--eval-interval",
+        "50000",
+        "--test-episodes",
+        "100"
+      ],
+      "started_at": "2026-10-12T16:11:39.733141+00:00",
+      "status": "completed",
+      "exit_code": 0,
+      "finished_at": "2026-10-12T16:22:42.603538+00:00"
+    }
+  }
+}

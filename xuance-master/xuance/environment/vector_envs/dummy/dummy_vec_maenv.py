@@ -77,6 +77,8 @@ class DummyVecMultiAgentEnv(VecEnv):
             if all(terminated_dict[e].values()) or truncated[e]:
                 obs_reset_dict, info_reset = self.envs[e].reset()
                 self.buf_info[e]["reset_obs"] = obs_reset_dict
+                if "prediction_context" in info_reset:
+                    self.buf_info[e]["reset_prediction_context"] = info_reset["prediction_context"]
                 self.buf_info[e]["reset_avail_actions"] = info_reset['avail_actions']
                 self.buf_info[e]["reset_state"] = info_reset['state']
         self.waiting = False

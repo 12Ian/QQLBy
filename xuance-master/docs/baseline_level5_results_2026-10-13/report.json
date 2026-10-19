@@ -1,0 +1,198 @@
+{
+  "timestamp_utc": "2026-10-12T17:53:36.986465+00:00",
+  "experiments": [
+    {
+      "name": "exp003",
+      "process": {
+        "experiment": "003",
+        "supervisor_pid": 2576735,
+        "child_pid": 2576736,
+        "command": [
+          "/home/ryy/miniconda3/envs/rl_env/bin/python",
+          "-u",
+          "examples/run_baseline.py",
+          "--name",
+          "exp003",
+          "--config",
+          "experiments/baseline_exp003.yaml",
+          "--steps",
+          "1500000",
+          "--parallels",
+          "16",
+          "--seed",
+          "1",
+          "--device",
+          "cuda:0",
+          "--eval-interval",
+          "50000",
+          "--test-episodes",
+          "100"
+        ],
+        "started_at": "2026-10-12T17:17:47.536127+00:00",
+        "status": "completed",
+        "exit_code": 0,
+        "finished_at": "2026-10-12T17:52:59.453483+00:00"
+      },
+      "live": false,
+      "training_episodes": 23941,
+      "training_safe_captures": 11432,
+      "highest_training_level": 1,
+      "critic_updates": 93494,
+      "actor_updates": 93494,
+      "actor_update_delay": 1,
+      "best_by_stage": {
+        "0": {
+          "step": "300000",
+          "phase": "current",
+          "level": "0",
+          "episodes": "100",
+          "success_rate": "1.0",
+          "safe_success_rate": "0.97",
+          "collision_rate": "0.03",
+          "building_collision_rate": "0.02",
+          "boundary_collision_rate": "0.01",
+          "uav_collision_rate": "0.0",
+          "mean_episode_steps": "20.58",
+          "mean_return": "30.836681250220963"
+        },
+        "1": {
+          "step": "650000",
+          "phase": "current",
+          "level": "1",
+          "episodes": "100",
+          "success_rate": "0.93",
+          "safe_success_rate": "0.72",
+          "collision_rate": "0.28",
+          "building_collision_rate": "0.27",
+          "boundary_collision_rate": "0.08",
+          "uav_collision_rate": "0.0",
+          "mean_episode_steps": "105.3",
+          "mean_return": "22.607023586669076"
+        }
+      },
+      "latest_current": {
+        "step": "1500000",
+        "phase": "current",
+        "level": "1",
+        "episodes": "100",
+        "success_rate": "0.48",
+        "safe_success_rate": "0.31",
+        "collision_rate": "0.59",
+        "building_collision_rate": "0.59",
+        "boundary_collision_rate": "0.05",
+        "uav_collision_rate": "0.0",
+        "mean_episode_steps": "258.84",
+        "mean_return": "-8.804121108428834"
+      },
+      "best_final": {
+        "step": "500000",
+        "phase": "final_task",
+        "level": "4",
+        "episodes": "100",
+        "success_rate": "0.08",
+        "safe_success_rate": "0.03",
+        "collision_rate": "0.97",
+        "building_collision_rate": "0.96",
+        "boundary_collision_rate": "0.95",
+        "uav_collision_rate": "0.0",
+        "mean_episode_steps": "380.74",
+        "mean_return": "-401.44404077512644"
+      },
+      "latest_final": {
+        "step": "1500000",
+        "phase": "final_task",
+        "level": "4",
+        "episodes": "100",
+        "success_rate": "0.0",
+        "safe_success_rate": "0.0",
+        "collision_rate": "1.0",
+        "building_collision_rate": "0.93",
+        "boundary_collision_rate": "0.79",
+        "uav_collision_rate": "0.0",
+        "mean_episode_steps": "400.0",
+        "mean_return": "-297.332945199789"
+      },
+      "summary": {
+        "reward_mode": "baseline",
+        "curriculum_level": 1,
+        "transitions": [
+          {
+            "step": 300000,
+            "level": 1
+          }
+        ],
+        "best_final_task": {
+          "episodes": 100,
+          "success_rate": 0.08,
+          "safe_success_rate": 0.03,
+          "collision_rate": 0.97,
+          "building_collision_rate": 0.96,
+          "boundary_collision_rate": 0.95,
+          "uav_collision_rate": 0.0,
+          "mean_episode_steps": 380.74,
+          "step": 500000,
+          "phase": "final_task",
+          "level": 4,
+          "mean_return": -401.44404077512644
+        },
+        "best_by_stage": {
+          "0": {
+            "episodes": 100,
+            "success_rate": 1.0,
+            "safe_success_rate": 0.97,
+            "collision_rate": 0.03,
+            "building_collision_rate": 0.02,
+            "boundary_collision_rate": 0.01,
+            "uav_collision_rate": 0.0,
+            "mean_episode_steps": 20.58,
+            "step": 300000,
+            "phase": "current",
+            "level": 0,
+            "mean_return": 30.836681250220963
+          },
+          "1": {
+            "episodes": 100,
+            "success_rate": 0.93,
+            "safe_success_rate": 0.72,
+            "collision_rate": 0.28,
+            "building_collision_rate": 0.27,
+            "boundary_collision_rate": 0.08,
+            "uav_collision_rate": 0.0,
+            "mean_episode_steps": 105.3,
+            "step": 650000,
+            "phase": "current",
+            "level": 1,
+            "mean_return": 22.607023586669076
+          }
+        },
+        "environment_steps": 1500000,
+        "elapsed_seconds": 2105.471
+      },
+      "final_task_spec": {
+        "level": 4,
+        "building_mode": "uniform_100",
+        "target_min_speed": 3,
+        "target_max_speed": 9,
+        "target_accel": 1.0,
+        "capture_radius": 15,
+        "spawn_offset": 100.0,
+        "reward_weights": {
+          "w_cov": 0.0,
+          "w_prep": 0.0,
+          "w_close": 0.0,
+          "w_match": 0.0,
+          "w_hold": 0.0,
+          "w_step": 0.0,
+          "w_safe": 1.0,
+          "w_terminal": 300.0,
+          "w_direct_terminal": 300.0
+        },
+        "spawn_radius": 200,
+        "spawn_vertical_radius": 70
+      },
+      "source_snapshot_verified": true,
+      "reward_sum_verified": true,
+      "completion_requires_heldout_validation": true
+    }
+  ]
+}

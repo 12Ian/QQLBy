@@ -72,9 +72,34 @@ def make_envs(config: Namespace):
         rank = 1
         config.env_seed += rank * config.parallels
 
+    prediction_mode = getattr(config, "uav_prediction_mode", "none")
+    if prediction_mode not in ("none", "cv", "lstm"):
+        raise ValueError("Unknown UAV prediction mode")
+    if prediction_mode != "none":
+        if (config.env_name != "uav_pursuit_coverage_3d" or
+                getattr(config, "policy", None) != "MATD3_Policy" or
+                getattr(config, "use_rnn", False) or distributed_training or
+                config.vectorize not in ("DummyVecMultiAgentEnv", "SubprocVecMultiAgentEnv") or
+                getattr(config, "use_target_prediction_obs", True) or
+                not getattr(config, "use_nearest_building_obs", False) or
+                getattr(config, "nearest_building_k", 5) != 5 or
+                not getattr(config, "curriculum_context_obs", False) or
+                getattr(config, "decision_dt", None) != 0.5 or
+                getattr(config, "z_min", None) != 50.0 or
+                getattr(config, "z_max", None) != 350.0):
+            raise ValueError("Frozen UAV predictor requires the validated standard MATD3 observation/timing layout")
+
     if config.vectorize in REGISTRY_VEC_ENV.keys():
         env_fn = [_thunk for _ in range(config.parallels)]
-        return REGISTRY_VEC_ENV[config.vectorize](env_fn, config.env_seed)
+        envs = REGISTRY_VEC_ENV[config.vectorize](env_fn, config.env_seed)
+        if prediction_mode != "none":
+            from xuance.environment.vector_envs.prediction_vec_maenv import PredictionVecMultiAgentEnv
+            try:
+                return PredictionVecMultiAgentEnv(envs, config)
+            except Exception:
+                envs.close()
+                raise
+        return envs
     elif config.vectorize == "NOREQUIRED":
         return _thunk()
     else:

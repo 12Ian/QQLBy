@@ -1,0 +1,19 @@
+{
+  "experiment": "exp020_021_current_baseline_v1",
+  "method": "MATD3_Policy",
+  "code": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/exp020_021_current_baseline_v1/code",
+  "config": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/exp020_021_current_baseline_v1/configs/matd3.yaml",
+  "checkpoint": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/exp020_021_current_baseline_v1/code/outputs/models/matd3/baseline_exp020_matd3/seed_1_2026_1015_164542/final_train_model.pth",
+  "checkpoint_sha256": "ae70eaf216b8eb0c250129203ede1ea7de470a65c048e16886cbf6c1180c48f4",
+  "training_steps": 6000000,
+  "training_seed": 1,
+  "episode_length": 800,
+  "decision_dt": 0.5,
+  "level": 5,
+  "test_episodes": 100,
+  "seed_base": 145001,
+  "first_scene_seed": 149001,
+  "successes_800": 42,
+  "successes_in_original_prefix_600": 28,
+  "note": "The 600-step count truncates original trajectories; not a new evaluation."
+}

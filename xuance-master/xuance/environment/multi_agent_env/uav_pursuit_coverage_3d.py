@@ -18,6 +18,7 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
     def __init__(self, config):
         super(UAVPursuitCoverage3DEnv, self).__init__()
         self.env_seed = getattr(config, "env_seed", getattr(config, "seed", None))
+        self.prediction_context_enabled = getattr(config, "uav_prediction_mode", "none") != "none"
         self.rng = np.random.RandomState(self.env_seed)
 
         # ---------------- 1. 物理参数 ----------------
@@ -874,6 +875,12 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
     # ============================================================
     # 观测与全局状态
     # ============================================================
+    def _prediction_context(self):
+        """Current observable geometry and known speed settings; no future state."""
+        return dict(times=float(self.episode_elapsed_seconds),
+                    target=self.target_position.copy(), pursuers=self.uav_positions.copy(),
+                    min_speed=float(self.target_min_speed), max_speed=float(self.target_max_speed))
+
     def _get_obs(self):
         obs = {}
         ms = self.map_size
@@ -1185,6 +1192,7 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
         self.episode_contact_seconds = {kind: 0.0 for kind in ("building", "boundary", "uav")}
         self.episode_contact_events = {kind: 0 for kind in ("building", "boundary", "uav")}
         return self._get_obs(), {
+            **({"prediction_context": self._prediction_context()} if self.prediction_context_enabled else {}),
             "infos": self.get_curriculum_info(),
             "individual_episode_rewards": self.individual_episode_reward,
         }
@@ -1719,6 +1727,8 @@ class UAVPursuitCoverage3DEnv(RawMultiAgentEnv):
             "uav_conflict": uav_conflict,
             "episode_uav_conflicts": self.episode_uav_conflicts,
         })
+        if self.prediction_context_enabled:
+            info["prediction_context"] = self._prediction_context()
         return self._get_obs(), rewards_dict, terminated, truncated, info
 
     # ============================================================

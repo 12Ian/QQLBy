@@ -1,0 +1,19 @@
+{
+  "examples/run_baseline.py": "ab06f7d47073f5c123dd34a6ffb0bd082f55cddf0a2e2a89dd4b26ca90a9bb36",
+  "tests/test_uav_baseline.py": "e4bc1c245381c160d214881fbc37e61fb5a841988b72143494c363ef0b73e899",
+  "tools/analyze_numbered_baseline.py": "b64483b4b4694f659705d233c64daf4ebbd2998c3ccb9ac129890e800ed9dd24",
+  "tools/generate_uniform_city_maps.py": "16ed67edc1b926a0a000cf53775acd53989c5489449b88f7f1213944a04500d7",
+  "xuance/configs/maddpg/uav_pursuit_baseline_3d.yaml": "3dbdbbfe753422951d329371d33285b8bb2fd8c67e10eb13015f84c908ae6266",
+  "xuance/configs/maddpg/uav_pursuit_coverage_3d.yaml": "5d4a064f05fe8367eeaa1849742ec1639cfe841bd2a8c3b54e6630e42c1c2add",
+  "xuance/engine/run_marl.py": "d7ff9786a962879efd57c27286e27ee5affe276f0120753ab8994b4bf4c9a7a6",
+  "xuance/engine/uav_baseline_logging.py": "ec39e5f0de17a5a19d74089bb3862d1ce5227c9dd4042e9cb375b0f32ddd658d",
+  "xuance/engine/uav_curriculum.py": "251809cca196825784e863f92f7c51f81f630b4a79abfe5909ba25abf2d18ba6",
+  "xuance/environment/multi_agent_env/buildings/buildings_uniform_100.json": "05cdeb03484ef0eee62fd5bdf3feb3225a1c015a576bc2ddf82ed1e6c34578d9",
+  "xuance/environment/multi_agent_env/buildings/buildings_uniform_20.json": "5817175e66452da5382934e9df7d74b824e7ad2092d370dbcdef37a62f0f1919",
+  "xuance/environment/multi_agent_env/buildings/buildings_uniform_40.json": "5262bf44c62708d0b755917eb5322afbe113327c368fc1423856c27796f6b073",
+  "xuance/environment/multi_agent_env/buildings/buildings_uniform_60.json": "96dc7f56ed3065bd0b78bcef162de76261d7cff3eab54fc94737d46dbc662c3b",
+  "xuance/environment/multi_agent_env/buildings/buildings_uniform_80.json": "2bcd0f70a9b84ea24e224bffe272b2e8f4e3709872215fe67da3dcfea7d526f2",
+  "xuance/environment/multi_agent_env/buildings/uniform_map_manifest.json": "bf68d67e80d411bde1997c17bec5722e9b86304708b32f445e91a6f0d1da90f0",
+  "xuance/environment/multi_agent_env/uav_pursuit_coverage_3d.py": "b45016f7a069a928130aa292bb530f35bc588450ac8036a3953bf910518e91bc",
+  "xuance/torch/agents/core/off_policy_marl.py": "94400a2b01fbd2cfee9e60d9b94097947a3f0d3ac675ff0076c1222d18011442"
+}

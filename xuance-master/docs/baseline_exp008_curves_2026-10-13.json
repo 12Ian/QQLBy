@@ -1,0 +1,26 @@
+{
+  "snapshot_step": 1382480,
+  "latest_formal_eval": {
+    "step": "1350000",
+    "phase": "current",
+    "level": "0",
+    "episodes": "100",
+    "success_rate": "0.94",
+    "safe_success_rate": "0.8",
+    "collision_rate": "0.2",
+    "building_collision_rate": "0.13",
+    "boundary_collision_rate": "0.17",
+    "uav_collision_rate": "0.0",
+    "mean_episode_steps": "112.43",
+    "mean_return": "-0.49953490794393773"
+  },
+  "training_reward_window_transitions": 50000,
+  "last_reward_window_incomplete": true,
+  "reward_unit": "mean across four agents, episode sum, reward_scale already applied",
+  "sources": {
+    "curriculum_eval.csv": "632a4444732b1a63a6c394ab0d8161a70e9e4cb47f32069020acbd36a65398f3",
+    "training_episodes.csv": "a5c86c0e14962e2ec8296b8b9c0cf971c3f084edd094f2109396bbb6eafa1b9e",
+    "training_updates.csv": "4e4bb5633b604fd6b41dd8ce295731ef8f8ce7505377c26d0b21f880b00b8701"
+  },
+  "image_sha256": "e6a18a515aabf740124631c27d98b2fefe88384498d507eb6cadb57b3dabd315"
+}

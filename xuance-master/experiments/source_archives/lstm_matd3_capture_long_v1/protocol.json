@@ -1,0 +1,105 @@
+{
+  "name": "lstm_matd3_capture_long_v1_20261019",
+  "training_level": 4,
+  "display_training_level": 5,
+  "episode_steps": 600,
+  "decision_dt": 0.5,
+  "methods": [
+    "lstm",
+    "cv"
+  ],
+  "training_seeds": [
+    1,
+    2,
+    3
+  ],
+  "jobs": [
+    {
+      "id": "lstm_seed_1",
+      "mode": "lstm",
+      "seed": 1,
+      "config": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/configs/lstm_seed_1.yaml",
+      "directory": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/jobs/lstm_seed_1",
+      "environment_steps": 6000000
+    },
+    {
+      "id": "lstm_seed_2",
+      "mode": "lstm",
+      "seed": 2,
+      "config": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/configs/lstm_seed_2.yaml",
+      "directory": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/jobs/lstm_seed_2",
+      "environment_steps": 6000000
+    },
+    {
+      "id": "lstm_seed_3",
+      "mode": "lstm",
+      "seed": 3,
+      "config": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/configs/lstm_seed_3.yaml",
+      "directory": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/jobs/lstm_seed_3",
+      "environment_steps": 6000000
+    },
+    {
+      "id": "cv_seed_1",
+      "mode": "cv",
+      "seed": 1,
+      "config": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/configs/cv_seed_1.yaml",
+      "directory": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/jobs/cv_seed_1",
+      "environment_steps": 6000000
+    },
+    {
+      "id": "cv_seed_2",
+      "mode": "cv",
+      "seed": 2,
+      "config": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/configs/cv_seed_2.yaml",
+      "directory": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/jobs/cv_seed_2",
+      "environment_steps": 6000000
+    },
+    {
+      "id": "cv_seed_3",
+      "mode": "cv",
+      "seed": 3,
+      "config": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/configs/cv_seed_3.yaml",
+      "directory": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/jobs/cv_seed_3",
+      "environment_steps": 6000000
+    }
+  ],
+  "total_training_environment_steps": 36000000,
+  "initialization": "same pretrained MATD3; fresh replay and optimizers; zero new input columns; learner RNG reseeded after initialization",
+  "validation": {
+    "seed_base": 621000000,
+    "episodes_per_level": 100,
+    "interval_environment_steps": 200000,
+    "selection": [
+      "max safe_success_rate",
+      "min collision_rate",
+      "max mean_return"
+    ],
+    "training_level_only": true
+  },
+  "test": {
+    "seed_base": 631000000,
+    "episodes_per_level": 200,
+    "levels": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "primary_checkpoint": "validation-selected best",
+    "secondary_checkpoint": "final checkpoint at level five only"
+  },
+  "source_integration": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_integration_v1_20261019",
+  "fixed_maps": true,
+  "capture_rate_improvement_claimed": false,
+  "existing_baseline": {
+    "config": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/configs/none_seed_1.yaml",
+    "checkpoint": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/exp020_021_current_baseline_v1/code/outputs/models/matd3/baseline_exp020_matd3/seed_1_2026_1015_164542/final_train_model.pth",
+    "sha256": "ae70eaf216b8eb0c250129203ede1ea7de470a65c048e16886cbf6c1180c48f4",
+    "retrain": false,
+    "training_seed_count": 1
+  },
+  "execution_order": "lstm seeds 1,2,3; then cv seeds 1,2,3; existing original evaluation only",
+  "primary_comparison": "lstm versus cv under identical additional training budgets",
+  "original_comparison_limitation": "Includes the effect of additional training; original is one previously trained checkpoint."
+}

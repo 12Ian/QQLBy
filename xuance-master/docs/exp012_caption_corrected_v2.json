@@ -1,0 +1,17 @@
+{
+  "zip_sha256": "117d64bf416b82e25b9cadb6bd4defb7b694a128d80aa12c7cbbc64a2bcbc72c",
+  "size_bytes": 22150300,
+  "files": {
+    "outputs/reviews/exp012_pilot_stage1_video_v2/level_1/success.mp4": "0de6f0014afe019fa1cb25951c761b074d908126931804e94a58a4233f8cf3e2",
+    "outputs/reviews/exp012_pilot_stage1_video_v2/level_1/start.png": "c5258113ee7813ccb70ea82adf6490f958e0bd4df1eb00e265a299dcea6e406b",
+    "outputs/reviews/exp012_pilot_stage1_video_v2/level_1/attempts.json": "3c81ae282d0a1d6da87ac9379fc1aa26b7c7dfd43be8e512483972fafe17c442",
+    "outputs/reviews/exp012_pilot_stage1_video_v2/level_1/capture.png": "0ac9c12bae1ebcebb6501f6adb42e2f280099fd12c34449cb76ce5e31cf33449",
+    "outputs/reviews/exp012_pilot_stage1_video_v2/level_1/training_config.json": "68cd2cb531100bdb45b1b582643bc8fba0cf596e84c317491bd7f2c9ad0a0df8",
+    "outputs/reviews/exp012_pilot_stage1_video_v2/level_1/trajectory.npz": "fa9e1f1b40e913604857400ddcd83644bbcc3f4484ad690766d73103a9816abb",
+    "outputs/reviews/exp012_pilot_stage1_video_v2/level_1/middle.png": "b219809c43eb8a8dd7c9952160bcd2f84deaa3e89d11a0da260b324574fe6b62",
+    "outputs/reviews/exp012_pilot_stage1_video_v2/level_1/manifest.json": "2b98830c547ecc76cc625b688b00005522dba7e3bef3e1d471f2907e67570a4e",
+    "outputs/reviews/exp012_pilot_stage1_video_v2/level_1/rollout_config.json": "c76dc5987b1faa22c7a04f62182c9bd9331f829416aad5c30dc4d065b914e4b8",
+    "outputs/reviews/exp012_pilot_stage1_video_v2/level_1/model.pth": "6243b02eb0b7e18d6cd3eb2deb381e646be9601292e228025bb1cf4bfc3b9462",
+    "outputs/reviews/exp012_pilot_stage1_video_v2/level_1/provenance.json": "eff04eec4f4c82ec39d94afe9104a0cda152504b0e2149ea658659e793f7bf9b"
+  }
+}

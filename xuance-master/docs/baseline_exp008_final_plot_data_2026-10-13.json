@@ -1,0 +1,762 @@
+{
+  "training_reward_bins": [
+    {
+      "step": 50000,
+      "episodes": 2248,
+      "r_progress": 7.364209827113746,
+      "r_obstacle": -0.8992886032806803,
+      "r_boundary": -0.9974171265824895,
+      "r_collision": -2.75894128113879,
+      "r_terminal": 0.026690391459074734,
+      "r_failure": -29.973309608540927
+    },
+    {
+      "step": 100000,
+      "episodes": 2443,
+      "r_progress": 7.293348604138095,
+      "r_obstacle": -0.550741567042027,
+      "r_boundary": -0.9281886438868725,
+      "r_collision": -2.781764224314368,
+      "r_terminal": 0.0,
+      "r_failure": -30.0
+    },
+    {
+      "step": 150000,
+      "episodes": 2725,
+      "r_progress": 7.182740148187201,
+      "r_obstacle": -0.5737589030879632,
+      "r_boundary": -0.9838409966800133,
+      "r_collision": -2.782752293577982,
+      "r_terminal": 0.0,
+      "r_failure": -30.0
+    },
+    {
+      "step": 200000,
+      "episodes": 2743,
+      "r_progress": 7.184568693454033,
+      "r_obstacle": -0.31741538168885214,
+      "r_boundary": -0.9947332371922609,
+      "r_collision": -2.7859095880422893,
+      "r_terminal": 0.0,
+      "r_failure": -30.0
+    },
+    {
+      "step": 250000,
+      "episodes": 2647,
+      "r_progress": 7.216357825277436,
+      "r_obstacle": -0.2382355162559924,
+      "r_boundary": -0.9747000485194744,
+      "r_collision": -2.777257272383831,
+      "r_terminal": 0.0,
+      "r_failure": -30.0
+    },
+    {
+      "step": 300000,
+      "episodes": 2579,
+      "r_progress": 7.234331667071991,
+      "r_obstacle": -0.30977806909561767,
+      "r_boundary": -0.9519830223654934,
+      "r_collision": -2.7776075998449015,
+      "r_terminal": 0.0,
+      "r_failure": -30.0
+    },
+    {
+      "step": 350000,
+      "episodes": 2591,
+      "r_progress": 7.237064107708064,
+      "r_obstacle": -0.44528228670956427,
+      "r_boundary": -0.9622063555796543,
+      "r_collision": -2.772037823234273,
+      "r_terminal": 0.0,
+      "r_failure": -30.0
+    },
+    {
+      "step": 400000,
+      "episodes": 2658,
+      "r_progress": 7.213300140687702,
+      "r_obstacle": -0.354295411602119,
+      "r_boundary": -1.0026252118920302,
+      "r_collision": -2.7715575620767496,
+      "r_terminal": 0.0,
+      "r_failure": -30.0
+    },
+    {
+      "step": 450000,
+      "episodes": 2660,
+      "r_progress": 7.209119456842466,
+      "r_obstacle": -0.34304192341533485,
+      "r_boundary": -1.0028864648912432,
+      "r_collision": -2.7631015037593984,
+      "r_terminal": 0.0,
+      "r_failure": -30.0
+    },
+    {
+      "step": 500000,
+      "episodes": 2636,
+      "r_progress": 7.213338438482387,
+      "r_obstacle": -0.36860244528085495,
+      "r_boundary": -1.1275393815049457,
+      "r_collision": -2.774525796661609,
+      "r_terminal": 0.0,
+      "r_failure": -30.0
+    },
+    {
+      "step": 550000,
+      "episodes": 2598,
+      "r_progress": 7.235747018000051,
+      "r_obstacle": -0.27347394160839184,
+      "r_boundary": -1.1230557373296044,
+      "r_collision": -2.767167051578137,
+      "r_terminal": 0.0,
+      "r_failure": -30.0
+    },
+    {
+      "step": 600000,
+      "episodes": 2391,
+      "r_progress": 7.31430385247346,
+      "r_obstacle": -0.5591198533831869,
+      "r_boundary": -1.1353334435898528,
+      "r_collision": -2.824759514847344,
+      "r_terminal": 0.0,
+      "r_failure": -30.0
+    },
+    {
+      "step": 650000,
+      "episodes": 2486,
+      "r_progress": 7.2809118726443405,
+      "r_obstacle": -0.5653135112700105,
+      "r_boundary": -1.047680726890717,
+      "r_collision": -2.83744971842317,
+      "r_terminal": 0.0,
+      "r_failure": -30.0
+    },
+    {
+      "step": 700000,
+      "episodes": 2471,
+      "r_progress": 7.2810477479602005,
+      "r_obstacle": -0.5029013969738926,
+      "r_boundary": -0.9501797782925147,
+      "r_collision": -2.7682921893970054,
+      "r_terminal": 0.0,
+      "r_failure": -30.0
+    },
+    {
+      "step": 750000,
+      "episodes": 2471,
+      "r_progress": 7.277359044218355,
+      "r_obstacle": -0.4626316267855042,
+      "r_boundary": -0.9789755103338955,
+      "r_collision": -2.7740186159449616,
+      "r_terminal": 0.0,
+      "r_failure": -30.0
+    },
+    {
+      "step": 800000,
+      "episodes": 2454,
+      "r_progress": 7.2848089098174125,
+      "r_obstacle": -0.49896269462262927,
+      "r_boundary": -1.0201496638884535,
+      "r_collision": -2.7724938875305627,
+      "r_terminal": 0.0,
+      "r_failure": -30.0
+    },
+    {
+      "step": 850000,
+      "episodes": 2325,
+      "r_progress": 7.320478015568889,
+      "r_obstacle": -0.7301398812254343,
+      "r_boundary": -1.203530995535224,
+      "r_collision": -2.8023440860215056,
+      "r_terminal": 0.0,
+      "r_failure": -30.0
+    },
+    {
+      "step": 900000,
+      "episodes": 2363,
+      "r_progress": 7.339678131208773,
+      "r_obstacle": -0.7041668288812097,
+      "r_boundary": -1.2606065645309708,
+      "r_collision": -2.7898222598391875,
+      "r_terminal": 0.0,
+      "r_failure": -30.0
+    },
+    {
+      "step": 950000,
+      "episodes": 2315,
+      "r_progress": 7.345456749256044,
+      "r_obstacle": -0.6048626734269049,
+      "r_boundary": -1.29329875244179,
+      "r_collision": -2.902505399568035,
+      "r_terminal": 0.0,
+      "r_failure": -30.0
+    },
+    {
+      "step": 1000000,
+      "episodes": 2326,
+      "r_progress": 7.34614922609075,
+      "r_obstacle": -0.5557933949285526,
+      "r_boundary": -1.1368853158475969,
+      "r_collision": -2.8036758383490974,
+      "r_terminal": 0.0,
+      "r_failure": -30.0
+    },
+    {
+      "step": 1050000,
+      "episodes": 2140,
+      "r_progress": 7.4130292629675125,
+      "r_obstacle": -0.5494723333848667,
+      "r_boundary": -1.1167190583606728,
+      "r_collision": -2.7648598130841124,
+      "r_terminal": 0.0,
+      "r_failure": -30.0
+    },
+    {
+      "step": 1100000,
+      "episodes": 1580,
+      "r_progress": 7.833624175595636,
+      "r_obstacle": -0.46047334657903494,
+      "r_boundary": -1.290438802886947,
+      "r_collision": -2.804367088607595,
+      "r_terminal": 0.11392405063291139,
+      "r_failure": -29.88607594936709
+    },
+    {
+      "step": 1150000,
+      "episodes": 1642,
+      "r_progress": 7.786064521986851,
+      "r_obstacle": -0.23037388288792043,
+      "r_boundary": -1.3600555562386978,
+      "r_collision": -2.8271924482338617,
+      "r_terminal": 0.018270401948842874,
+      "r_failure": -29.981729598051157
+    },
+    {
+      "step": 1200000,
+      "episodes": 1621,
+      "r_progress": 7.7623978770762605,
+      "r_obstacle": -0.12900146519178546,
+      "r_boundary": -1.2076400776747191,
+      "r_collision": -2.787661937075879,
+      "r_terminal": 0.0,
+      "r_failure": -30.0
+    },
+    {
+      "step": 1250000,
+      "episodes": 1276,
+      "r_progress": 8.095518054706028,
+      "r_obstacle": -0.1451791805233244,
+      "r_boundary": -1.2130444707842314,
+      "r_collision": -2.740007836990596,
+      "r_terminal": 0.164576802507837,
+      "r_failure": -29.83542319749216
+    },
+    {
+      "step": 1300000,
+      "episodes": 950,
+      "r_progress": 8.424427300061579,
+      "r_obstacle": -0.2112703130320193,
+      "r_boundary": -1.2070232617618435,
+      "r_collision": -2.630368421052632,
+      "r_terminal": 1.736842105263158,
+      "r_failure": -28.263157894736842
+    },
+    {
+      "step": 1350000,
+      "episodes": 630,
+      "r_progress": 9.06254369129499,
+      "r_obstacle": -0.3475500931402012,
+      "r_boundary": -0.8590807668534407,
+      "r_collision": -1.3907936507936511,
+      "r_terminal": 14.333333333333334,
+      "r_failure": -15.666666666666666
+    },
+    {
+      "step": 1400000,
+      "episodes": 735,
+      "r_progress": 8.708714507324844,
+      "r_obstacle": -0.10242648681851607,
+      "r_boundary": -0.12726339665920483,
+      "r_collision": -0.3059863945578231,
+      "r_terminal": 26.571428571428573,
+      "r_failure": -3.4285714285714284
+    },
+    {
+      "step": 1450000,
+      "episodes": 773,
+      "r_progress": 8.701199740927464,
+      "r_obstacle": -0.04833157307614256,
+      "r_boundary": -0.027494256231646166,
+      "r_collision": -0.06520051746442433,
+      "r_terminal": 29.22380336351876,
+      "r_failure": -0.7761966364812419
+    },
+    {
+      "step": 1500000,
+      "episodes": 9925,
+      "r_progress": 6.422572925229888,
+      "r_obstacle": -0.6860675117631446,
+      "r_boundary": -4.5304140255062295e-06,
+      "r_collision": -2.287556675062972,
+      "r_terminal": 0.04836272040302267,
+      "r_failure": -29.951637279596977
+    },
+    {
+      "step": 1550000,
+      "episodes": 10000,
+      "r_progress": 6.414072384437867,
+      "r_obstacle": -0.7061668891612675,
+      "r_boundary": 0.0,
+      "r_collision": -2.2721200000000006,
+      "r_terminal": 0.0,
+      "r_failure": -30.0
+    },
+    {
+      "step": 1600000,
+      "episodes": 10000,
+      "r_progress": 6.412112814640809,
+      "r_obstacle": -0.7212852354185829,
+      "r_boundary": 0.0,
+      "r_collision": -2.246365,
+      "r_terminal": 0.0,
+      "r_failure": -30.0
+    },
+    {
+      "step": 1650000,
+      "episodes": 10000,
+      "r_progress": 6.415499563408051,
+      "r_obstacle": -0.787747616596324,
+      "r_boundary": 0.0,
+      "r_collision": -2.27083,
+      "r_terminal": 0.0,
+      "r_failure": -30.0
+    },
+    {
+      "step": 1700000,
+      "episodes": 10000,
+      "r_progress": 6.416032526020967,
+      "r_obstacle": -0.7677794950749854,
+      "r_boundary": 0.0,
+      "r_collision": -2.2721150000000003,
+      "r_terminal": 0.0,
+      "r_failure": -30.0
+    },
+    {
+      "step": 1750000,
+      "episodes": 9981,
+      "r_progress": 6.411436267807837,
+      "r_obstacle": -0.7018470775363295,
+      "r_boundary": -0.0001440172151105432,
+      "r_collision": -2.2459222522793305,
+      "r_terminal": 0.0,
+      "r_failure": -30.0
+    },
+    {
+      "step": 1800000,
+      "episodes": 6191,
+      "r_progress": 6.536497233435389,
+      "r_obstacle": -0.7906931772227463,
+      "r_boundary": -0.033466561325988665,
+      "r_collision": -2.1580520109836865,
+      "r_terminal": 0.09206913261185593,
+      "r_failure": -29.907930867388146
+    },
+    {
+      "step": 1850000,
+      "episodes": 711,
+      "r_progress": 9.057010113291804,
+      "r_obstacle": -1.241803771913224,
+      "r_boundary": -0.5765169119949961,
+      "r_collision": -2.147679324894515,
+      "r_terminal": 4.472573839662447,
+      "r_failure": -25.52742616033755
+    },
+    {
+      "step": 1900000,
+      "episodes": 742,
+      "r_progress": 8.998621109548349,
+      "r_obstacle": -0.8284020019477615,
+      "r_boundary": -0.5954939635145391,
+      "r_collision": -1.0659703504043128,
+      "r_terminal": 16.495956873315365,
+      "r_failure": -13.504043126684635
+    },
+    {
+      "step": 1950000,
+      "episodes": 657,
+      "r_progress": 9.193350847955385,
+      "r_obstacle": -0.4218037539564414,
+      "r_boundary": -0.3459999859252398,
+      "r_collision": -0.2661339421613394,
+      "r_terminal": 26.894977168949772,
+      "r_failure": -3.105022831050228
+    },
+    {
+      "step": 2000000,
+      "episodes": 695,
+      "r_progress": 8.92576368116283,
+      "r_obstacle": -0.31474922050471127,
+      "r_boundary": -0.08120751717339483,
+      "r_collision": -0.13446043165467628,
+      "r_terminal": 28.446043165467625,
+      "r_failure": -1.5539568345323742
+    },
+    {
+      "step": 2050000,
+      "episodes": 732,
+      "r_progress": 8.845115821242075,
+      "r_obstacle": -0.2524415830677212,
+      "r_boundary": -0.038832413556515046,
+      "r_collision": -0.027049180327868853,
+      "r_terminal": 29.631147540983605,
+      "r_failure": -0.36885245901639346
+    },
+    {
+      "step": 2100000,
+      "episodes": 683,
+      "r_progress": 8.934560120351252,
+      "r_obstacle": -0.7255169446815382,
+      "r_boundary": -0.08737784468475085,
+      "r_collision": -0.5627379209370424,
+      "r_terminal": 22.79648609077599,
+      "r_failure": -7.203513909224012
+    },
+    {
+      "step": 2150000,
+      "episodes": 680,
+      "r_progress": 8.94662545747852,
+      "r_obstacle": -0.47243879892460316,
+      "r_boundary": -0.06130148888345793,
+      "r_collision": -0.11514705882352941,
+      "r_terminal": 28.455882352941178,
+      "r_failure": -1.5441176470588236
+    },
+    {
+      "step": 2200000,
+      "episodes": 718,
+      "r_progress": 8.850873254647713,
+      "r_obstacle": -0.4774778388628026,
+      "r_boundary": -0.11858288325562631,
+      "r_collision": -0.07701949860724235,
+      "r_terminal": 28.997214484679667,
+      "r_failure": -1.0027855153203342
+    },
+    {
+      "step": 2250000,
+      "episodes": 900,
+      "r_progress": 8.40417226815963,
+      "r_obstacle": -2.156478877022027,
+      "r_boundary": -0.17651264463472963,
+      "r_collision": -1.7715555555555556,
+      "r_terminal": 7.466666666666667,
+      "r_failure": -22.533333333333335
+    },
+    {
+      "step": 2300000,
+      "episodes": 812,
+      "r_progress": 8.573610750890456,
+      "r_obstacle": -2.0193846846964676,
+      "r_boundary": -0.10661022626458388,
+      "r_collision": -1.5647783251231526,
+      "r_terminal": 10.529556650246306,
+      "r_failure": -19.470443349753694
+    },
+    {
+      "step": 2350000,
+      "episodes": 867,
+      "r_progress": 8.45362519343462,
+      "r_obstacle": -1.6913197283063557,
+      "r_boundary": -0.022400200883899553,
+      "r_collision": -1.5574971164936562,
+      "r_terminal": 9.72318339100346,
+      "r_failure": -20.27681660899654
+    },
+    {
+      "step": 2400000,
+      "episodes": 805,
+      "r_progress": 8.63995951681894,
+      "r_obstacle": -1.615770651781821,
+      "r_boundary": -0.07370254292692582,
+      "r_collision": -1.3905590062111803,
+      "r_terminal": 11.925465838509316,
+      "r_failure": -18.074534161490682
+    },
+    {
+      "step": 2450000,
+      "episodes": 763,
+      "r_progress": 8.743790763397833,
+      "r_obstacle": -1.2195657853168325,
+      "r_boundary": -0.04155451472673175,
+      "r_collision": -0.9160550458715597,
+      "r_terminal": 18.165137614678898,
+      "r_failure": -11.8348623853211
+    },
+    {
+      "step": 2500000,
+      "episodes": 878,
+      "r_progress": 8.4907923424117,
+      "r_obstacle": -1.0138012119409125,
+      "r_boundary": -0.020518669320804355,
+      "r_collision": -0.9816628701594534,
+      "r_terminal": 17.050113895216402,
+      "r_failure": -12.9498861047836
+    },
+    {
+      "step": 2550000,
+      "episodes": 854,
+      "r_progress": 8.596413895411224,
+      "r_obstacle": -1.0086039667224012,
+      "r_boundary": -0.051538333038944846,
+      "r_collision": -0.8413348946135831,
+      "r_terminal": 18.86416861826698,
+      "r_failure": -11.135831381733022
+    },
+    {
+      "step": 2600000,
+      "episodes": 910,
+      "r_progress": 8.4773830644505,
+      "r_obstacle": -1.04715924535756,
+      "r_boundary": -0.03158517067073747,
+      "r_collision": -1.042857142857143,
+      "r_terminal": 16.285714285714285,
+      "r_failure": -13.714285714285714
+    },
+    {
+      "step": 2650000,
+      "episodes": 866,
+      "r_progress": 8.605365309063009,
+      "r_obstacle": -0.915028810042409,
+      "r_boundary": -0.0288932564472834,
+      "r_collision": -0.965242494226328,
+      "r_terminal": 17.321016166281755,
+      "r_failure": -12.678983833718245
+    },
+    {
+      "step": 2700000,
+      "episodes": 732,
+      "r_progress": 9.019741346195245,
+      "r_obstacle": -0.578198268692533,
+      "r_boundary": -0.11288894496524182,
+      "r_collision": -0.33073770491803284,
+      "r_terminal": 25.737704918032787,
+      "r_failure": -4.262295081967213
+    },
+    {
+      "step": 2750000,
+      "episodes": 697,
+      "r_progress": 9.132447570107063,
+      "r_obstacle": -0.4533099247162673,
+      "r_boundary": -0.11926643783820154,
+      "r_collision": -0.11814921090387373,
+      "r_terminal": 28.493543758967,
+      "r_failure": -1.5064562410329985
+    },
+    {
+      "step": 2800000,
+      "episodes": 1204,
+      "r_progress": 8.1211041175152,
+      "r_obstacle": -2.102413380510861,
+      "r_boundary": -0.4067194105338224,
+      "r_collision": -2.1370847176079737,
+      "r_terminal": 2.292358803986711,
+      "r_failure": -27.707641196013288
+    },
+    {
+      "step": 2850000,
+      "episodes": 846,
+      "r_progress": 8.828210147910694,
+      "r_obstacle": -2.031216298994199,
+      "r_boundary": -0.6146743528905967,
+      "r_collision": -1.6093971631205677,
+      "r_terminal": 9.078014184397164,
+      "r_failure": -20.921985815602838
+    },
+    {
+      "step": 2900000,
+      "episodes": 693,
+      "r_progress": 9.215300280194507,
+      "r_obstacle": -1.4243368374584144,
+      "r_boundary": -0.7417592410468625,
+      "r_collision": -0.7077200577200577,
+      "r_terminal": 20.90909090909091,
+      "r_failure": -9.090909090909092
+    },
+    {
+      "step": 2950000,
+      "episodes": 770,
+      "r_progress": 8.84827698719353,
+      "r_obstacle": -1.739661037532435,
+      "r_boundary": -0.5781095361205104,
+      "r_collision": -0.9266233766233766,
+      "r_terminal": 17.805194805194805,
+      "r_failure": -12.194805194805195
+    },
+    {
+      "step": 3000000,
+      "episodes": 871,
+      "r_progress": 8.60136644545516,
+      "r_obstacle": -1.5027017717778208,
+      "r_boundary": -0.44087010580609015,
+      "r_collision": -0.9468427095292767,
+      "r_terminal": 17.634902411021812,
+      "r_failure": -12.365097588978186
+    }
+  ],
+  "final_metrics": [
+    {
+      "episodes": 100,
+      "success_rate": 1.0,
+      "safe_success_rate": 0.38,
+      "collision_rate": 0.62,
+      "building_collision_rate": 0.56,
+      "boundary_collision_rate": 0.19,
+      "uav_collision_rate": 0.0,
+      "mean_episode_steps": 70.61
+    },
+    {
+      "episodes": 100,
+      "success_rate": 1.0,
+      "safe_success_rate": 0.04,
+      "collision_rate": 0.96,
+      "building_collision_rate": 0.9,
+      "boundary_collision_rate": 0.23,
+      "uav_collision_rate": 0.0,
+      "mean_episode_steps": 79.16
+    },
+    {
+      "episodes": 100,
+      "success_rate": 1.0,
+      "safe_success_rate": 0.06,
+      "collision_rate": 0.94,
+      "building_collision_rate": 0.89,
+      "boundary_collision_rate": 0.25,
+      "uav_collision_rate": 0.0,
+      "mean_episode_steps": 82.94
+    },
+    {
+      "episodes": 100,
+      "success_rate": 0.99,
+      "safe_success_rate": 0.68,
+      "collision_rate": 0.32,
+      "building_collision_rate": 0.27,
+      "boundary_collision_rate": 0.09,
+      "uav_collision_rate": 0.0,
+      "mean_episode_steps": 79.12
+    },
+    {
+      "episodes": 100,
+      "success_rate": 0.8,
+      "safe_success_rate": 0.57,
+      "collision_rate": 0.43,
+      "building_collision_rate": 0.38,
+      "boundary_collision_rate": 0.32,
+      "uav_collision_rate": 0.0,
+      "mean_episode_steps": 152.43
+    }
+  ],
+  "initial_metrics": [
+    {
+      "episodes": 100,
+      "success_rate": 0.85,
+      "safe_success_rate": 0.0,
+      "collision_rate": 1.0,
+      "building_collision_rate": 0.56,
+      "boundary_collision_rate": 1.0,
+      "uav_collision_rate": 0.0,
+      "mean_episode_steps": 136.54
+    },
+    {
+      "episodes": 100,
+      "success_rate": 0.46,
+      "safe_success_rate": 0.0,
+      "collision_rate": 1.0,
+      "building_collision_rate": 1.0,
+      "boundary_collision_rate": 0.92,
+      "uav_collision_rate": 0.0,
+      "mean_episode_steps": 255.45
+    },
+    {
+      "episodes": 100,
+      "success_rate": 0.46,
+      "safe_success_rate": 0.0,
+      "collision_rate": 1.0,
+      "building_collision_rate": 1.0,
+      "boundary_collision_rate": 0.76,
+      "uav_collision_rate": 0.0,
+      "mean_episode_steps": 256.96
+    },
+    {
+      "episodes": 100,
+      "success_rate": 0.55,
+      "safe_success_rate": 0.0,
+      "collision_rate": 1.0,
+      "building_collision_rate": 1.0,
+      "boundary_collision_rate": 0.58,
+      "uav_collision_rate": 0.0,
+      "mean_episode_steps": 241.93
+    },
+    {
+      "episodes": 100,
+      "success_rate": 0.23,
+      "safe_success_rate": 0.0,
+      "collision_rate": 1.0,
+      "building_collision_rate": 1.0,
+      "boundary_collision_rate": 0.2,
+      "uav_collision_rate": 0.0,
+      "mean_episode_steps": 342.99
+    }
+  ],
+  "beststage_retention_metrics": [
+    {
+      "episodes": 100,
+      "success_rate": 1.0,
+      "safe_success_rate": 1.0,
+      "collision_rate": 0.0,
+      "building_collision_rate": 0.0,
+      "boundary_collision_rate": 0.0,
+      "uav_collision_rate": 0.0,
+      "mean_episode_steps": 63.25
+    },
+    {
+      "episodes": 100,
+      "success_rate": 1.0,
+      "safe_success_rate": 0.99,
+      "collision_rate": 0.01,
+      "building_collision_rate": 0.01,
+      "boundary_collision_rate": 0.01,
+      "uav_collision_rate": 0.0,
+      "mean_episode_steps": 69.24
+    },
+    {
+      "episodes": 100,
+      "success_rate": 1.0,
+      "safe_success_rate": 1.0,
+      "collision_rate": 0.0,
+      "building_collision_rate": 0.0,
+      "boundary_collision_rate": 0.0,
+      "uav_collision_rate": 0.0,
+      "mean_episode_steps": 71.98
+    }
+  ],
+  "course_transition_steps": [
+    0,
+    1.45,
+    2.05,
+    2.2,
+    2.75,
+    3.0
+  ],
+  "training_updates_last": {
+    "step": "2999984",
+    "updates": "187244",
+    "window_updates": "125",
+    "actor_updates": "93622",
+    "window_actor_updates": "63",
+    "loss_actor_mean": "-5.431583215319921",
+    "loss_critic_mean": "11.08642349243164",
+    "predictQ_mean": "4.368233602523803",
+    "loss_critic_max": "27.41162872314453",
+    "predictQ_min": "3.2907400131225586",
+    "predictQ_max": "5.505852699279785",
+    "noise_scale": "0.03"
+  }
+}

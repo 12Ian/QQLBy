@@ -1,0 +1,7 @@
+{
+  "remote": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/docs/baseline_exp007_candidate_review_2026-10-13.zip",
+  "size": 1996048,
+  "sha256": "3729e7f4d7c46a96a9b1571c38037cb8f8b7c2b93a60c3102bcd4b968ae211dc",
+  "files": 25,
+  "scope": "frozen 950000-step candidate: fixed test passed, held-out safety failed; success video is illustrative"
+}

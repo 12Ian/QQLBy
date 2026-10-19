@@ -1,0 +1,119 @@
+{
+  "audits": {
+    "matd3": {
+      "environment_steps": 6000000,
+      "critic_updates": 374744,
+      "actor_updates": 187372,
+      "checkpoint": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/exp020_021_current_baseline_v1/code/outputs/models/matd3/baseline_exp020_matd3/seed_1_2026_1015_164542/final_train_model.pth",
+      "checkpoint_sha256": "ae70eaf216b8eb0c250129203ede1ea7de470a65c048e16886cbf6c1180c48f4",
+      "changed_tensors": {
+        "actor.": 6,
+        "critic_A.": 6,
+        "critic_B.": 6
+      },
+      "training_elapsed_seconds": 52295.197,
+      "curriculum_level": 4
+    },
+    "matd3_hgat": {
+      "environment_steps": 6000000,
+      "critic_updates": 374744,
+      "actor_updates": 187372,
+      "checkpoint": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/exp020_021_current_baseline_v1/code/outputs/models/matd3/baseline_exp021_matd3_hgat/seed_1_2026_1016_072433/final_train_model.pth",
+      "checkpoint_sha256": "e45c65b4ea72653df6472a05e4383cd8ebb1e42d6fd4521e77b5b9ced911f592",
+      "changed_tensors": {
+        "actor.": 6,
+        "critic_A.": 6,
+        "critic_B.": 6,
+        "actor_representation.": 6,
+        "critic_A_representation.": 6,
+        "critic_B_representation.": 6,
+        "target_actor_representation.": 6,
+        "target_critic_A_representation.": 6,
+        "target_critic_B_representation.": 6
+      },
+      "training_elapsed_seconds": 55751.648,
+      "curriculum_level": 3
+    }
+  },
+  "levels": [
+    {
+      "level": 1,
+      "target_max_speed": 3,
+      "initial_cases_match": true,
+      "matd3_success_rate": 1.0,
+      "matd3_safe_success_rate": 1.0,
+      "matd3_collision_rate": 0.0,
+      "matd3_mean_episode_steps": 159.3,
+      "matd3_intervention_fraction": 0.019445493454179254,
+      "matd3_hgat_success_rate": 0.99,
+      "matd3_hgat_safe_success_rate": 0.99,
+      "matd3_hgat_collision_rate": 0.0,
+      "matd3_hgat_mean_episode_steps": 163.36,
+      "matd3_hgat_intervention_fraction": 0.12077355457100428
+    },
+    {
+      "level": 2,
+      "target_max_speed": 5,
+      "initial_cases_match": true,
+      "matd3_success_rate": 1.0,
+      "matd3_safe_success_rate": 1.0,
+      "matd3_collision_rate": 0.0,
+      "matd3_mean_episode_steps": 231.13,
+      "matd3_intervention_fraction": 0.06698162274618585,
+      "matd3_hgat_success_rate": 0.84,
+      "matd3_hgat_safe_success_rate": 0.84,
+      "matd3_hgat_collision_rate": 0.0,
+      "matd3_hgat_mean_episode_steps": 314.14,
+      "matd3_hgat_intervention_fraction": 0.06828973701989878
+    },
+    {
+      "level": 3,
+      "target_max_speed": 8,
+      "initial_cases_match": true,
+      "matd3_success_rate": 0.89,
+      "matd3_safe_success_rate": 0.89,
+      "matd3_collision_rate": 0.0,
+      "matd3_mean_episode_steps": 393.39,
+      "matd3_intervention_fraction": 0.061839105610796176,
+      "matd3_hgat_success_rate": 0.97,
+      "matd3_hgat_safe_success_rate": 0.97,
+      "matd3_hgat_collision_rate": 0.0,
+      "matd3_hgat_mean_episode_steps": 347.21,
+      "matd3_hgat_intervention_fraction": 0.07897862917642175
+    },
+    {
+      "level": 4,
+      "target_max_speed": 10,
+      "initial_cases_match": true,
+      "matd3_success_rate": 0.71,
+      "matd3_safe_success_rate": 0.71,
+      "matd3_collision_rate": 0.0,
+      "matd3_mean_episode_steps": 525.94,
+      "matd3_intervention_fraction": 0.07561201117105874,
+      "matd3_hgat_success_rate": 0.61,
+      "matd3_hgat_safe_success_rate": 0.61,
+      "matd3_hgat_collision_rate": 0.0,
+      "matd3_hgat_mean_episode_steps": 572.04,
+      "matd3_hgat_intervention_fraction": 0.08393321860308932
+    },
+    {
+      "level": 5,
+      "target_max_speed": 12,
+      "initial_cases_match": true,
+      "matd3_success_rate": 0.42,
+      "matd3_safe_success_rate": 0.42,
+      "matd3_collision_rate": 0.0,
+      "matd3_mean_episode_steps": 676.31,
+      "matd3_intervention_fraction": 0.1078223726246539,
+      "matd3_hgat_success_rate": 0.1,
+      "matd3_hgat_safe_success_rate": 0.1,
+      "matd3_hgat_collision_rate": 0.0,
+      "matd3_hgat_mean_episode_steps": 765.82,
+      "matd3_hgat_intervention_fraction": 0.18677263325045443
+    }
+  ],
+  "training_seeds": [
+    1
+  ],
+  "limitation": "One training seed, fixed cities, no unseen-map claim"
+}

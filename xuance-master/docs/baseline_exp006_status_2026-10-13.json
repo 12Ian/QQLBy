@@ -1,0 +1,47 @@
+{
+  "time": "2026-10-13T06:15:26.678589+00:00",
+  "process": {
+    "experiment": "006",
+    "supervisor_pid": 2784836,
+    "child_pid": 2784837,
+    "command": [
+      "/home/ryy/miniconda3/envs/rl_env/bin/python",
+      "-u",
+      "examples/run_baseline.py",
+      "--name",
+      "exp006",
+      "--config",
+      "experiments/baseline_exp006.yaml",
+      "--steps",
+      "3000000",
+      "--parallels",
+      "16",
+      "--seed",
+      "1",
+      "--device",
+      "cuda:0",
+      "--start-level",
+      "2",
+      "--eval-interval",
+      "50000",
+      "--test-episodes",
+      "100"
+    ],
+    "started_at": "2026-10-13T03:34:17.394612+00:00",
+    "status": "completed",
+    "exit_code": 0,
+    "finished_at": "2026-10-13T05:10:31.289117+00:00"
+  },
+  "live": false,
+  "training": {
+    "step": 2999888,
+    "episodes": 124449,
+    "successes": 99270,
+    "level": 4,
+    "recent_success_rate": 0.85,
+    "recent_safe_success_rate": 0.85,
+    "recent_collision_rate": 0.15,
+    "updates": 187237,
+    "actor_updates": 93618
+  }
+}

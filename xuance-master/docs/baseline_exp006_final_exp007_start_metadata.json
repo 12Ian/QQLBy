@@ -1,0 +1,8 @@
+{
+  "remote": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/docs/baseline_exp006_final_exp007_start_2026-10-13.zip",
+  "size": 351841,
+  "sha256": "3f5702871769d8a2ae5839f109fc23068ba31efd24cd9062e29d857d5c439753",
+  "files": 27,
+  "snapshot_time": "2026-10-13T06:15:26.678589+00:00",
+  "exp007_training_steps": 77888
+}

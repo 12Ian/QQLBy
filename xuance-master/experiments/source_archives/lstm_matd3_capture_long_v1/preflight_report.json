@@ -1,0 +1,58 @@
+{
+  "passed": true,
+  "initial_cases_matched": true,
+  "initial_metrics": {
+    "lstm": {
+      "success_rate": 0.3,
+      "safe_success_rate": 0.3,
+      "collision_rate": 0.0,
+      "building_collision_rate": 0.0,
+      "boundary_collision_rate": 0.0,
+      "uav_collision_rate": 0.0,
+      "timeout_rate": 0.7,
+      "episodes": 10,
+      "mean_episode_steps": 561.0,
+      "mean_return": -2.6680647802898236
+    },
+    "cv": {
+      "success_rate": 0.3,
+      "safe_success_rate": 0.3,
+      "collision_rate": 0.0,
+      "building_collision_rate": 0.0,
+      "boundary_collision_rate": 0.0,
+      "uav_collision_rate": 0.0,
+      "timeout_rate": 0.7,
+      "episodes": 10,
+      "mean_episode_steps": 561.0,
+      "mean_return": -2.6680647802898236
+    },
+    "none": {
+      "success_rate": 0.3,
+      "safe_success_rate": 0.3,
+      "collision_rate": 0.0,
+      "building_collision_rate": 0.0,
+      "boundary_collision_rate": 0.0,
+      "uav_collision_rate": 0.0,
+      "timeout_rate": 0.7,
+      "episodes": 10,
+      "mean_episode_steps": 561.0,
+      "mean_return": -2.6680647802898236
+    }
+  },
+  "benchmark_smoke": {
+    "stage": "complete",
+    "job": "lstm_seed_1",
+    "smoke": true,
+    "training_steps": 4096,
+    "learner_updates": 240,
+    "elapsed_seconds": 26.21506357192993,
+    "predictor_frozen": true,
+    "models": {
+      "best": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/preflight/benchmark_smoke/results/best_model/best_model.pth",
+      "final": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/preflight/benchmark_smoke/models/capture_long_lstm_seed_1/seed_1_2026_1019_022343/final_train_model.pth",
+      "initial": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/preflight/benchmark_smoke/models/capture_long_lstm_seed_1/seed_1_2026_1019_022343/initial_random_model.pth"
+    }
+  },
+  "configs_only_expected_differences": true,
+  "heldout_test_labels_used": false
+}

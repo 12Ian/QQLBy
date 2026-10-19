@@ -1,0 +1,3271 @@
+{
+  "china_time": "2026-10-19T12:40:23.340942+08:00",
+  "queue": {
+    "stage": "running",
+    "job": "cv_seed_1",
+    "job_index": 4,
+    "total_jobs": 6,
+    "completed_jobs": 3,
+    "total_training_steps": 36000000
+  },
+  "jobs": [
+    {
+      "method": "lstm",
+      "seed": 1,
+      "status": {
+        "stage": "complete",
+        "job": "lstm_seed_1",
+        "smoke": false,
+        "training_steps": 6000000,
+        "learner_updates": 374744,
+        "elapsed_seconds": 10476.42975473404,
+        "predictor_frozen": true,
+        "models": {
+          "best": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/jobs/lstm_seed_1/results/best_model/best_model.pth",
+          "final": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/jobs/lstm_seed_1/models/capture_long_lstm_seed_1/seed_1_2026_1019_022450/final_train_model.pth",
+          "initial": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/jobs/lstm_seed_1/models/capture_long_lstm_seed_1/seed_1_2026_1019_022450/initial_random_model.pth"
+        }
+      },
+      "progress": {
+        "step": 5999008,
+        "episodes": 10351,
+        "successes": 1183,
+        "level": 4,
+        "recent_success_rate": 0.01,
+        "recent_safe_success_rate": 0.01,
+        "recent_collision_rate": 0.0,
+        "updates": 374682,
+        "actor_updates": 187341
+      },
+      "best_validation": {
+        "step": "0",
+        "phase": "current",
+        "level": "4",
+        "episodes": "100",
+        "success_rate": "0.33",
+        "safe_success_rate": "0.33",
+        "collision_rate": "0.0",
+        "building_collision_rate": "0.0",
+        "boundary_collision_rate": "0.0",
+        "uav_collision_rate": "0.0",
+        "mean_episode_steps": "537.79",
+        "mean_return": "13.890535745564128"
+      },
+      "last_validation": {
+        "step": "6000000",
+        "phase": "current",
+        "level": "4",
+        "episodes": "100",
+        "success_rate": "0.05",
+        "safe_success_rate": "0.05",
+        "collision_rate": "0.0",
+        "building_collision_rate": "0.0",
+        "boundary_collision_rate": "0.0",
+        "uav_collision_rate": "0.0",
+        "mean_episode_steps": "587.16",
+        "mean_return": "27.468568523395106"
+      },
+      "tests": {
+        "best_level_5": {
+          "success_rate": 0.265,
+          "safe_success_rate": 0.265,
+          "collision_rate": 0.0,
+          "building_collision_rate": 0.0,
+          "boundary_collision_rate": 0.0,
+          "uav_collision_rate": 0.0,
+          "timeout_rate": 0.735,
+          "episodes": 200,
+          "mean_episode_steps": 549.765,
+          "mean_return": 7.175750766414927
+        },
+        "final_level_5": {
+          "success_rate": 0.05,
+          "safe_success_rate": 0.05,
+          "collision_rate": 0.0,
+          "building_collision_rate": 0.0,
+          "boundary_collision_rate": 0.0,
+          "uav_collision_rate": 0.0,
+          "timeout_rate": 0.95,
+          "episodes": 200,
+          "mean_episode_steps": 590.08,
+          "mean_return": 27.3745912378025
+        },
+        "best_level_1": {
+          "success_rate": 1.0,
+          "safe_success_rate": 1.0,
+          "collision_rate": 0.0,
+          "building_collision_rate": 0.0,
+          "boundary_collision_rate": 0.0,
+          "uav_collision_rate": 0.0,
+          "timeout_rate": 0.0,
+          "episodes": 200,
+          "mean_episode_steps": 157.9,
+          "mean_return": 110.98268075700422
+        },
+        "best_level_2": {
+          "success_rate": 0.965,
+          "safe_success_rate": 0.965,
+          "collision_rate": 0.0,
+          "building_collision_rate": 0.0,
+          "boundary_collision_rate": 0.0,
+          "uav_collision_rate": 0.0,
+          "timeout_rate": 0.035,
+          "episodes": 200,
+          "mean_episode_steps": 212.27,
+          "mean_return": 91.8092632577263
+        },
+        "best_level_4": {
+          "success_rate": 0.625,
+          "safe_success_rate": 0.625,
+          "collision_rate": 0.0,
+          "building_collision_rate": 0.0,
+          "boundary_collision_rate": 0.0,
+          "uav_collision_rate": 0.0,
+          "timeout_rate": 0.375,
+          "episodes": 200,
+          "mean_episode_steps": 449.61,
+          "mean_return": 43.908603708131956
+        },
+        "best_level_3": {
+          "success_rate": 0.85,
+          "safe_success_rate": 0.85,
+          "collision_rate": 0.0,
+          "building_collision_rate": 0.0,
+          "boundary_collision_rate": 0.0,
+          "uav_collision_rate": 0.0,
+          "timeout_rate": 0.15,
+          "episodes": 200,
+          "mean_episode_steps": 333.895,
+          "mean_return": 69.24060695511355
+        }
+      }
+    },
+    {
+      "method": "lstm",
+      "seed": 2,
+      "status": {
+        "stage": "complete",
+        "job": "lstm_seed_2",
+        "smoke": false,
+        "training_steps": 6000000,
+        "learner_updates": 374744,
+        "elapsed_seconds": 10444.16026210785,
+        "predictor_frozen": true,
+        "models": {
+          "best": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/jobs/lstm_seed_2/results/best_model/best_model.pth",
+          "final": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/jobs/lstm_seed_2/models/capture_long_lstm_seed_2/seed_2_2026_1019_051931/final_train_model.pth",
+          "initial": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/jobs/lstm_seed_2/models/capture_long_lstm_seed_2/seed_2_2026_1019_051931/initial_random_model.pth"
+        }
+      },
+      "progress": {
+        "step": 5999504,
+        "episodes": 10385,
+        "successes": 1222,
+        "level": 4,
+        "recent_success_rate": 0.04,
+        "recent_safe_success_rate": 0.04,
+        "recent_collision_rate": 0.0,
+        "updates": 374713,
+        "actor_updates": 187356
+      },
+      "best_validation": {
+        "step": "0",
+        "phase": "current",
+        "level": "4",
+        "episodes": "100",
+        "success_rate": "0.33",
+        "safe_success_rate": "0.33",
+        "collision_rate": "0.0",
+        "building_collision_rate": "0.0",
+        "boundary_collision_rate": "0.0",
+        "uav_collision_rate": "0.0",
+        "mean_episode_steps": "537.79",
+        "mean_return": "13.890535745564128"
+      },
+      "last_validation": {
+        "step": "6000000",
+        "phase": "current",
+        "level": "4",
+        "episodes": "100",
+        "success_rate": "0.03",
+        "safe_success_rate": "0.03",
+        "collision_rate": "0.0",
+        "building_collision_rate": "0.0",
+        "boundary_collision_rate": "0.0",
+        "uav_collision_rate": "0.0",
+        "mean_episode_steps": "596.21",
+        "mean_return": "30.128471915930145"
+      },
+      "tests": {
+        "best_level_5": {
+          "success_rate": 0.265,
+          "safe_success_rate": 0.265,
+          "collision_rate": 0.0,
+          "building_collision_rate": 0.0,
+          "boundary_collision_rate": 0.0,
+          "uav_collision_rate": 0.0,
+          "timeout_rate": 0.735,
+          "episodes": 200,
+          "mean_episode_steps": 549.765,
+          "mean_return": 7.175750766414927
+        },
+        "final_level_5": {
+          "success_rate": 0.01,
+          "safe_success_rate": 0.01,
+          "collision_rate": 0.0,
+          "building_collision_rate": 0.0,
+          "boundary_collision_rate": 0.0,
+          "uav_collision_rate": 0.0,
+          "timeout_rate": 0.99,
+          "episodes": 200,
+          "mean_episode_steps": 596.38,
+          "mean_return": 27.900936162766246
+        },
+        "best_level_1": {
+          "success_rate": 1.0,
+          "safe_success_rate": 1.0,
+          "collision_rate": 0.0,
+          "building_collision_rate": 0.0,
+          "boundary_collision_rate": 0.0,
+          "uav_collision_rate": 0.0,
+          "timeout_rate": 0.0,
+          "episodes": 200,
+          "mean_episode_steps": 157.9,
+          "mean_return": 110.98268075700422
+        },
+        "best_level_2": {
+          "success_rate": 0.965,
+          "safe_success_rate": 0.965,
+          "collision_rate": 0.0,
+          "building_collision_rate": 0.0,
+          "boundary_collision_rate": 0.0,
+          "uav_collision_rate": 0.0,
+          "timeout_rate": 0.035,
+          "episodes": 200,
+          "mean_episode_steps": 212.27,
+          "mean_return": 91.8092632577263
+        },
+        "best_level_4": {
+          "success_rate": 0.625,
+          "safe_success_rate": 0.625,
+          "collision_rate": 0.0,
+          "building_collision_rate": 0.0,
+          "boundary_collision_rate": 0.0,
+          "uav_collision_rate": 0.0,
+          "timeout_rate": 0.375,
+          "episodes": 200,
+          "mean_episode_steps": 449.61,
+          "mean_return": 43.908603708131956
+        },
+        "best_level_3": {
+          "success_rate": 0.85,
+          "safe_success_rate": 0.85,
+          "collision_rate": 0.0,
+          "building_collision_rate": 0.0,
+          "boundary_collision_rate": 0.0,
+          "uav_collision_rate": 0.0,
+          "timeout_rate": 0.15,
+          "episodes": 200,
+          "mean_episode_steps": 333.895,
+          "mean_return": 69.24060695511355
+        }
+      }
+    },
+    {
+      "method": "lstm",
+      "seed": 3,
+      "status": {
+        "stage": "complete",
+        "job": "lstm_seed_3",
+        "smoke": false,
+        "training_steps": 6000000,
+        "learner_updates": 374744,
+        "elapsed_seconds": 10689.476027011871,
+        "predictor_frozen": true,
+        "models": {
+          "best": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/jobs/lstm_seed_3/results/best_model/best_model.pth",
+          "final": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/jobs/lstm_seed_3/models/capture_long_lstm_seed_3/seed_3_2026_1019_081339/final_train_model.pth",
+          "initial": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/jobs/lstm_seed_3/models/capture_long_lstm_seed_3/seed_3_2026_1019_081339/initial_random_model.pth"
+        }
+      },
+      "progress": {
+        "step": 5999728,
+        "episodes": 10404,
+        "successes": 1220,
+        "level": 4,
+        "recent_success_rate": 0.1,
+        "recent_safe_success_rate": 0.1,
+        "recent_collision_rate": 0.0,
+        "updates": 374727,
+        "actor_updates": 187363
+      },
+      "best_validation": {
+        "step": "200000",
+        "phase": "current",
+        "level": "4",
+        "episodes": "100",
+        "success_rate": "0.35",
+        "safe_success_rate": "0.35",
+        "collision_rate": "0.0",
+        "building_collision_rate": "0.0",
+        "boundary_collision_rate": "0.0",
+        "uav_collision_rate": "0.0",
+        "mean_episode_steps": "534.51",
+        "mean_return": "10.346597552121652"
+      },
+      "last_validation": {
+        "step": "6000000",
+        "phase": "current",
+        "level": "4",
+        "episodes": "100",
+        "success_rate": "0.08",
+        "safe_success_rate": "0.08",
+        "collision_rate": "0.0",
+        "building_collision_rate": "0.0",
+        "boundary_collision_rate": "0.0",
+        "uav_collision_rate": "0.0",
+        "mean_episode_steps": "585.17",
+        "mean_return": "33.31897334593961"
+      },
+      "tests": {
+        "best_level_5": {
+          "success_rate": 0.29,
+          "safe_success_rate": 0.29,
+          "collision_rate": 0.0,
+          "building_collision_rate": 0.0,
+          "boundary_collision_rate": 0.0,
+          "uav_collision_rate": 0.0,
+          "timeout_rate": 0.71,
+          "episodes": 200,
+          "mean_episode_steps": 548.335,
+          "mean_return": 2.8138262730516135
+        },
+        "final_level_5": {
+          "success_rate": 0.05,
+          "safe_success_rate": 0.05,
+          "collision_rate": 0.0,
+          "building_collision_rate": 0.0,
+          "boundary_collision_rate": 0.0,
+          "uav_collision_rate": 0.0,
+          "timeout_rate": 0.95,
+          "episodes": 200,
+          "mean_episode_steps": 587.92,
+          "mean_return": 38.66658693240401
+        },
+        "best_level_1": {
+          "success_rate": 1.0,
+          "safe_success_rate": 1.0,
+          "collision_rate": 0.0,
+          "building_collision_rate": 0.0,
+          "boundary_collision_rate": 0.0,
+          "uav_collision_rate": 0.0,
+          "timeout_rate": 0.0,
+          "episodes": 200,
+          "mean_episode_steps": 154.095,
+          "mean_return": 111.85763699377146
+        },
+        "best_level_2": {
+          "success_rate": 0.98,
+          "safe_success_rate": 0.98,
+          "collision_rate": 0.0,
+          "building_collision_rate": 0.0,
+          "boundary_collision_rate": 0.0,
+          "uav_collision_rate": 0.0,
+          "timeout_rate": 0.02,
+          "episodes": 200,
+          "mean_episode_steps": 216.605,
+          "mean_return": 94.96248641632128
+        },
+        "best_level_4": {
+          "success_rate": 0.375,
+          "safe_success_rate": 0.375,
+          "collision_rate": 0.0,
+          "building_collision_rate": 0.0,
+          "boundary_collision_rate": 0.0,
+          "uav_collision_rate": 0.0,
+          "timeout_rate": 0.625,
+          "episodes": 200,
+          "mean_episode_steps": 493.05,
+          "mean_return": 25.932439910073082
+        },
+        "best_level_3": {
+          "success_rate": 0.76,
+          "safe_success_rate": 0.76,
+          "collision_rate": 0.0,
+          "building_collision_rate": 0.0,
+          "boundary_collision_rate": 0.0,
+          "uav_collision_rate": 0.0,
+          "timeout_rate": 0.24,
+          "episodes": 200,
+          "mean_episode_steps": 340.51,
+          "mean_return": 68.16643880336865
+        }
+      }
+    },
+    {
+      "method": "cv",
+      "seed": 1,
+      "status": {
+        "stage": "training",
+        "job": "cv_seed_1",
+        "pid": 1806273,
+        "total_steps": 6000000
+      },
+      "progress": {
+        "step": 3400000,
+        "episodes": 5975,
+        "successes": 1002,
+        "level": 4,
+        "recent_success_rate": 0.15,
+        "recent_safe_success_rate": 0.15,
+        "recent_collision_rate": 0.0,
+        "updates": 212244,
+        "actor_updates": 106122
+      },
+      "best_validation": {
+        "step": "0",
+        "phase": "current",
+        "level": "4",
+        "episodes": "100",
+        "success_rate": "0.33",
+        "safe_success_rate": "0.33",
+        "collision_rate": "0.0",
+        "building_collision_rate": "0.0",
+        "boundary_collision_rate": "0.0",
+        "uav_collision_rate": "0.0",
+        "mean_episode_steps": "537.79",
+        "mean_return": "13.890535745564128"
+      },
+      "last_validation": {
+        "step": "3200000",
+        "phase": "current",
+        "level": "4",
+        "episodes": "100",
+        "success_rate": "0.2",
+        "safe_success_rate": "0.2",
+        "collision_rate": "0.0",
+        "building_collision_rate": "0.0",
+        "boundary_collision_rate": "0.0",
+        "uav_collision_rate": "0.0",
+        "mean_episode_steps": "567.96",
+        "mean_return": "16.51251017640939"
+      },
+      "tests": {}
+    }
+  ],
+  "frozen_source_unchanged": true,
+  "frozen_inputs_unchanged": true,
+  "prediction_audit": {
+    "scene_count": 20,
+    "levels": [
+      5
+    ],
+    "physical_dt": 0.5,
+    "full_future_only": true,
+    "trajectory_source": {
+      "initial": {
+        "checkpoint": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/jobs/lstm_seed_1/models/capture_long_lstm_seed_1/seed_1_2026_1019_022450/initial_random_model.pth",
+        "sha256": "d076172a6a41e3164ae625d3bcd1270daf67c41006aee4c79d611112644e7919"
+      },
+      "final_seed_3": {
+        "checkpoint": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/jobs/lstm_seed_3/models/capture_long_lstm_seed_3/seed_3_2026_1019_081339/final_train_model.pth",
+        "sha256": "76c832dbe6c659f3b87d421654b19968b30db7dd165a6c8f89f8678b50218dd2"
+      }
+    },
+    "results": {
+      "initial": {
+        "aggregate": {
+          "lstm": {
+            "ade_m": 3.30676531791687,
+            "episode_macro_ade_m": 3.3072158217430117,
+            "horizons_m": [
+              0.13603760302066803,
+              0.3417631685733795,
+              0.6558828353881836,
+              1.0909174680709839,
+              1.660544753074646,
+              2.350794553756714,
+              3.1473679542541504,
+              4.026892185211182,
+              4.989738464355469,
+              5.999906539916992,
+              7.071893692016602,
+              8.20971393585205
+            ],
+            "p90_m": 9.235247611999512,
+            "full_windows": 9486
+          },
+          "cv": {
+            "ade_m": 8.41497802734375,
+            "episode_macro_ade_m": 8.327094173431396,
+            "horizons_m": [
+              0.35072389245033264,
+              1.0347037315368652,
+              2.0244712829589844,
+              3.2878170013427734,
+              4.790487289428711,
+              6.498688697814941,
+              8.38036060333252,
+              10.408674240112305,
+              12.562158584594727,
+              14.824913024902344,
+              17.18381118774414,
+              19.632556915283203
+            ],
+            "p90_m": 25.783056259155273,
+            "full_windows": 9486
+          },
+          "ca": {
+            "ade_m": 8.794336318969727,
+            "episode_macro_ade_m": 8.87714467048645,
+            "horizons_m": [
+              0.20789878070354462,
+              0.5582143068313599,
+              1.1661481857299805,
+              2.1132688522338867,
+              3.453921318054199,
+              5.218690872192383,
+              7.424161911010742,
+              10.072745323181152,
+              13.158808708190918,
+              16.667930603027344,
+              20.58670425415039,
+              24.903257369995117
+            ],
+            "p90_m": 28.369098663330078,
+            "full_windows": 9486
+          }
+        },
+        "episodes": [
+          {
+            "case": 0,
+            "seed": 641004000,
+            "initial_sha256": "2c767cdddef087000993f2244255e41dfda3499c38127a87ce5051322fd3abe7",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 3.8893983364105225,
+                "horizons_m": [
+                  0.15535295009613037,
+                  0.38896316289901733,
+                  0.7330178618431091,
+                  1.2196884155273438,
+                  1.8722944259643555,
+                  2.692902088165283,
+                  3.651343584060669,
+                  4.7281174659729,
+                  5.897183895111084,
+                  7.1323041915893555,
+                  8.429313659667969,
+                  9.77230453491211
+                ],
+                "p90_m": 11.328618049621582
+              },
+              "cv": {
+                "ade_m": 9.122447967529297,
+                "horizons_m": [
+                  0.3709551692008972,
+                  1.0963619947433472,
+                  2.1490328311920166,
+                  3.4974372386932373,
+                  5.107650279998779,
+                  6.947437763214111,
+                  8.98852252960205,
+                  11.207938194274902,
+                  13.588608741760254,
+                  16.11952781677246,
+                  18.79131507873535,
+                  21.604534149169922
+                ],
+                "p90_m": 26.813337326049805
+              },
+              "ca": {
+                "ade_m": 9.013166427612305,
+                "horizons_m": [
+                  0.2139083743095398,
+                  0.5669719576835632,
+                  1.191014051437378,
+                  2.169543981552124,
+                  3.5565407276153564,
+                  5.3795013427734375,
+                  7.644481658935547,
+                  10.362140655517578,
+                  13.510039329528809,
+                  17.0721435546875,
+                  21.05200958251953,
+                  25.439727783203125
+                ],
+                "p90_m": 28.282594680786133
+              }
+            }
+          },
+          {
+            "case": 1,
+            "seed": 641004001,
+            "initial_sha256": "0c11bfd6965dbe6194c5854056cddc644942e7c13fe16a173682c9af0b9a2511",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 3.1391804218292236,
+                "horizons_m": [
+                  0.11967303603887558,
+                  0.3090206980705261,
+                  0.6224582195281982,
+                  1.0537410974502563,
+                  1.6199722290039062,
+                  2.2817206382751465,
+                  3.0352156162261963,
+                  3.8594014644622803,
+                  4.757457256317139,
+                  5.689234256744385,
+                  6.658864974975586,
+                  7.663403034210205
+                ],
+                "p90_m": 9.354774475097656
+              },
+              "cv": {
+                "ade_m": 7.111340522766113,
+                "horizons_m": [
+                  0.29115766286849976,
+                  0.859431803226471,
+                  1.6821538209915161,
+                  2.734205484390259,
+                  3.9867873191833496,
+                  5.416391372680664,
+                  7.002045154571533,
+                  8.727572441101074,
+                  10.580780982971191,
+                  12.55644416809082,
+                  14.648717880249023,
+                  16.850431442260742
+                ],
+                "p90_m": 21.45716094970703
+              },
+              "ca": {
+                "ade_m": 7.638670921325684,
+                "horizons_m": [
+                  0.17599281668663025,
+                  0.49084803462028503,
+                  1.0476840734481812,
+                  1.911481261253357,
+                  3.10802960395813,
+                  4.654207229614258,
+                  6.564508438110352,
+                  8.825569152832031,
+                  11.437826156616211,
+                  14.401068687438965,
+                  17.705673217773438,
+                  21.34113883972168
+                ],
+                "p90_m": 23.880640029907227
+              }
+            }
+          },
+          {
+            "case": 2,
+            "seed": 641004002,
+            "initial_sha256": "aea46f2aa8445836d552c6def0612c5b9c18a5f0f97e819e7f8b7ef3043b3b7e",
+            "steps": 362,
+            "terminal_time_seconds": 180.64234299649095,
+            "terminal_on_grid": false,
+            "success": true,
+            "full_6s_windows": 340,
+            "metrics": {
+              "lstm": {
+                "ade_m": 4.180962562561035,
+                "horizons_m": [
+                  0.15356950461864471,
+                  0.40292152762413025,
+                  0.7970160841941833,
+                  1.3567917346954346,
+                  2.0751404762268066,
+                  2.949916124343872,
+                  3.9447293281555176,
+                  5.048181056976318,
+                  6.2675299644470215,
+                  7.592308044433594,
+                  9.01406192779541,
+                  10.569404602050781
+                ],
+                "p90_m": 13.356884002685547
+              },
+              "cv": {
+                "ade_m": 8.569270133972168,
+                "horizons_m": [
+                  0.3816663324832916,
+                  1.1047282218933105,
+                  2.1340231895446777,
+                  3.434084177017212,
+                  4.962988376617432,
+                  6.68664026260376,
+                  8.5745210647583,
+                  10.60204029083252,
+                  12.749661445617676,
+                  15.005204200744629,
+                  17.363399505615234,
+                  19.832237243652344
+                ],
+                "p90_m": 27.257450103759766
+              },
+              "ca": {
+                "ade_m": 10.768381118774414,
+                "horizons_m": [
+                  0.24209855496883392,
+                  0.6850466728210449,
+                  1.459330439567566,
+                  2.650871992111206,
+                  4.31392765045166,
+                  6.492558002471924,
+                  9.191025733947754,
+                  12.412700653076172,
+                  16.142980575561523,
+                  20.3680362701416,
+                  25.061107635498047,
+                  30.20086097717285
+                ],
+                "p90_m": 33.5845947265625
+              }
+            }
+          },
+          {
+            "case": 3,
+            "seed": 641004003,
+            "initial_sha256": "bb768518a16d686ba3b1f686a60d9b20368f3f967292698eb2b25c7d0ebb26f0",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 3.6782078742980957,
+                "horizons_m": [
+                  0.15851542353630066,
+                  0.40858060121536255,
+                  0.7874612808227539,
+                  1.3012661933898926,
+                  1.9716212749481201,
+                  2.7664637565612793,
+                  3.63920521736145,
+                  4.5797247886657715,
+                  5.555075645446777,
+                  6.5597333908081055,
+                  7.633867263793945,
+                  8.776962280273438
+                ],
+                "p90_m": 10.375380516052246
+              },
+              "cv": {
+                "ade_m": 9.822295188903809,
+                "horizons_m": [
+                  0.4143110513687134,
+                  1.2209619283676147,
+                  2.382441997528076,
+                  3.862523078918457,
+                  5.617112159729004,
+                  7.598949909210205,
+                  9.778630256652832,
+                  12.12691879272461,
+                  14.62846565246582,
+                  17.271339416503906,
+                  20.04009246826172,
+                  22.925762176513672
+                ],
+                "p90_m": 28.548879623413086
+              },
+              "ca": {
+                "ade_m": 10.205533981323242,
+                "horizons_m": [
+                  0.2463448941707611,
+                  0.6605405211448669,
+                  1.3822472095489502,
+                  2.505230665206909,
+                  4.0818986892700195,
+                  6.145352840423584,
+                  8.70881462097168,
+                  11.760207176208496,
+                  15.289772987365723,
+                  19.285985946655273,
+                  23.743404388427734,
+                  28.65656089782715
+                ],
+                "p90_m": 31.856443405151367
+              }
+            }
+          },
+          {
+            "case": 4,
+            "seed": 641004004,
+            "initial_sha256": "6c6114dd380e068e2f534c43f9e043ed68729a9c3e37c63e29cf13f2c5dd70a3",
+            "steps": 319,
+            "terminal_time_seconds": 159.16699179591805,
+            "terminal_on_grid": false,
+            "success": true,
+            "full_6s_windows": 297,
+            "metrics": {
+              "lstm": {
+                "ade_m": 2.981271505355835,
+                "horizons_m": [
+                  0.12649419903755188,
+                  0.31953850388526917,
+                  0.5962603688240051,
+                  0.9852527379989624,
+                  1.4767218828201294,
+                  2.065187692642212,
+                  2.755584955215454,
+                  3.559929847717285,
+                  4.475484371185303,
+                  5.4261884689331055,
+                  6.453516006469727,
+                  7.535109996795654
+                ],
+                "p90_m": 9.39622688293457
+              },
+              "cv": {
+                "ade_m": 7.454995155334473,
+                "horizons_m": [
+                  0.3216363191604614,
+                  0.9488410353660583,
+                  1.8528178930282593,
+                  2.9977967739105225,
+                  4.350561618804932,
+                  5.873255252838135,
+                  7.529160499572754,
+                  9.290849685668945,
+                  11.140752792358398,
+                  13.061296463012695,
+                  15.035496711730957,
+                  17.057416915893555
+                ],
+                "p90_m": 25.39521598815918
+              },
+              "ca": {
+                "ade_m": 8.546111106872559,
+                "horizons_m": [
+                  0.20093204081058502,
+                  0.5486547946929932,
+                  1.1403251886367798,
+                  2.0631935596466064,
+                  3.3641583919525146,
+                  5.087623596191406,
+                  7.234591960906982,
+                  9.8075532913208,
+                  12.800061225891113,
+                  16.19518280029297,
+                  19.978988647460938,
+                  24.132030487060547
+                ],
+                "p90_m": 27.870471954345703
+              }
+            }
+          },
+          {
+            "case": 5,
+            "seed": 641004005,
+            "initial_sha256": "02e209269c8f120f0dacc6ce8761f507ed64656e288c412d1bec49cd980d3491",
+            "steps": 330,
+            "terminal_time_seconds": 164.72365105295867,
+            "terminal_on_grid": false,
+            "success": true,
+            "full_6s_windows": 308,
+            "metrics": {
+              "lstm": {
+                "ade_m": 3.441701650619507,
+                "horizons_m": [
+                  0.14206816256046295,
+                  0.3651389479637146,
+                  0.7179056406021118,
+                  1.2164921760559082,
+                  1.8740121126174927,
+                  2.6546881198883057,
+                  3.5032753944396973,
+                  4.391579627990723,
+                  5.304717063903809,
+                  6.163201332092285,
+                  7.037164688110352,
+                  7.930160045623779
+                ],
+                "p90_m": 9.628108978271484
+              },
+              "cv": {
+                "ade_m": 8.53966999053955,
+                "horizons_m": [
+                  0.37201863527297974,
+                  1.0958657264709473,
+                  2.135925531387329,
+                  3.4509966373443604,
+                  4.997990608215332,
+                  6.735884189605713,
+                  8.619671821594238,
+                  10.622786521911621,
+                  12.733259201049805,
+                  14.932394981384277,
+                  17.208284378051758,
+                  19.570980072021484
+                ],
+                "p90_m": 26.650604248046875
+              },
+              "ca": {
+                "ade_m": 9.393424034118652,
+                "horizons_m": [
+                  0.22277787327766418,
+                  0.603924572467804,
+                  1.2618598937988281,
+                  2.2885560989379883,
+                  3.733213424682617,
+                  5.634015083312988,
+                  8.000743865966797,
+                  10.820113182067871,
+                  14.103745460510254,
+                  17.799968719482422,
+                  21.888084411621094,
+                  26.364084243774414
+                ],
+                "p90_m": 31.996870040893555
+              }
+            }
+          },
+          {
+            "case": 6,
+            "seed": 641004006,
+            "initial_sha256": "16109eb5568c5f8cc8230106ec9ca62a0c4c5e15c97d864c33eb5fd12206dede",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 4.415977954864502,
+                "horizons_m": [
+                  0.15767771005630493,
+                  0.41535550355911255,
+                  0.8245699405670166,
+                  1.4088813066482544,
+                  2.186143636703491,
+                  3.130800247192383,
+                  4.222674369812012,
+                  5.423691272735596,
+                  6.723503589630127,
+                  8.077255249023438,
+                  9.482769966125488,
+                  10.938446044921875
+                ],
+                "p90_m": 12.106303215026855
+              },
+              "cv": {
+                "ade_m": 9.784903526306152,
+                "horizons_m": [
+                  0.40387028455734253,
+                  1.1914595365524292,
+                  2.333327531814575,
+                  3.79522967338562,
+                  5.542003631591797,
+                  7.537437438964844,
+                  9.740166664123535,
+                  12.11789608001709,
+                  14.645317077636719,
+                  17.285459518432617,
+                  20.01453971862793,
+                  22.81206512451172
+                ],
+                "p90_m": 27.620153427124023
+              },
+              "ca": {
+                "ade_m": 10.205000877380371,
+                "horizons_m": [
+                  0.23831680417060852,
+                  0.6443116068840027,
+                  1.3565078973770142,
+                  2.4525046348571777,
+                  3.9882619380950928,
+                  6.018392086029053,
+                  8.55523681640625,
+                  11.62193489074707,
+                  15.224413871765137,
+                  19.346817016601562,
+                  23.965839385986328,
+                  29.047489166259766
+                ],
+                "p90_m": 31.682287216186523
+              }
+            }
+          },
+          {
+            "case": 7,
+            "seed": 641004007,
+            "initial_sha256": "a5d7315eeb0078b47d1053b838f668e9e0d0274a86f74dbc704da7b1b162a8f4",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 3.2239298820495605,
+                "horizons_m": [
+                  0.13974221050739288,
+                  0.351217120885849,
+                  0.6604516506195068,
+                  1.0895718336105347,
+                  1.6518661975860596,
+                  2.3273324966430664,
+                  3.0942578315734863,
+                  3.9306411743164062,
+                  4.8515191078186035,
+                  5.812985420227051,
+                  6.833759784698486,
+                  7.94382381439209
+                ],
+                "p90_m": 8.443351745605469
+              },
+              "cv": {
+                "ade_m": 8.362778663635254,
+                "horizons_m": [
+                  0.34568411111831665,
+                  1.0197193622589111,
+                  1.997727632522583,
+                  3.2467944622039795,
+                  4.733101844787598,
+                  6.428139686584473,
+                  8.302044868469238,
+                  10.329934120178223,
+                  12.486411094665527,
+                  14.755705833435059,
+                  17.12543296813965,
+                  19.582632064819336
+                ],
+                "p90_m": 24.378604888916016
+              },
+              "ca": {
+                "ade_m": 8.604544639587402,
+                "horizons_m": [
+                  0.2056165188550949,
+                  0.5629023909568787,
+                  1.1744823455810547,
+                  2.1220414638519287,
+                  3.4564168453216553,
+                  5.190098762512207,
+                  7.334758758544922,
+                  9.897737503051758,
+                  12.878861427307129,
+                  16.257204055786133,
+                  20.02001953125,
+                  24.154407501220703
+                ],
+                "p90_m": 27.357751846313477
+              }
+            }
+          },
+          {
+            "case": 8,
+            "seed": 641004008,
+            "initial_sha256": "d13d10bfd69c51f66ce91caca228975ca14c4f0ccfd93b696b508908091beeb0",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 3.3245608806610107,
+                "horizons_m": [
+                  0.12894988059997559,
+                  0.3255532681941986,
+                  0.6272695660591125,
+                  1.0400619506835938,
+                  1.5896893739700317,
+                  2.2713887691497803,
+                  3.075453758239746,
+                  3.9844014644622803,
+                  5.003383159637451,
+                  6.091396808624268,
+                  7.25583553314209,
+                  8.501328468322754
+                ],
+                "p90_m": 8.4774169921875
+              },
+              "cv": {
+                "ade_m": 8.530665397644043,
+                "horizons_m": [
+                  0.34900209307670593,
+                  1.0321041345596313,
+                  2.022141933441162,
+                  3.2906527519226074,
+                  4.806949138641357,
+                  6.533967971801758,
+                  8.446698188781738,
+                  10.522713661193848,
+                  12.734055519104004,
+                  15.065964698791504,
+                  17.50922203063965,
+                  20.05455207824707
+                ],
+                "p90_m": 25.90618324279785
+              },
+              "ca": {
+                "ade_m": 8.507878303527832,
+                "horizons_m": [
+                  0.19930148124694824,
+                  0.5179529190063477,
+                  1.074461579322815,
+                  1.9640592336654663,
+                  3.2408924102783203,
+                  4.93703556060791,
+                  7.086747169494629,
+                  9.681509971618652,
+                  12.719728469848633,
+                  16.19236183166504,
+                  20.086734771728516,
+                  24.393762588500977
+                ],
+                "p90_m": 27.12482452392578
+              }
+            }
+          },
+          {
+            "case": 9,
+            "seed": 641004009,
+            "initial_sha256": "6c7d2f9118bfe2adbae036cc9a647c16c5a5fbf389f37f274bad1267737ee729",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 2.480454206466675,
+                "horizons_m": [
+                  0.11155076324939728,
+                  0.2796330749988556,
+                  0.5392426252365112,
+                  0.8787176609039307,
+                  1.3076105117797852,
+                  1.8101365566253662,
+                  2.3987772464752197,
+                  3.0313193798065186,
+                  3.7107157707214355,
+                  4.442665100097656,
+                  5.210127353668213,
+                  6.044952869415283
+                ],
+                "p90_m": 6.404271602630615
+              },
+              "cv": {
+                "ade_m": 6.6091814041137695,
+                "horizons_m": [
+                  0.2766631543636322,
+                  0.815759003162384,
+                  1.5928281545639038,
+                  2.5823183059692383,
+                  3.7582852840423584,
+                  5.09289026260376,
+                  6.568358898162842,
+                  8.16186237335205,
+                  9.857185363769531,
+                  11.642326354980469,
+                  13.50765609741211,
+                  15.454020500183105
+                ],
+                "p90_m": 20.704294204711914
+              },
+              "ca": {
+                "ade_m": 7.180996894836426,
+                "horizons_m": [
+                  0.16519765555858612,
+                  0.4466426372528076,
+                  0.9391621947288513,
+                  1.7041549682617188,
+                  2.7964582443237305,
+                  4.236409664154053,
+                  6.0362420082092285,
+                  8.207091331481934,
+                  10.740728378295898,
+                  13.629386901855469,
+                  16.855398178100586,
+                  20.415084838867188
+                ],
+                "p90_m": 23.075679779052734
+              }
+            }
+          },
+          {
+            "case": 10,
+            "seed": 641004010,
+            "initial_sha256": "ab7fe62a499269f90ccd6f490a22c8347b80d17d6f9208084c2e78bc41c51a90",
+            "steps": 555,
+            "terminal_time_seconds": 277.2086374017935,
+            "terminal_on_grid": false,
+            "success": true,
+            "full_6s_windows": 533,
+            "metrics": {
+              "lstm": {
+                "ade_m": 2.68070650100708,
+                "horizons_m": [
+                  0.12399259209632874,
+                  0.29783010482788086,
+                  0.5679353475570679,
+                  0.9216984510421753,
+                  1.3741451501846313,
+                  1.9093153476715088,
+                  2.528841972351074,
+                  3.217465877532959,
+                  3.9889743328094482,
+                  4.815564155578613,
+                  5.720962047576904,
+                  6.701758861541748
+                ],
+                "p90_m": 6.8743391036987305
+              },
+              "cv": {
+                "ade_m": 7.912562370300293,
+                "horizons_m": [
+                  0.3168870210647583,
+                  0.9393213391304016,
+                  1.847137689590454,
+                  3.0161631107330322,
+                  4.418967247009277,
+                  6.029574871063232,
+                  7.8170905113220215,
+                  9.755109786987305,
+                  11.827417373657227,
+                  14.015957832336426,
+                  16.29958152770996,
+                  18.667442321777344
+                ],
+                "p90_m": 24.634559631347656
+              },
+              "ca": {
+                "ade_m": 7.432065486907959,
+                "horizons_m": [
+                  0.1848229467868805,
+                  0.4792269170284271,
+                  0.9720172882080078,
+                  1.7333248853683472,
+                  2.8186123371124268,
+                  4.270423889160156,
+                  6.127554416656494,
+                  8.3916015625,
+                  11.061098098754883,
+                  14.127869606018066,
+                  17.585172653198242,
+                  21.43294906616211
+                ],
+                "p90_m": 23.560596466064453
+              }
+            }
+          },
+          {
+            "case": 11,
+            "seed": 641004011,
+            "initial_sha256": "ae323fbd8eab6ec877301a1427be9387cabba81bbe4c5c24fe7533a878aa2d6d",
+            "steps": 470,
+            "terminal_time_seconds": 234.95986631139345,
+            "terminal_on_grid": false,
+            "success": true,
+            "full_6s_windows": 448,
+            "metrics": {
+              "lstm": {
+                "ade_m": 2.6598379611968994,
+                "horizons_m": [
+                  0.10170835256576538,
+                  0.2387486845254898,
+                  0.45191022753715515,
+                  0.7823856472969055,
+                  1.2124873399734497,
+                  1.7524787187576294,
+                  2.3947525024414062,
+                  3.1324849128723145,
+                  3.966733455657959,
+                  4.901199817657471,
+                  5.925651550292969,
+                  7.057526588439941
+                ],
+                "p90_m": 7.078096389770508
+              },
+              "cv": {
+                "ade_m": 7.3008294105529785,
+                "horizons_m": [
+                  0.29957062005996704,
+                  0.8866848945617676,
+                  1.7393916845321655,
+                  2.8325042724609375,
+                  4.140835762023926,
+                  5.62941312789917,
+                  7.276787757873535,
+                  9.054831504821777,
+                  10.931647300720215,
+                  12.8949613571167,
+                  14.922918319702148,
+                  17.000364303588867
+                ],
+                "p90_m": 23.50596046447754
+              },
+              "ca": {
+                "ade_m": 6.8830132484436035,
+                "horizons_m": [
+                  0.17602241039276123,
+                  0.4528568685054779,
+                  0.9115130305290222,
+                  1.6161903142929077,
+                  2.615790843963623,
+                  3.9564127922058105,
+                  5.6631269454956055,
+                  7.744523048400879,
+                  10.215280532836914,
+                  13.072916030883789,
+                  16.298749923706055,
+                  19.872730255126953
+                ],
+                "p90_m": 22.737943649291992
+              }
+            }
+          },
+          {
+            "case": 12,
+            "seed": 641004012,
+            "initial_sha256": "df54cb5932b99f69373c36362bf9b0a36f6baeeac4c299e1823866eb01ec5c85",
+            "steps": 471,
+            "terminal_time_seconds": 235.2445690918215,
+            "terminal_on_grid": false,
+            "success": true,
+            "full_6s_windows": 449,
+            "metrics": {
+              "lstm": {
+                "ade_m": 4.026800155639648,
+                "horizons_m": [
+                  0.14422465860843658,
+                  0.36554867029190063,
+                  0.7197654247283936,
+                  1.236985206604004,
+                  1.9273978471755981,
+                  2.7910821437835693,
+                  3.7972850799560547,
+                  4.9305620193481445,
+                  6.156874179840088,
+                  7.436351776123047,
+                  8.741793632507324,
+                  10.073761940002441
+                ],
+                "p90_m": 12.571596145629883
+              },
+              "cv": {
+                "ade_m": 9.037121772766113,
+                "horizons_m": [
+                  0.3888978064060211,
+                  1.1460028886795044,
+                  2.239603281021118,
+                  3.629645586013794,
+                  5.267527103424072,
+                  7.121367931365967,
+                  9.142096519470215,
+                  11.284103393554688,
+                  13.521787643432617,
+                  15.83820629119873,
+                  18.217700958251953,
+                  20.648427963256836
+                ],
+                "p90_m": 28.730175018310547
+              },
+              "ca": {
+                "ade_m": 9.829902648925781,
+                "horizons_m": [
+                  0.2275199443101883,
+                  0.6112903952598572,
+                  1.2922395467758179,
+                  2.3514199256896973,
+                  3.8482015132904053,
+                  5.81740140914917,
+                  8.28293228149414,
+                  11.245328903198242,
+                  14.701132774353027,
+                  18.64153480529785,
+                  23.040224075317383,
+                  27.899553298950195
+                ],
+                "p90_m": 32.28728485107422
+              }
+            }
+          },
+          {
+            "case": 13,
+            "seed": 641004013,
+            "initial_sha256": "43d35c2a7e1046f5262f27bc969c739b53b450a489f80cfba4019d931894540b",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 3.3361546993255615,
+                "horizons_m": [
+                  0.11875326186418533,
+                  0.2934242784976959,
+                  0.5918546319007874,
+                  1.0200830698013306,
+                  1.59039306640625,
+                  2.2902095317840576,
+                  3.1167707443237305,
+                  4.035391330718994,
+                  5.05229377746582,
+                  6.138932228088379,
+                  7.291606903076172,
+                  8.49415111541748
+                ],
+                "p90_m": 9.503400802612305
+              },
+              "cv": {
+                "ade_m": 8.096735000610352,
+                "horizons_m": [
+                  0.3261232376098633,
+                  0.9665122628211975,
+                  1.9004251956939697,
+                  3.101501226425171,
+                  4.539392471313477,
+                  6.1850409507751465,
+                  8.009368896484375,
+                  9.987968444824219,
+                  12.099163055419922,
+                  14.324505805969238,
+                  16.650835037231445,
+                  19.069978713989258
+                ],
+                "p90_m": 23.964895248413086
+              },
+              "ca": {
+                "ade_m": 7.589520454406738,
+                "horizons_m": [
+                  0.18215930461883545,
+                  0.46861210465431213,
+                  0.9646747708320618,
+                  1.7497005462646484,
+                  2.8767852783203125,
+                  4.379431247711182,
+                  6.283681392669678,
+                  8.595393180847168,
+                  11.315743446350098,
+                  14.438456535339355,
+                  17.9582576751709,
+                  21.861438751220703
+                ],
+                "p90_m": 23.4365234375
+              }
+            }
+          },
+          {
+            "case": 14,
+            "seed": 641004014,
+            "initial_sha256": "5bf719aa304877682730bbdd54fa6d065877628e179dfcbcfb83d600985b6921",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 2.811094284057617,
+                "horizons_m": [
+                  0.12425003945827484,
+                  0.30239707231521606,
+                  0.565788745880127,
+                  0.9296693801879883,
+                  1.3971457481384277,
+                  1.9722957611083984,
+                  2.6454970836639404,
+                  3.3980772495269775,
+                  4.233138084411621,
+                  5.101629734039307,
+                  6.025082588195801,
+                  7.038309097290039
+                ],
+                "p90_m": 8.186590194702148
+              },
+              "cv": {
+                "ade_m": 6.990706443786621,
+                "horizons_m": [
+                  0.2962087392807007,
+                  0.8724046349525452,
+                  1.7036131620407104,
+                  2.759958505630493,
+                  4.012413024902344,
+                  5.42997932434082,
+                  6.985208511352539,
+                  8.654167175292969,
+                  10.423727989196777,
+                  12.282732963562012,
+                  14.223082542419434,
+                  16.244983673095703
+                ],
+                "p90_m": 23.207502365112305
+              },
+              "ca": {
+                "ade_m": 7.682533264160156,
+                "horizons_m": [
+                  0.1840786635875702,
+                  0.5058874487876892,
+                  1.0618773698806763,
+                  1.9141430854797363,
+                  3.1047892570495605,
+                  4.662227630615234,
+                  6.586288928985596,
+                  8.88403606414795,
+                  11.532929420471191,
+                  14.512348175048828,
+                  17.81446647644043,
+                  21.427318572998047
+                ],
+                "p90_m": 26.050188064575195
+              }
+            }
+          },
+          {
+            "case": 15,
+            "seed": 641004015,
+            "initial_sha256": "6af72c8f9b4c41844bca2a87b94e0a2a720aa6790f9fee09f02fee21d54adf34",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 2.904526710510254,
+                "horizons_m": [
+                  0.1284736543893814,
+                  0.3083353638648987,
+                  0.5691994428634644,
+                  0.9209534525871277,
+                  1.3971065282821655,
+                  1.977376937866211,
+                  2.6768627166748047,
+                  3.464249610900879,
+                  4.349582195281982,
+                  5.302434921264648,
+                  6.329118251800537,
+                  7.4306254386901855
+                ],
+                "p90_m": 8.402033805847168
+              },
+              "cv": {
+                "ade_m": 8.781058311462402,
+                "horizons_m": [
+                  0.3592912554740906,
+                  1.064552903175354,
+                  2.091162919998169,
+                  3.4057791233062744,
+                  4.977315425872803,
+                  6.768019199371338,
+                  8.741098403930664,
+                  10.87045669555664,
+                  13.129040718078613,
+                  15.497895240783691,
+                  17.95992088317871,
+                  20.508203506469727
+                ],
+                "p90_m": 27.96230125427246
+              },
+              "ca": {
+                "ade_m": 8.95313835144043,
+                "horizons_m": [
+                  0.20446708798408508,
+                  0.5442314147949219,
+                  1.138755440711975,
+                  2.076310157775879,
+                  3.4222052097320557,
+                  5.214516639709473,
+                  7.475281715393066,
+                  10.203400611877441,
+                  13.393036842346191,
+                  17.035972595214844,
+                  21.114473342895508,
+                  25.615015029907227
+                ],
+                "p90_m": 29.973548889160156
+              }
+            }
+          },
+          {
+            "case": 16,
+            "seed": 641004016,
+            "initial_sha256": "9df0bed74f1a28a444d21eb278f45cbd0e0804d39cf515c57a129536bc8d59ec",
+            "steps": 215,
+            "terminal_time_seconds": 107.46213500277918,
+            "terminal_on_grid": false,
+            "success": true,
+            "full_6s_windows": 193,
+            "metrics": {
+              "lstm": {
+                "ade_m": 2.4435131549835205,
+                "horizons_m": [
+                  0.1257627159357071,
+                  0.3146745264530182,
+                  0.5946115255355835,
+                  0.9585205316543579,
+                  1.4116854667663574,
+                  1.9487085342407227,
+                  2.5172410011291504,
+                  3.071979522705078,
+                  3.6747448444366455,
+                  4.244338512420654,
+                  4.879110336303711,
+                  5.580754280090332
+                ],
+                "p90_m": 6.752098560333252
+              },
+              "cv": {
+                "ade_m": 6.402695178985596,
+                "horizons_m": [
+                  0.29755228757858276,
+                  0.8744332194328308,
+                  1.6982704401016235,
+                  2.721918821334839,
+                  3.909144878387451,
+                  5.233490467071533,
+                  6.660262584686279,
+                  8.134612083435059,
+                  9.617273330688477,
+                  11.095407485961914,
+                  12.567682266235352,
+                  14.02231502532959
+                ],
+                "p90_m": 20.650470733642578
+              },
+              "ca": {
+                "ade_m": 9.077994346618652,
+                "horizons_m": [
+                  0.19731175899505615,
+                  0.5666627287864685,
+                  1.239282250404358,
+                  2.2812845706939697,
+                  3.7574522495269775,
+                  5.626893043518066,
+                  7.9404377937316895,
+                  10.651063919067383,
+                  13.71235466003418,
+                  17.11774444580078,
+                  20.880041122436523,
+                  24.965412139892578
+                ],
+                "p90_m": 29.91891098022461
+              }
+            }
+          },
+          {
+            "case": 17,
+            "seed": 641004017,
+            "initial_sha256": "dbc18fb85804c300360294d2d9fda3654724696d736b0c31465754d13ac150f8",
+            "steps": 378,
+            "terminal_time_seconds": 188.50437585109572,
+            "terminal_on_grid": false,
+            "success": true,
+            "full_6s_windows": 356,
+            "metrics": {
+              "lstm": {
+                "ade_m": 3.5717594623565674,
+                "horizons_m": [
+                  0.1495375633239746,
+                  0.3886858820915222,
+                  0.732807993888855,
+                  1.197007656097412,
+                  1.801916241645813,
+                  2.5459609031677246,
+                  3.40934157371521,
+                  4.357966423034668,
+                  5.393425464630127,
+                  6.479097366333008,
+                  7.607956886291504,
+                  8.797412872314453
+                ],
+                "p90_m": 9.834724426269531
+              },
+              "cv": {
+                "ade_m": 9.03545093536377,
+                "horizons_m": [
+                  0.39553186297416687,
+                  1.1633648872375488,
+                  2.2692453861236572,
+                  3.6711604595184326,
+                  5.321748733520508,
+                  7.174592018127441,
+                  9.173007011413574,
+                  11.2885103225708,
+                  13.497437477111816,
+                  15.774378776550293,
+                  18.126611709594727,
+                  20.56984519958496
+                ],
+                "p90_m": 25.337974548339844
+              },
+              "ca": {
+                "ade_m": 10.132826805114746,
+                "horizons_m": [
+                  0.23816069960594177,
+                  0.6483075022697449,
+                  1.3557180166244507,
+                  2.4567453861236572,
+                  4.032780170440674,
+                  6.0984649658203125,
+                  8.661702156066895,
+                  11.728912353515625,
+                  15.266822814941406,
+                  19.231689453125,
+                  23.580434799194336,
+                  28.294246673583984
+                ],
+                "p90_m": 33.245182037353516
+              }
+            }
+          },
+          {
+            "case": 18,
+            "seed": 641004018,
+            "initial_sha256": "9a0b6214f4c71f476e3b91b1415847b818895fab6e2f86fdc4b38f4f6fc77606",
+            "steps": 215,
+            "terminal_time_seconds": 107.42898214304783,
+            "terminal_on_grid": false,
+            "success": true,
+            "full_6s_windows": 193,
+            "metrics": {
+              "lstm": {
+                "ade_m": 3.6838769912719727,
+                "horizons_m": [
+                  0.1587270200252533,
+                  0.41224345564842224,
+                  0.7881544828414917,
+                  1.2879860401153564,
+                  1.9060871601104736,
+                  2.6673455238342285,
+                  3.5426619052886963,
+                  4.507280349731445,
+                  5.553828716278076,
+                  6.643278121948242,
+                  7.787607192993164,
+                  8.951313972473145
+                ],
+                "p90_m": 9.30897045135498
+              },
+              "cv": {
+                "ade_m": 8.179006576538086,
+                "horizons_m": [
+                  0.34565678238868713,
+                  1.014663577079773,
+                  1.9794046878814697,
+                  3.20481538772583,
+                  4.662769317626953,
+                  6.3227410316467285,
+                  8.1505126953125,
+                  10.120792388916016,
+                  12.212388038635254,
+                  14.403454780578613,
+                  16.68413734436035,
+                  19.046730041503906
+                ],
+                "p90_m": 26.66752815246582
+              },
+              "ca": {
+                "ade_m": 9.222339630126953,
+                "horizons_m": [
+                  0.217601478099823,
+                  0.5994752645492554,
+                  1.2611199617385864,
+                  2.2876951694488525,
+                  3.7230217456817627,
+                  5.596482276916504,
+                  7.911040306091309,
+                  10.655293464660645,
+                  13.835674285888672,
+                  17.421680450439453,
+                  21.398916244506836,
+                  25.760128021240234
+                ],
+                "p90_m": 30.572826385498047
+              }
+            }
+          },
+          {
+            "case": 19,
+            "seed": 641004019,
+            "initial_sha256": "33a19064bb2c8f69406ae127bfda0cdfaaa9dd8b05c70f0e121bd23b71fbf7d8",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 3.2704012393951416,
+                "horizons_m": [
+                  0.16393010318279266,
+                  0.3979496955871582,
+                  0.7261369228363037,
+                  1.1645451784133911,
+                  1.7374787330627441,
+                  2.408928632736206,
+                  3.1712613105773926,
+                  3.997676134109497,
+                  4.907700538635254,
+                  5.835484027862549,
+                  6.822652816772461,
+                  7.911090850830078
+                ],
+                "p90_m": 7.962106704711914
+              },
+              "cv": {
+                "ade_m": 10.89816951751709,
+                "horizons_m": [
+                  0.4431357979774475,
+                  1.3099441528320312,
+                  2.569223642349243,
+                  4.1835198402404785,
+                  6.1127471923828125,
+                  8.318094253540039,
+                  10.762356758117676,
+                  13.416495323181152,
+                  16.257028579711914,
+                  19.26544952392578,
+                  22.424129486083984,
+                  25.715797424316406
+                ],
+                "p90_m": 31.894174575805664
+              },
+              "ca": {
+                "ade_m": 10.675850868225098,
+                "horizons_m": [
+                  0.25946488976478577,
+                  0.6786917448043823,
+                  1.3922721147537231,
+                  2.518138885498047,
+                  4.1339569091796875,
+                  6.269535541534424,
+                  8.937840461730957,
+                  12.161468505859375,
+                  15.941116333007812,
+                  20.25587272644043,
+                  25.098798751831055,
+                  30.463008880615234
+                ],
+                "p90_m": 32.652198791503906
+              }
+            }
+          }
+        ],
+        "lstm_minus_cv_macro_ade_m": -5.019878351688385,
+        "scene_bootstrap_95ci_m": [
+          -5.410903954803944,
+          -4.683440894484519
+        ]
+      },
+      "final_seed_3": {
+        "aggregate": {
+          "lstm": {
+            "ade_m": 3.562835454940796,
+            "episode_macro_ade_m": 3.5628352642059324,
+            "horizons_m": [
+              0.12581750750541687,
+              0.3202793300151825,
+              0.6184529066085815,
+              1.0603625774383545,
+              1.657063603401184,
+              2.409698009490967,
+              3.2941999435424805,
+              4.297429084777832,
+              5.399529933929443,
+              6.582377910614014,
+              7.8365478515625,
+              9.15245532989502
+            ],
+            "p90_m": 10.200936317443848,
+            "full_windows": 11580
+          },
+          "cv": {
+            "ade_m": 8.40485668182373,
+            "episode_macro_ade_m": 8.404855608940125,
+            "horizons_m": [
+              0.34169575572013855,
+              1.0101382732391357,
+              1.9813449382781982,
+              3.2258152961730957,
+              4.71330451965332,
+              6.413580894470215,
+              8.299924850463867,
+              10.34862232208252,
+              12.538847923278809,
+              14.856471061706543,
+              17.291778564453125,
+              19.836402893066406
+            ],
+            "p90_m": 26.395633697509766,
+            "full_windows": 11580
+          },
+          "ca": {
+            "ade_m": 7.882330417633057,
+            "episode_macro_ade_m": 7.882330751419067,
+            "horizons_m": [
+              0.19370129704475403,
+              0.5002546310424805,
+              1.0252608060836792,
+              1.8467642068862915,
+              3.020745277404785,
+              4.58392858505249,
+              6.556723117828369,
+              8.945894241333008,
+              11.751001358032227,
+              14.96876049041748,
+              18.59023094177246,
+              22.6047306060791
+            ],
+            "p90_m": 26.395408630371094,
+            "full_windows": 11580
+          }
+        },
+        "episodes": [
+          {
+            "case": 0,
+            "seed": 641004000,
+            "initial_sha256": "2c767cdddef087000993f2244255e41dfda3499c38127a87ce5051322fd3abe7",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 2.7147774696350098,
+                "horizons_m": [
+                  0.08906557410955429,
+                  0.2364491969347,
+                  0.45004943013191223,
+                  0.7699737548828125,
+                  1.1914958953857422,
+                  1.746161699295044,
+                  2.404951810836792,
+                  3.169448137283325,
+                  4.052791595458984,
+                  5.037708759307861,
+                  6.120434761047363,
+                  7.308800220489502
+                ],
+                "p90_m": 7.5269389152526855
+              },
+              "cv": {
+                "ade_m": 5.314945220947266,
+                "horizons_m": [
+                  0.2092689573764801,
+                  0.6194478273391724,
+                  1.2167435884475708,
+                  1.9848182201385498,
+                  2.9080889225006104,
+                  3.9719018936157227,
+                  5.1659650802612305,
+                  6.4806718826293945,
+                  7.906684398651123,
+                  9.438315391540527,
+                  11.07275104522705,
+                  12.804718971252441
+                ],
+                "p90_m": 14.828592300415039
+              },
+              "ca": {
+                "ade_m": 4.545324325561523,
+                "horizons_m": [
+                  0.11579785495996475,
+                  0.294293075799942,
+                  0.5994903445243835,
+                  1.0772446393966675,
+                  1.7536998987197876,
+                  2.647780418395996,
+                  3.7724499702453613,
+                  5.136965274810791,
+                  6.744584560394287,
+                  8.6015043258667,
+                  10.714934349060059,
+                  13.085119247436523
+                ],
+                "p90_m": 13.587724685668945
+              }
+            }
+          },
+          {
+            "case": 1,
+            "seed": 641004001,
+            "initial_sha256": "0c11bfd6965dbe6194c5854056cddc644942e7c13fe16a173682c9af0b9a2511",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 3.2360146045684814,
+                "horizons_m": [
+                  0.10742650181055069,
+                  0.27087754011154175,
+                  0.517592191696167,
+                  0.9147019386291504,
+                  1.458448052406311,
+                  2.138101577758789,
+                  2.9430158138275146,
+                  3.8713395595550537,
+                  4.893697738647461,
+                  6.000086307525635,
+                  7.207176208496094,
+                  8.5097017288208
+                ],
+                "p90_m": 10.02267837524414
+              },
+              "cv": {
+                "ade_m": 7.7482733726501465,
+                "horizons_m": [
+                  0.3162139356136322,
+                  0.9354820251464844,
+                  1.832008957862854,
+                  2.975987195968628,
+                  4.344676494598389,
+                  5.90656042098999,
+                  7.637361526489258,
+                  9.52209758758545,
+                  11.541662216186523,
+                  13.68593692779541,
+                  15.94970417022705,
+                  18.331645965576172
+                ],
+                "p90_m": 25.005691528320312
+              },
+              "ca": {
+                "ade_m": 7.168081283569336,
+                "horizons_m": [
+                  0.17810797691345215,
+                  0.4589719772338867,
+                  0.9383929967880249,
+                  1.6896512508392334,
+                  2.7625932693481445,
+                  4.1884660720825195,
+                  5.97727108001709,
+                  8.145791053771973,
+                  10.690720558166504,
+                  13.603626251220703,
+                  16.877105712890625,
+                  20.506223678588867
+                ],
+                "p90_m": 24.531017303466797
+              }
+            }
+          },
+          {
+            "case": 2,
+            "seed": 641004002,
+            "initial_sha256": "aea46f2aa8445836d552c6def0612c5b9c18a5f0f97e819e7f8b7ef3043b3b7e",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 2.6841671466827393,
+                "horizons_m": [
+                  0.09812761098146439,
+                  0.2413889765739441,
+                  0.46851545572280884,
+                  0.8021555542945862,
+                  1.2657573223114014,
+                  1.8385857343673706,
+                  2.509537935256958,
+                  3.2648608684539795,
+                  4.086933612823486,
+                  4.940735340118408,
+                  5.863711833953857,
+                  6.829692363739014
+                ],
+                "p90_m": 7.820359230041504
+              },
+              "cv": {
+                "ade_m": 6.485533237457275,
+                "horizons_m": [
+                  0.2554166913032532,
+                  0.7580456137657166,
+                  1.4935322999954224,
+                  2.443779945373535,
+                  3.5896730422973633,
+                  4.907705783843994,
+                  6.375343322753906,
+                  7.975362300872803,
+                  9.693029403686523,
+                  11.510929107666016,
+                  13.417725563049316,
+                  15.4058837890625
+                ],
+                "p90_m": 20.116376876831055
+              },
+              "ca": {
+                "ade_m": 5.762811183929443,
+                "horizons_m": [
+                  0.14135780930519104,
+                  0.35941725969314575,
+                  0.732183039188385,
+                  1.3251147270202637,
+                  2.177910089492798,
+                  3.3223812580108643,
+                  4.768941879272461,
+                  6.515634059906006,
+                  8.582390785217285,
+                  10.966021537780762,
+                  13.647911071777344,
+                  16.614500045776367
+                ],
+                "p90_m": 19.428327560424805
+              }
+            }
+          },
+          {
+            "case": 3,
+            "seed": 641004003,
+            "initial_sha256": "bb768518a16d686ba3b1f686a60d9b20368f3f967292698eb2b25c7d0ebb26f0",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 4.437406539916992,
+                "horizons_m": [
+                  0.15231668949127197,
+                  0.3753640353679657,
+                  0.7266368865966797,
+                  1.2612910270690918,
+                  1.9955731630325317,
+                  2.92830228805542,
+                  4.05076789855957,
+                  5.320415019989014,
+                  6.727494716644287,
+                  8.266075134277344,
+                  9.870743751525879,
+                  11.573898315429688
+                ],
+                "p90_m": 11.496642112731934
+              },
+              "cv": {
+                "ade_m": 13.256004333496094,
+                "horizons_m": [
+                  0.5124019980430603,
+                  1.5223002433776855,
+                  3.003782272338867,
+                  4.923325061798096,
+                  7.24343204498291,
+                  9.92692756652832,
+                  12.937911987304688,
+                  16.240734100341797,
+                  19.80254554748535,
+                  23.594505310058594,
+                  27.591489791870117,
+                  31.772701263427734
+                ],
+                "p90_m": 36.91572189331055
+              },
+              "ca": {
+                "ade_m": 10.869967460632324,
+                "horizons_m": [
+                  0.27896034717559814,
+                  0.6858541369438171,
+                  1.3637619018554688,
+                  2.4324686527252197,
+                  3.9855804443359375,
+                  6.092981815338135,
+                  8.800411224365234,
+                  12.138524055480957,
+                  16.11688232421875,
+                  20.73102569580078,
+                  25.979257583618164,
+                  31.83395004272461
+                ],
+                "p90_m": 34.118228912353516
+              }
+            }
+          },
+          {
+            "case": 4,
+            "seed": 641004004,
+            "initial_sha256": "6c6114dd380e068e2f534c43f9e043ed68729a9c3e37c63e29cf13f2c5dd70a3",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 4.363644599914551,
+                "horizons_m": [
+                  0.15484321117401123,
+                  0.39573293924331665,
+                  0.7504714727401733,
+                  1.2681435346603394,
+                  1.9778597354888916,
+                  2.8725874423980713,
+                  3.9552502632141113,
+                  5.1916608810424805,
+                  6.575119495391846,
+                  8.093850135803223,
+                  9.7110595703125,
+                  11.417159080505371
+                ],
+                "p90_m": 12.443926811218262
+              },
+              "cv": {
+                "ade_m": 12.389323234558105,
+                "horizons_m": [
+                  0.48990654945373535,
+                  1.4539803266525269,
+                  2.8630354404449463,
+                  4.678900241851807,
+                  6.863201141357422,
+                  9.376485824584961,
+                  12.175854682922363,
+                  15.227148056030273,
+                  18.503185272216797,
+                  21.976768493652344,
+                  25.62557601928711,
+                  29.437850952148438
+                ],
+                "p90_m": 35.20446014404297
+              },
+              "ca": {
+                "ade_m": 10.831623077392578,
+                "horizons_m": [
+                  0.27341029047966003,
+                  0.6866341233253479,
+                  1.390859842300415,
+                  2.498112678527832,
+                  4.0883564949035645,
+                  6.219363212585449,
+                  8.92232894897461,
+                  12.214982986450195,
+                  16.108341217041016,
+                  20.598072052001953,
+                  25.670000076293945,
+                  31.308860778808594
+                ],
+                "p90_m": 33.96600341796875
+              }
+            }
+          },
+          {
+            "case": 5,
+            "seed": 641004005,
+            "initial_sha256": "02e209269c8f120f0dacc6ce8761f507ed64656e288c412d1bec49cd980d3491",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 3.537100315093994,
+                "horizons_m": [
+                  0.13593675196170807,
+                  0.33550184965133667,
+                  0.6352682113647461,
+                  1.0650484561920166,
+                  1.655921220779419,
+                  2.399155378341675,
+                  3.2760612964630127,
+                  4.261600017547607,
+                  5.340322494506836,
+                  6.504653453826904,
+                  7.738900184631348,
+                  9.09683895111084
+                ],
+                "p90_m": 9.9827241897583
+              },
+              "cv": {
+                "ade_m": 10.14405632019043,
+                "horizons_m": [
+                  0.40181249380111694,
+                  1.190230369567871,
+                  2.3394851684570312,
+                  3.8219401836395264,
+                  5.602034091949463,
+                  7.6457624435424805,
+                  9.928874015808105,
+                  12.430856704711914,
+                  15.121613502502441,
+                  17.98845672607422,
+                  21.027332305908203,
+                  24.230239868164062
+                ],
+                "p90_m": 29.858142852783203
+              },
+              "ca": {
+                "ade_m": 9.0469331741333,
+                "horizons_m": [
+                  0.2233441025018692,
+                  0.5681220293045044,
+                  1.1601964235305786,
+                  2.093380928039551,
+                  3.433175563812256,
+                  5.225341796875,
+                  7.495294094085693,
+                  10.244213104248047,
+                  13.47725772857666,
+                  17.19605255126953,
+                  21.391361236572266,
+                  26.055540084838867
+                ],
+                "p90_m": 29.191829681396484
+              }
+            }
+          },
+          {
+            "case": 6,
+            "seed": 641004006,
+            "initial_sha256": "16109eb5568c5f8cc8230106ec9ca62a0c4c5e15c97d864c33eb5fd12206dede",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 2.8443949222564697,
+                "horizons_m": [
+                  0.10204067826271057,
+                  0.2668902277946472,
+                  0.5227763652801514,
+                  0.8934296369552612,
+                  1.3734180927276611,
+                  1.9741824865341187,
+                  2.658097743988037,
+                  3.4348628520965576,
+                  4.298618793487549,
+                  5.2199835777282715,
+                  6.191437244415283,
+                  7.1970014572143555
+                ],
+                "p90_m": 8.107037544250488
+              },
+              "cv": {
+                "ade_m": 5.8649444580078125,
+                "horizons_m": [
+                  0.23976022005081177,
+                  0.7086198925971985,
+                  1.385952353477478,
+                  2.2494354248046875,
+                  3.282198190689087,
+                  4.460056304931641,
+                  5.765701770782471,
+                  7.1949076652526855,
+                  8.7313871383667,
+                  10.36418342590332,
+                  12.090667724609375,
+                  13.906428337097168
+                ],
+                "p90_m": 14.79206371307373
+              },
+              "ca": {
+                "ade_m": 5.265858173370361,
+                "horizons_m": [
+                  0.13601164519786835,
+                  0.35238486528396606,
+                  0.7233806848526001,
+                  1.2913157939910889,
+                  2.0903446674346924,
+                  3.1385996341705322,
+                  4.445378303527832,
+                  6.010666847229004,
+                  7.837669849395752,
+                  9.930243492126465,
+                  12.293418884277344,
+                  14.940863609313965
+                ],
+                "p90_m": 16.534812927246094
+              }
+            }
+          },
+          {
+            "case": 7,
+            "seed": 641004007,
+            "initial_sha256": "a5d7315eeb0078b47d1053b838f668e9e0d0274a86f74dbc704da7b1b162a8f4",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 3.8516013622283936,
+                "horizons_m": [
+                  0.12235230952501297,
+                  0.30378639698028564,
+                  0.5935657620429993,
+                  1.0349140167236328,
+                  1.654738187789917,
+                  2.462111473083496,
+                  3.4357903003692627,
+                  4.572005271911621,
+                  5.853332996368408,
+                  7.228604316711426,
+                  8.702058792114258,
+                  10.255965232849121
+                ],
+                "p90_m": 10.806665420532227
+              },
+              "cv": {
+                "ade_m": 9.681061744689941,
+                "horizons_m": [
+                  0.3735256791114807,
+                  1.1092333793640137,
+                  2.186707019805908,
+                  3.5830347537994385,
+                  5.272617340087891,
+                  7.226598739624023,
+                  9.41942310333252,
+                  11.831789016723633,
+                  14.442365646362305,
+                  17.233346939086914,
+                  20.190143585205078,
+                  23.304027557373047
+                ],
+                "p90_m": 28.929059982299805
+              },
+              "ca": {
+                "ade_m": 8.06353759765625,
+                "horizons_m": [
+                  0.20377245545387268,
+                  0.5054173469543457,
+                  1.0138107538223267,
+                  1.8208311796188354,
+                  2.9914591312408447,
+                  4.5694684982299805,
+                  6.582961559295654,
+                  9.05302619934082,
+                  11.979698181152344,
+                  15.362454414367676,
+                  19.196659088134766,
+                  23.482938766479492
+                ],
+                "p90_m": 25.8113956451416
+              }
+            }
+          },
+          {
+            "case": 8,
+            "seed": 641004008,
+            "initial_sha256": "d13d10bfd69c51f66ce91caca228975ca14c4f0ccfd93b696b508908091beeb0",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 4.463382720947266,
+                "horizons_m": [
+                  0.17108671367168427,
+                  0.42380714416503906,
+                  0.8021034002304077,
+                  1.3516937494277954,
+                  2.0910844802856445,
+                  3.0317280292510986,
+                  4.135533332824707,
+                  5.387639045715332,
+                  6.7560272216796875,
+                  8.23593807220459,
+                  9.782731056213379,
+                  11.391225814819336
+                ],
+                "p90_m": 12.616981506347656
+              },
+              "cv": {
+                "ade_m": 11.398303985595703,
+                "horizons_m": [
+                  0.4658068120479584,
+                  1.3747512102127075,
+                  2.6969964504241943,
+                  4.388710021972656,
+                  6.40718936920166,
+                  8.711546897888184,
+                  11.265280723571777,
+                  14.036210060119629,
+                  17.00164794921875,
+                  20.137739181518555,
+                  23.427988052368164,
+                  26.865690231323242
+                ],
+                "p90_m": 33.32194137573242
+              },
+              "ca": {
+                "ade_m": 11.152036666870117,
+                "horizons_m": [
+                  0.27478939294815063,
+                  0.7174735069274902,
+                  1.4678398370742798,
+                  2.626359462738037,
+                  4.2730913162231445,
+                  6.4680609703063965,
+                  9.245340347290039,
+                  12.623580932617188,
+                  16.603620529174805,
+                  21.17523956298828,
+                  26.32179832458496,
+                  32.02717208862305
+                ],
+                "p90_m": 34.425140380859375
+              }
+            }
+          },
+          {
+            "case": 9,
+            "seed": 641004009,
+            "initial_sha256": "6c7d2f9118bfe2adbae036cc9a647c16c5a5fbf389f37f274bad1267737ee729",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 4.43143892288208,
+                "horizons_m": [
+                  0.1572122722864151,
+                  0.40003445744514465,
+                  0.7666176557540894,
+                  1.3116344213485718,
+                  2.0503458976745605,
+                  2.9910411834716797,
+                  4.099583625793457,
+                  5.369660377502441,
+                  6.756783485412598,
+                  8.210439682006836,
+                  9.741551399230957,
+                  11.32236385345459
+                ],
+                "p90_m": 12.624595642089844
+              },
+              "cv": {
+                "ade_m": 9.70203971862793,
+                "horizons_m": [
+                  0.40930676460266113,
+                  1.2057181596755981,
+                  2.3555352687835693,
+                  3.820516586303711,
+                  5.556662559509277,
+                  7.525640964508057,
+                  9.694281578063965,
+                  12.02360725402832,
+                  14.486754417419434,
+                  17.067420959472656,
+                  19.752281188964844,
+                  22.52667999267578
+                ],
+                "p90_m": 29.062013626098633
+              },
+              "ca": {
+                "ade_m": 10.36353874206543,
+                "horizons_m": [
+                  0.24115090072155,
+                  0.6520073413848877,
+                  1.361440658569336,
+                  2.4674785137176514,
+                  4.039647579193115,
+                  6.116275310516357,
+                  8.725542068481445,
+                  11.858123779296875,
+                  15.510516166687012,
+                  19.670639038085938,
+                  24.312721252441406,
+                  29.40689468383789
+                ],
+                "p90_m": 32.345943450927734
+              }
+            }
+          },
+          {
+            "case": 10,
+            "seed": 641004010,
+            "initial_sha256": "ab7fe62a499269f90ccd6f490a22c8347b80d17d6f9208084c2e78bc41c51a90",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 2.882944107055664,
+                "horizons_m": [
+                  0.11063402146100998,
+                  0.2886067032814026,
+                  0.5628427267074585,
+                  0.9636693000793457,
+                  1.474073886871338,
+                  2.0927085876464844,
+                  2.778111696243286,
+                  3.5373294353485107,
+                  4.356528282165527,
+                  5.214103698730469,
+                  6.130451679229736,
+                  7.08627462387085
+                ],
+                "p90_m": 7.4653239250183105
+              },
+              "cv": {
+                "ade_m": 5.843555927276611,
+                "horizons_m": [
+                  0.24759051203727722,
+                  0.7287510633468628,
+                  1.4230105876922607,
+                  2.304841995239258,
+                  3.3477447032928467,
+                  4.526853561401367,
+                  5.822192192077637,
+                  7.217612266540527,
+                  8.704705238342285,
+                  10.270761489868164,
+                  11.91004467010498,
+                  13.618539810180664
+                ],
+                "p90_m": 16.006244659423828
+              },
+              "ca": {
+                "ade_m": 5.820510387420654,
+                "horizons_m": [
+                  0.14178620278835297,
+                  0.37598398327827454,
+                  0.7830638289451599,
+                  1.4143472909927368,
+                  2.30747389793396,
+                  3.4716312885284424,
+                  4.92613410949707,
+                  6.671501636505127,
+                  8.699479103088379,
+                  11.00850772857666,
+                  13.595134735107422,
+                  16.451175689697266
+                ],
+                "p90_m": 19.4451961517334
+              }
+            }
+          },
+          {
+            "case": 11,
+            "seed": 641004011,
+            "initial_sha256": "ae323fbd8eab6ec877301a1427be9387cabba81bbe4c5c24fe7533a878aa2d6d",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 3.765684127807617,
+                "horizons_m": [
+                  0.13380129635334015,
+                  0.33848094940185547,
+                  0.6442235708236694,
+                  1.1105676889419556,
+                  1.7355653047561646,
+                  2.5325725078582764,
+                  3.4817841053009033,
+                  4.551907539367676,
+                  5.69685697555542,
+                  6.955175876617432,
+                  8.29584789276123,
+                  9.71143627166748
+                ],
+                "p90_m": 10.5264892578125
+              },
+              "cv": {
+                "ade_m": 10.206070899963379,
+                "horizons_m": [
+                  0.41760683059692383,
+                  1.2356717586517334,
+                  2.4241225719451904,
+                  3.9451780319213867,
+                  5.764614105224609,
+                  7.839732646942139,
+                  10.133706092834473,
+                  12.60975170135498,
+                  15.243609428405762,
+                  18.015024185180664,
+                  20.913061141967773,
+                  23.930749893188477
+                ],
+                "p90_m": 31.440624237060547
+              },
+              "ca": {
+                "ade_m": 9.840417861938477,
+                "horizons_m": [
+                  0.23822756111621857,
+                  0.6193731427192688,
+                  1.2723047733306885,
+                  2.296001434326172,
+                  3.7622382640838623,
+                  5.7226057052612305,
+                  8.200706481933594,
+                  11.197965621948242,
+                  14.703880310058594,
+                  18.711727142333984,
+                  23.201562881469727,
+                  28.15848731994629
+                ],
+                "p90_m": 32.80197525024414
+              }
+            }
+          },
+          {
+            "case": 12,
+            "seed": 641004012,
+            "initial_sha256": "df54cb5932b99f69373c36362bf9b0a36f6baeeac4c299e1823866eb01ec5c85",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 5.256136894226074,
+                "horizons_m": [
+                  0.17720584571361542,
+                  0.4763869345188141,
+                  0.9401295781135559,
+                  1.6102590560913086,
+                  2.506474494934082,
+                  3.620274543762207,
+                  4.927207946777344,
+                  6.402749538421631,
+                  7.985990047454834,
+                  9.680543899536133,
+                  11.448709487915039,
+                  13.297752380371094
+                ],
+                "p90_m": 14.220383644104004
+              },
+              "cv": {
+                "ade_m": 11.206918716430664,
+                "horizons_m": [
+                  0.48641467094421387,
+                  1.4309511184692383,
+                  2.791996955871582,
+                  4.515036582946777,
+                  6.5393290519714355,
+                  8.814361572265625,
+                  11.294363975524902,
+                  13.93632984161377,
+                  16.709009170532227,
+                  19.6037540435791,
+                  22.617944717407227,
+                  25.74353790283203
+                ],
+                "p90_m": 31.727069854736328
+              },
+              "ca": {
+                "ade_m": 11.98196792602539,
+                "horizons_m": [
+                  0.28506967425346375,
+                  0.7646434307098389,
+                  1.5948485136032104,
+                  2.8907699584960938,
+                  4.728433609008789,
+                  7.14451789855957,
+                  10.159765243530273,
+                  13.775763511657715,
+                  17.97003936767578,
+                  22.71615219116211,
+                  27.98824119567871,
+                  33.76545333862305
+                ],
+                "p90_m": 37.44475555419922
+              }
+            }
+          },
+          {
+            "case": 13,
+            "seed": 641004013,
+            "initial_sha256": "43d35c2a7e1046f5262f27bc969c739b53b450a489f80cfba4019d931894540b",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 2.3770430088043213,
+                "horizons_m": [
+                  0.0905822366476059,
+                  0.23350144922733307,
+                  0.4738236665725708,
+                  0.7902044653892517,
+                  1.1854888200759888,
+                  1.670445203781128,
+                  2.235248327255249,
+                  2.8615403175354004,
+                  3.5784573554992676,
+                  4.332301616668701,
+                  5.121020317077637,
+                  5.951852798461914
+                ],
+                "p90_m": 7.939185619354248
+              },
+              "cv": {
+                "ade_m": 2.8905601501464844,
+                "horizons_m": [
+                  0.13687293231487274,
+                  0.3917473256587982,
+                  0.7483549118041992,
+                  1.1864128112792969,
+                  1.693603515625,
+                  2.266411781311035,
+                  2.897383451461792,
+                  3.571607828140259,
+                  4.283246040344238,
+                  5.034604072570801,
+                  5.824591159820557,
+                  6.651888847351074
+                ],
+                "p90_m": 9.737730979919434
+              },
+              "ca": {
+                "ade_m": 4.0730814933776855,
+                "horizons_m": [
+                  0.09537612646818161,
+                  0.2773531973361969,
+                  0.5935945510864258,
+                  1.069867730140686,
+                  1.7216174602508545,
+                  2.5560696125030518,
+                  3.5683226585388184,
+                  4.753481388092041,
+                  6.1100945472717285,
+                  7.635378837585449,
+                  9.32441520690918,
+                  11.171408653259277
+                ],
+                "p90_m": 12.298789024353027
+              }
+            }
+          },
+          {
+            "case": 14,
+            "seed": 641004014,
+            "initial_sha256": "5bf719aa304877682730bbdd54fa6d065877628e179dfcbcfb83d600985b6921",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 2.9428164958953857,
+                "horizons_m": [
+                  0.10972076654434204,
+                  0.28692951798439026,
+                  0.5588918328285217,
+                  0.9647643566131592,
+                  1.4871609210968018,
+                  2.1266961097717285,
+                  2.836064338684082,
+                  3.627812147140503,
+                  4.475128173828125,
+                  5.350316524505615,
+                  6.271754741668701,
+                  7.218554496765137
+                ],
+                "p90_m": 8.192628860473633
+              },
+              "cv": {
+                "ade_m": 5.785892963409424,
+                "horizons_m": [
+                  0.24247939884662628,
+                  0.7154465913772583,
+                  1.3972176313400269,
+                  2.267148494720459,
+                  3.299621105194092,
+                  4.469718933105469,
+                  5.7610955238342285,
+                  7.154806137084961,
+                  8.630366325378418,
+                  10.181827545166016,
+                  11.806325912475586,
+                  13.504643440246582
+                ],
+                "p90_m": 16.49666404724121
+              },
+              "ca": {
+                "ade_m": 5.713741302490234,
+                "horizons_m": [
+                  0.13858504593372345,
+                  0.3654964566230774,
+                  0.7608308792114258,
+                  1.376097321510315,
+                  2.251163959503174,
+                  3.4035487174987793,
+                  4.836197853088379,
+                  6.551652431488037,
+                  8.546215057373047,
+                  10.817667007446289,
+                  13.35968017578125,
+                  16.157835006713867
+                ],
+                "p90_m": 19.1727352142334
+              }
+            }
+          },
+          {
+            "case": 15,
+            "seed": 641004015,
+            "initial_sha256": "6af72c8f9b4c41844bca2a87b94e0a2a720aa6790f9fee09f02fee21d54adf34",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 2.906325578689575,
+                "horizons_m": [
+                  0.09861285984516144,
+                  0.25009581446647644,
+                  0.48058730363845825,
+                  0.8375847339630127,
+                  1.3211612701416016,
+                  1.9468306303024292,
+                  2.670703649520874,
+                  3.494230031967163,
+                  4.398965835571289,
+                  5.387538433074951,
+                  6.442781925201416,
+                  7.546814441680908
+                ],
+                "p90_m": 7.905187606811523
+              },
+              "cv": {
+                "ade_m": 6.446841716766357,
+                "horizons_m": [
+                  0.2614360749721527,
+                  0.7745372653007507,
+                  1.5212547779083252,
+                  2.4792282581329346,
+                  3.6252875328063965,
+                  4.935060501098633,
+                  6.3869194984436035,
+                  7.958524703979492,
+                  9.632401466369629,
+                  11.393677711486816,
+                  13.236651420593262,
+                  15.157116889953613
+                ],
+                "p90_m": 19.770872116088867
+              },
+              "ca": {
+                "ade_m": 6.044500350952148,
+                "horizons_m": [
+                  0.1468103677034378,
+                  0.37522268295288086,
+                  0.7644110918045044,
+                  1.3800710439682007,
+                  2.2706356048583984,
+                  3.465811014175415,
+                  4.987466812133789,
+                  6.838167667388916,
+                  9.015068054199219,
+                  11.514411926269531,
+                  14.329580307006836,
+                  17.446378707885742
+                ],
+                "p90_m": 20.56432342529297
+              }
+            }
+          },
+          {
+            "case": 16,
+            "seed": 641004016,
+            "initial_sha256": "9df0bed74f1a28a444d21eb278f45cbd0e0804d39cf515c57a129536bc8d59ec",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 4.072272777557373,
+                "horizons_m": [
+                  0.134617879986763,
+                  0.3482149541378021,
+                  0.696925163269043,
+                  1.2165871858596802,
+                  1.9330909252166748,
+                  2.825485944747925,
+                  3.859917640686035,
+                  5.012294292449951,
+                  6.249873161315918,
+                  7.5410990715026855,
+                  8.85649585723877,
+                  10.192645072937012
+                ],
+                "p90_m": 11.93758487701416
+              },
+              "cv": {
+                "ade_m": 9.287795066833496,
+                "horizons_m": [
+                  0.3841753304004669,
+                  1.1363450288772583,
+                  2.2282567024230957,
+                  3.625335693359375,
+                  5.289252281188965,
+                  7.1798906326293945,
+                  9.266021728515625,
+                  11.512126922607422,
+                  13.886016845703125,
+                  16.37545394897461,
+                  18.95686912536621,
+                  21.61383819580078
+                ],
+                "p90_m": 31.5685977935791
+              },
+              "ca": {
+                "ade_m": 8.869842529296875,
+                "horizons_m": [
+                  0.21422137320041656,
+                  0.5483285188674927,
+                  1.1228746175765991,
+                  2.0308339595794678,
+                  3.3308846950531006,
+                  5.079904556274414,
+                  7.303183078765869,
+                  10.010869979858398,
+                  13.204360008239746,
+                  16.885601043701172,
+                  21.041786193847656,
+                  25.665218353271484
+                ],
+                "p90_m": 30.804317474365234
+              }
+            }
+          },
+          {
+            "case": 17,
+            "seed": 641004017,
+            "initial_sha256": "dbc18fb85804c300360294d2d9fda3654724696d736b0c31465754d13ac150f8",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 2.706477165222168,
+                "horizons_m": [
+                  0.10077057778835297,
+                  0.25789427757263184,
+                  0.49892228841781616,
+                  0.8580119609832764,
+                  1.3314309120178223,
+                  1.917284369468689,
+                  2.5798451900482178,
+                  3.312739849090576,
+                  4.1132426261901855,
+                  4.949467182159424,
+                  5.829732418060303,
+                  6.728393077850342
+                ],
+                "p90_m": 7.940900802612305
+              },
+              "cv": {
+                "ade_m": 5.7405571937561035,
+                "horizons_m": [
+                  0.23316997289657593,
+                  0.6897854208946228,
+                  1.3528424501419067,
+                  2.2009408473968506,
+                  3.21313738822937,
+                  4.371743679046631,
+                  5.6574835777282715,
+                  7.054567337036133,
+                  8.556772232055664,
+                  10.152950286865234,
+                  11.827880859375,
+                  13.5753812789917
+                ],
+                "p90_m": 16.135841369628906
+              },
+              "ca": {
+                "ade_m": 5.229416370391846,
+                "horizons_m": [
+                  0.13041500747203827,
+                  0.3359576463699341,
+                  0.6905949115753174,
+                  1.242745280265808,
+                  2.027874708175659,
+                  3.0627708435058594,
+                  4.363199234008789,
+                  5.931884288787842,
+                  7.772051811218262,
+                  9.895706176757812,
+                  12.304823875427246,
+                  14.994882583618164
+                ],
+                "p90_m": 17.628461837768555
+              }
+            }
+          },
+          {
+            "case": 18,
+            "seed": 641004018,
+            "initial_sha256": "9a0b6214f4c71f476e3b91b1415847b818895fab6e2f86fdc4b38f4f6fc77606",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 3.2347466945648193,
+                "horizons_m": [
+                  0.11348751932382584,
+                  0.2892526686191559,
+                  0.5496929883956909,
+                  0.9406790137290955,
+                  1.4853111505508423,
+                  2.170144557952881,
+                  2.989156723022461,
+                  3.910808563232422,
+                  4.918182849884033,
+                  5.996740341186523,
+                  7.134650707244873,
+                  8.31886100769043
+                ],
+                "p90_m": 9.470414161682129
+              },
+              "cv": {
+                "ade_m": 6.83568811416626,
+                "horizons_m": [
+                  0.2846049964427948,
+                  0.8410738110542297,
+                  1.650888442993164,
+                  2.6839654445648193,
+                  3.912820339202881,
+                  5.305898666381836,
+                  6.834408760070801,
+                  8.474102973937988,
+                  10.20661449432373,
+                  12.022233009338379,
+                  13.9188871383667,
+                  15.892721176147461
+                ],
+                "p90_m": 21.251522064208984
+              },
+              "ca": {
+                "ade_m": 6.823963642120361,
+                "horizons_m": [
+                  0.15914267301559448,
+                  0.4124859571456909,
+                  0.8592578172683716,
+                  1.5641286373138428,
+                  2.586073637008667,
+                  3.956260919570923,
+                  5.694020748138428,
+                  7.788022041320801,
+                  10.225446701049805,
+                  13.001985549926758,
+                  16.108640670776367,
+                  19.532081604003906
+                ],
+                "p90_m": 23.782026290893555
+              }
+            }
+          },
+          {
+            "case": 19,
+            "seed": 641004019,
+            "initial_sha256": "33a19064bb2c8f69406ae127bfda0cdfaaa9dd8b05c70f0e121bd23b71fbf7d8",
+            "steps": 600,
+            "terminal_time_seconds": 300.0,
+            "terminal_on_grid": true,
+            "success": false,
+            "full_6s_windows": 579,
+            "metrics": {
+              "lstm": {
+                "ade_m": 4.548329830169678,
+                "horizons_m": [
+                  0.1566762626171112,
+                  0.38587328791618347,
+                  0.7290379405021667,
+                  1.2437093257904053,
+                  1.9667280912399292,
+                  2.9107346534729004,
+                  4.055671215057373,
+                  5.38884973526001,
+                  6.875077724456787,
+                  8.510379791259766,
+                  10.257993698120117,
+                  12.099222183227539
+                ],
+                "p90_m": 12.410199165344238
+              },
+              "cv": {
+                "ade_m": 11.868745803833008,
+                "horizons_m": [
+                  0.46612316370010376,
+                  1.3805640935897827,
+                  2.715512990951538,
+                  4.438241004943848,
+                  6.511782169342041,
+                  8.902167320251465,
+                  11.580309867858887,
+                  14.520689964294434,
+                  17.69441795349121,
+                  21.0828914642334,
+                  24.67762565612793,
+                  28.454511642456055
+                ],
+                "p90_m": 33.10413360595703
+              },
+              "ca": {
+                "ade_m": 10.179461479187012,
+                "horizons_m": [
+                  0.25769007205963135,
+                  0.649591326713562,
+                  1.3122166395187378,
+                  2.3487937450408936,
+                  3.8330178260803223,
+                  5.826409339904785,
+                  8.358055114746094,
+                  11.457083702087402,
+                  15.123038291931152,
+                  19.355623245239258,
+                  24.14558982849121,
+                  29.486438751220703
+                ],
+                "p90_m": 31.009618759155273
+              }
+            }
+          }
+        ],
+        "lstm_minus_cv_macro_ade_m": -4.842020344734192,
+        "scene_bootstrap_95ci_m": [
+          -5.7621455049514765,
+          -3.938305530548096
+        ]
+      }
+    },
+    "elapsed_seconds": 33.05026936531067,
+    "paired_initial_states_verified": true,
+    "note": "Read-only diagnostic on 20 new level-five scenes under two fixed policies. Predictions precede labels; no future after episode termination; four views and overlapping windows are correlated."
+  },
+  "capture_seed3_best_minus_initial": {
+    "difference_pp": 2.5,
+    "paired_scene_bootstrap95ci_pp": [
+      -6.0,
+      11.0
+    ],
+    "scenes": 200
+  }
+}

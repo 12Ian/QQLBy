@@ -26,6 +26,17 @@ def initialize_baseline_policy(agent, config):
 
     checkpoint = torch.load(path, map_location=agent.device, weights_only=False)
     current = agent.policy.state_dict()
+    if (getattr(config, "uav_prediction_mode", "none") != "none" and
+            getattr(config, "uav_prediction_migrate_checkpoint", False)):
+        if config.policy != "MATD3_Policy":
+            raise ValueError("Prediction checkpoint migration supports standard MATD3 only")
+        from uav_lstm_prediction.migration import migrate_prediction_state
+        migrated, changed = migrate_prediction_state(checkpoint["policy"], current, actor_only=bool(actor_path))
+        agent.policy.load_state_dict(migrated, strict=True)
+        return dict(kind="prediction_full_policy" if full_path else "prediction_actor_only",
+                    path=str(Path(path).resolve()), sha256=hashlib.sha256(Path(path).read_bytes()).hexdigest(),
+                    tensors=len(migrated), migrated_first_layers=changed, optimizer_restored=False,
+                    prediction=getattr(agent.train_envs, "prediction_metadata", {}))
     prefixes = ("actor.", "target_actor.")
     selected = {key: value for key, value in checkpoint["policy"].items()
                 if full_path or key.startswith(prefixes)}

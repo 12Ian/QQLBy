@@ -1,0 +1,40 @@
+{
+  "recorded_episodes": 2,
+  "decision_states": 258,
+  "diagnostic_seed": 66001,
+  "exact_bound_fraction": 0.19896640826873385,
+  "tanh_derivative_mean_by_agent_axis": [
+    [
+      0.16611864817001762,
+      0.17953706696321298,
+      0.7514601401928942
+    ],
+    [
+      0.008253035679829539,
+      0.5596039526653972,
+      0.6731559698204711
+    ],
+    [
+      0.0,
+      1.0659361369493617e-05,
+      0.3903585152097048
+    ],
+    [
+      0.4785665340238148,
+      0.015392572386047208,
+      0.5746534525355554
+    ]
+  ],
+  "initial_uav2_action": [
+    1.0,
+    0.9999779462814331,
+    0.9980661869049072
+  ],
+  "gaussian_reversal_probability_at_action_one": {
+    "0.03": 6.352273120202697e-244,
+    "0.1": 7.619853024160689e-24,
+    "0.25": 3.1671241833119965e-05,
+    "0.3": 0.0004290603331968374
+  },
+  "limitation": "Measured on two recorded trajectories; does not prove all network parameter gradients vanish"
+}

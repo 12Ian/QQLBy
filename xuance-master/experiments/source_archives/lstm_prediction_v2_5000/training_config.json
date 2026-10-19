@@ -1,0 +1,23 @@
+{
+  "feature_version": "causal_position_v1_71",
+  "feature_dim": 71,
+  "history_frames": 9,
+  "raw_position_frames": 11,
+  "dt": 0.5,
+  "future_steps": 12,
+  "hidden_size": 128,
+  "layers": 2,
+  "dropout": 0.1,
+  "batch_size": 256,
+  "learning_rate": 0.001,
+  "max_epochs": 100,
+  "patience": 10,
+  "seed": 20261019,
+  "huber_delta": 0.1,
+  "velocity_loss_weight": 0.2,
+  "parameters": 256164,
+  "protocol_sha256": "a0a2c4fd8bcc893addfbadb717a7d22f63137be9f535097c85e99d246c03e79a",
+  "data_residency": "cpu_memmap_with_optional_gpu_training_cache",
+  "training_storage": "cuda:0",
+  "shuffle_device": "cuda:0"
+}

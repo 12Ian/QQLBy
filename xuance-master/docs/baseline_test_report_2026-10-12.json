@@ -1,0 +1,103 @@
+{
+  "tested_at_utc": "2026-10-12T15:30:20.287168+00:00",
+  "branch": "feat-coverage-reaward",
+  "worktree": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master",
+  "python": "3.10.20",
+  "pytorch": "2.12.0.dev20260319+cu128",
+  "gpu": "NVIDIA GeForce RTX 5080",
+  "pytest": {
+    "passed": 27,
+    "result": "...........................                                              [100%]\n27 passed in 9.41s",
+    "includes_real_cpu_training_and_worker_promotion": true
+  },
+  "cuda_smoke": {
+    "name": "baseline_smoke_20261012_coverage_v2",
+    "environment_steps": 1024,
+    "parameter_updates": {
+      "actor": {
+        "parameter_tensors": 6,
+        "changed_tensors": 6,
+        "maximum_absolute_change": 0.0577925369143486
+      },
+      "critic": {
+        "parameter_tensors": 6,
+        "changed_tensors": 6,
+        "maximum_absolute_change": 0.31885719299316406
+      }
+    },
+    "scalar_metrics": {
+      "uav_0/loss_actor": {
+        "count": 496,
+        "first_step": 32,
+        "last_step": 1022,
+        "first": 0.28259003162384033,
+        "last": 5.437448501586914,
+        "all_finite": true
+      },
+      "uav_0/loss_critic": {
+        "count": 496,
+        "first_step": 32,
+        "last_step": 1022,
+        "first": 0.0485699400305748,
+        "last": 429.877685546875,
+        "all_finite": true
+      },
+      "uav_0/predictQ": {
+        "count": 496,
+        "first_step": 32,
+        "last_step": 1022,
+        "first": -0.11969572305679321,
+        "last": -6.646173000335693,
+        "all_finite": true
+      }
+    },
+    "summary": {
+      "reward_mode": "baseline",
+      "curriculum_level": 0,
+      "transitions": [],
+      "best_final_task": {
+        "episodes": 2,
+        "success_rate": 0.0,
+        "safe_success_rate": 0.0,
+        "collision_rate": 1.0,
+        "building_collision_rate": 1.0,
+        "boundary_collision_rate": 1.0,
+        "uav_collision_rate": 0.0,
+        "mean_episode_steps": 32.0,
+        "step": 1024,
+        "phase": "final_task",
+        "level": 4,
+        "mean_return": -311.7896645174866
+      },
+      "best_by_stage": {
+        "0": {
+          "episodes": 2,
+          "success_rate": 0.0,
+          "safe_success_rate": 0.0,
+          "collision_rate": 1.0,
+          "building_collision_rate": 0.5,
+          "boundary_collision_rate": 1.0,
+          "uav_collision_rate": 0.0,
+          "mean_episode_steps": 32.0,
+          "step": 1024,
+          "phase": "current",
+          "level": 0,
+          "mean_return": -201.95729441771329
+        }
+      },
+      "environment_steps": 1024,
+      "elapsed_seconds": 6.835
+    },
+    "models": [
+      "outputs/models/maddpg/baseline_smoke_20261012_coverage_v2/seed_1_2026_1012_232850/smoke_initial_model.pth",
+      "outputs/models/maddpg/baseline_smoke_20261012_coverage_v2/seed_1_2026_1012_232850/final_train_model.pth",
+      "outputs/results/maddpg/baseline_smoke_20261012_coverage_v2/best_model/best_model.pth"
+    ]
+  },
+  "git_diff_check": "passed",
+  "original_checkout": {
+    "branch": "feat-traj-prediction",
+    "status": "M xuance-master/examples/run_tensorboard.py"
+  },
+  "limitation": "Smoke tests validate execution and numerical finiteness; they do not establish convergence or pursuit performance."
+}

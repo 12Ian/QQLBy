@@ -1,0 +1,9 @@
+{
+  "integration_tests_passed": 17,
+  "archive_restoration_checks": 4,
+  "restored_source_files": 5018,
+  "historical_reference_files_unchanged": 1241,
+  "active_training_python_files_unchanged": 691,
+  "active_training_inputs_unchanged": 10,
+  "secret_scan_flags": 0
+}

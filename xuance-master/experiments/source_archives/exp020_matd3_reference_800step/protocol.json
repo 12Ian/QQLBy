@@ -1,0 +1,20 @@
+{
+  "created_at_utc": "2026-10-15T08:45:28.693294+00:00",
+  "smoke": false,
+  "methods": [
+    "matd3",
+    "matd3_hgat"
+  ],
+  "training_steps_per_method": 6000000,
+  "training_seed": 1,
+  "seed_base": 145001,
+  "episodes_per_level": 100,
+  "eval_workers": 8,
+  "eval_inference_device": "cpu",
+  "device": "cuda:0",
+  "min_free_gib": 2.0,
+  "wait_for_processes": [],
+  "source_manifest_sha256": "1030bb14a64fc920c4acb635e51f7140670124a1552e5c479a62e77f2daf6f3b",
+  "collision_protocol": "building/boundary terminate; inter-UAV ignored",
+  "initialization": "random for both methods; separate optimizers and replay"
+}

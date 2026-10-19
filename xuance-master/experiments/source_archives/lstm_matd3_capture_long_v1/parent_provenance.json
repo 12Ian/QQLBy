@@ -1,0 +1,6 @@
+{
+  "integration_run": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_integration_v1_20261019",
+  "baseline_head": "4ac54745a14dc1010a438ae8bd2033dbdf56b8dd",
+  "predictor": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_prediction_v2_5000_20261019/model/best.pt",
+  "predictor_sha256": "703aa6009a128d8ae23ee41922fcdd696f6cdaaf77fa3df1ab0ff17a798359a7"
+}

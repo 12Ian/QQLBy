@@ -1,0 +1,16 @@
+{
+  "sha256": "130bd61f4af4592b49749a17933856b1c6ad29c0869ca32f8f06207d28d13b60",
+  "bytes": 1090327,
+  "files": {
+    "outputs/reviews/curriculum_feasibility_v2/level2.json": "85c6b83e13a145b4ee3953a7798c6587d008d2828a214a6e9291a0db2757c892",
+    "outputs/reviews/curriculum_feasibility_v2/results.json": "f81a83ad0942c571fe1e45de0863554a08c8b37c0208dfcd39ce69c1fb27e6be",
+    "outputs/reviews/curriculum_feasibility_v2/level4.json": "81bcd4d88b64082cbd09ee3ae881f72989f744f0cdfa59c7f0ee6d9b1f6a5e99",
+    "outputs/reviews/curriculum_feasibility_v2/process.json": "fc091163da33187d60ce4c2b21cc2707547a7dbf32d7ec7b840b6fece975b802",
+    "outputs/reviews/curriculum_feasibility_v2/level3.json": "609e5746fa6eb442f4e516352a7e31394da3b53c259310267f7c2769b8c5eeba",
+    "outputs/reviews/curriculum_feasibility_v2/level5.json": "4cf0c6ce035eb45b93981c712146a68f378f74e7843873702ecbcc0c66383933",
+    "outputs/reviews/curriculum_feasibility_v2/level1.json": "a4b92db9c22e16292b24f339b0e47befb7521a42736567790dfadeca6ef0d883",
+    "docs/curriculum_feasibility_2026-10-14.png": "1521b2e03efbf9c182a2878d875544e0890e6f2c6f1e49edfb4fa9ff9c4673f9",
+    "docs/curriculum_feasibility_2026-10-14.json": "f81a83ad0942c571fe1e45de0863554a08c8b37c0208dfcd39ce69c1fb27e6be",
+    "docs/curriculum_feasibility_2026-10-14.md": "fef4d9daff2d870cb51a09bc26be6b53283f7beeb0fe9a07c7f2f1fa726570e0"
+  }
+}

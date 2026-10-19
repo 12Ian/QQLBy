@@ -1,0 +1,374 @@
+{
+  "experiments": [
+    {
+      "number": "001",
+      "critic_learning_rate": 0.001,
+      "seed": 1,
+      "evaluation_env_seed": 10001,
+      "environment_steps": 300000,
+      "learning_updates": 18686,
+      "elapsed_seconds": 689.081,
+      "process": {
+        "experiment": "001",
+        "supervisor_pid": 2549184,
+        "child_pid": 2549185,
+        "command": [
+          "/home/ryy/miniconda3/envs/rl_env/bin/python",
+          "-u",
+          "examples/run_baseline.py",
+          "--name",
+          "exp001",
+          "--config",
+          "experiments/baseline_exp001.yaml",
+          "--steps",
+          "300000",
+          "--parallels",
+          "16",
+          "--seed",
+          "1",
+          "--device",
+          "cuda:0",
+          "--eval-interval",
+          "50000",
+          "--test-episodes",
+          "100"
+        ],
+        "started_at": "2026-10-12T15:58:50.744544+00:00",
+        "status": "completed",
+        "exit_code": 0,
+        "finished_at": "2026-10-12T16:10:26.194057+00:00"
+      },
+      "training_episodes": 810,
+      "training_successes": 125,
+      "training_safe_successes": 34,
+      "first_training_success": {
+        "step": "752",
+        "env": "1",
+        "level": "0",
+        "building_count": "20",
+        "episode_steps": "47",
+        "success": "1",
+        "safe_success": "0",
+        "collision": "1",
+        "capture_type": "sustained",
+        "mean_return": "101.0441205687369",
+        "min_target_distance": "20.72772216796875",
+        "building_contact_seconds": "4.4",
+        "boundary_contact_seconds": "4.5",
+        "uav_contact_seconds": "0.0",
+        "r_distance": "-14.118850947852968",
+        "r_obstacle": "-2.8613710989290655",
+        "r_boundary": "-2.4756584",
+        "r_teammate": "0.0",
+        "r_collision": "-179.5",
+        "r_terminal": "300.0"
+      },
+      "final_current": {
+        "step": "300000",
+        "phase": "current",
+        "level": "0",
+        "episodes": "100",
+        "success_rate": "0.21",
+        "safe_success_rate": "0.13",
+        "collision_rate": "0.87",
+        "building_collision_rate": "0.67",
+        "boundary_collision_rate": "0.85",
+        "uav_collision_rate": "0.01",
+        "mean_episode_steps": "331.01",
+        "mean_return": "-1037.1733180249043"
+      },
+      "final_task": {
+        "step": "300000",
+        "phase": "final_task",
+        "level": "4",
+        "episodes": "100",
+        "success_rate": "0.0",
+        "safe_success_rate": "0.0",
+        "collision_rate": "1.0",
+        "building_collision_rate": "0.91",
+        "boundary_collision_rate": "1.0",
+        "uav_collision_rate": "0.22",
+        "mean_episode_steps": "400.0",
+        "mean_return": "-5562.584544918229"
+      },
+      "recent_training": {
+        "success": 0.22,
+        "safe_success": 0.08,
+        "collision": 0.92,
+        "mean_return": -648.643711683214,
+        "r_distance": -153.4414703861946,
+        "r_obstacle": -4.693324825360262,
+        "r_boundary": -26.5107819787,
+        "r_teammate": -0.003135060372861074,
+        "r_collision": -529.995,
+        "r_terminal": 66.0
+      },
+      "summary": {
+        "reward_mode": "baseline",
+        "curriculum_level": 0,
+        "transitions": [],
+        "best_final_task": {
+          "episodes": 100,
+          "success_rate": 0.01,
+          "safe_success_rate": 0.01,
+          "collision_rate": 0.99,
+          "building_collision_rate": 0.64,
+          "boundary_collision_rate": 0.99,
+          "uav_collision_rate": 0.96,
+          "mean_episode_steps": 396.22,
+          "step": 0,
+          "phase": "final_task",
+          "level": 4,
+          "mean_return": -13101.031211375184
+        },
+        "best_by_stage": {
+          "0": {
+            "episodes": 100,
+            "success_rate": 0.21,
+            "safe_success_rate": 0.13,
+            "collision_rate": 0.87,
+            "building_collision_rate": 0.67,
+            "boundary_collision_rate": 0.85,
+            "uav_collision_rate": 0.01,
+            "mean_episode_steps": 331.01,
+            "step": 300000,
+            "phase": "current",
+            "level": 0,
+            "mean_return": -1037.1733180249043
+          }
+        },
+        "environment_steps": 300000,
+        "elapsed_seconds": 689.081
+      },
+      "tensorboard": {
+        "uav_0/loss_actor": {
+          "count": 18686,
+          "minimum": -34.69337463378906,
+          "maximum": 11.15373420715332,
+          "last": -30.15904998779297,
+          "first_step": 1024,
+          "last_step": 299984,
+          "all_finite": true
+        },
+        "uav_0/loss_critic": {
+          "count": 18686,
+          "minimum": 83.07411193847656,
+          "maximum": 838.1739501953125,
+          "last": 246.92652893066406,
+          "first_step": 1024,
+          "last_step": 299984,
+          "all_finite": true
+        },
+        "uav_0/predictQ": {
+          "count": 18686,
+          "minimum": -16.24884605407715,
+          "maximum": 25.859851837158203,
+          "last": 23.49167251586914,
+          "first_step": 1024,
+          "last_step": 299984,
+          "all_finite": true
+        }
+      },
+      "checkpoints": {
+        "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/models/maddpg/baseline_exp001/seed_1_2026_1012_235853/final_train_model.pth": "01fc30bd83785f98cfdb3520e24f9077fda61221c4843bab5957b76d42a3c3f1",
+        "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/models/maddpg/baseline_exp001/seed_1_2026_1012_235853/latest_train_model.pth": "705b27a1fb6712304a7dd45189b4064af9ae0208c62145f25e12c5f888dd5977",
+        "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/results/maddpg/baseline_exp001/best_model/best_model.pth": "75a5a4258e9a7e750bd5e609c6bba7d6c846d8cb37a9ecac6b560f3ccd4289e2",
+        "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/results/maddpg/baseline_exp001/best_model/best_stage_0.pth": "2c7bcef0e8a42cc8b35c01e8bb1462b5209708f9123e2f05d57cea6e9d9127d4"
+      },
+      "final_policy_tensor_count": 24,
+      "final_policy_all_finite": true
+    },
+    {
+      "number": "002",
+      "critic_learning_rate": 0.0003,
+      "seed": 1,
+      "evaluation_env_seed": 10001,
+      "environment_steps": 300000,
+      "learning_updates": 18686,
+      "elapsed_seconds": 656.53,
+      "process": {
+        "experiment": "002",
+        "supervisor_pid": 2553867,
+        "child_pid": 2553868,
+        "command": [
+          "/home/ryy/miniconda3/envs/rl_env/bin/python",
+          "-u",
+          "examples/run_baseline.py",
+          "--name",
+          "exp002",
+          "--config",
+          "experiments/baseline_exp002.yaml",
+          "--steps",
+          "300000",
+          "--parallels",
+          "16",
+          "--seed",
+          "1",
+          "--device",
+          "cuda:0",
+          "--eval-interval",
+          "50000",
+          "--test-episodes",
+          "100"
+        ],
+        "started_at": "2026-10-12T16:11:39.733141+00:00",
+        "status": "completed",
+        "exit_code": 0,
+        "finished_at": "2026-10-12T16:22:42.603538+00:00"
+      },
+      "training_episodes": 953,
+      "training_successes": 348,
+      "training_safe_successes": 166,
+      "first_training_success": {
+        "step": "752",
+        "env": "1",
+        "level": "0",
+        "building_count": "20",
+        "episode_steps": "47",
+        "success": "1",
+        "safe_success": "0",
+        "collision": "1",
+        "capture_type": "sustained",
+        "mean_return": "101.0441205687369",
+        "min_target_distance": "20.72772216796875",
+        "building_contact_seconds": "4.4",
+        "boundary_contact_seconds": "4.5",
+        "uav_contact_seconds": "0.0",
+        "r_distance": "-14.118850947852968",
+        "r_obstacle": "-2.8613710989290655",
+        "r_boundary": "-2.4756584",
+        "r_teammate": "0.0",
+        "r_collision": "-179.5",
+        "r_terminal": "300.0"
+      },
+      "final_current": {
+        "step": "300000",
+        "phase": "current",
+        "level": "0",
+        "episodes": "100",
+        "success_rate": "0.38",
+        "safe_success_rate": "0.26",
+        "collision_rate": "0.53",
+        "building_collision_rate": "0.36",
+        "boundary_collision_rate": "0.28",
+        "uav_collision_rate": "0.0",
+        "mean_episode_steps": "308.51",
+        "mean_return": "-71.50045755907759"
+      },
+      "final_task": {
+        "step": "300000",
+        "phase": "final_task",
+        "level": "4",
+        "episodes": "100",
+        "success_rate": "0.0",
+        "safe_success_rate": "0.0",
+        "collision_rate": "1.0",
+        "building_collision_rate": "1.0",
+        "boundary_collision_rate": "0.98",
+        "uav_collision_rate": "0.0",
+        "mean_episode_steps": "400.0",
+        "mean_return": "-2963.0375141343156"
+      },
+      "recent_training": {
+        "success": 0.49,
+        "safe_success": 0.35,
+        "collision": 0.54,
+        "mean_return": -45.90633614440808,
+        "r_distance": -94.25234400902687,
+        "r_obstacle": -4.19730148808978,
+        "r_boundary": -1.46575416515728,
+        "r_teammate": -0.010936517418407113,
+        "r_collision": -92.98,
+        "r_terminal": 147.0
+      },
+      "summary": {
+        "reward_mode": "baseline",
+        "curriculum_level": 0,
+        "transitions": [],
+        "best_final_task": {
+          "episodes": 100,
+          "success_rate": 0.02,
+          "safe_success_rate": 0.01,
+          "collision_rate": 0.99,
+          "building_collision_rate": 0.99,
+          "boundary_collision_rate": 0.95,
+          "uav_collision_rate": 0.0,
+          "mean_episode_steps": 392.45,
+          "step": 200000,
+          "phase": "final_task",
+          "level": 4,
+          "mean_return": -3624.155548357592
+        },
+        "best_by_stage": {
+          "0": {
+            "episodes": 100,
+            "success_rate": 0.53,
+            "safe_success_rate": 0.32,
+            "collision_rate": 0.59,
+            "building_collision_rate": 0.53,
+            "boundary_collision_rate": 0.2,
+            "uav_collision_rate": 0.0,
+            "mean_episode_steps": 265.52,
+            "step": 250000,
+            "phase": "current",
+            "level": 0,
+            "mean_return": -1.7518390809098043
+          }
+        },
+        "environment_steps": 300000,
+        "elapsed_seconds": 656.53
+      },
+      "tensorboard": {
+        "uav_0/loss_actor": {
+          "count": 18686,
+          "minimum": -39.058265686035156,
+          "maximum": 15.926488876342773,
+          "last": -35.83990478515625,
+          "first_step": 1024,
+          "last_step": 299984,
+          "all_finite": true
+        },
+        "uav_0/loss_critic": {
+          "count": 18686,
+          "minimum": 110.24668884277344,
+          "maximum": 1089.5230712890625,
+          "last": 225.6263427734375,
+          "first_step": 1024,
+          "last_step": 299984,
+          "all_finite": true
+        },
+        "uav_0/predictQ": {
+          "count": 18686,
+          "minimum": -19.19167137145996,
+          "maximum": 36.40044403076172,
+          "last": 34.65641784667969,
+          "first_step": 1024,
+          "last_step": 299984,
+          "all_finite": true
+        }
+      },
+      "checkpoints": {
+        "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/models/maddpg/baseline_exp002/seed_1_2026_1013_001142/final_train_model.pth": "7bb50833d2fbd232d6a57a068afb43c7a2ccda9db19d9d41f2a6d5fe403502ca",
+        "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/models/maddpg/baseline_exp002/seed_1_2026_1013_001142/latest_train_model.pth": "92e37daf5309d33a26dc8cd14669f39bbca012c5286c71c814f291ca0c66b6db",
+        "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/results/maddpg/baseline_exp002/best_model/best_model.pth": "58055ff7bf4b0662b65000cb18854e18f37d2a290c764627fa4007f7872fa7ae",
+        "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/results/maddpg/baseline_exp002/best_model/best_stage_0.pth": "b52d16dd274c02aa265f53229dc87880f6196d43ed284280a184bda3bd2235d3"
+      },
+      "final_policy_tensor_count": 24,
+      "final_policy_all_finite": true
+    }
+  ],
+  "parameter_delta": {
+    "learning_rate_critic": [
+      0.001,
+      0.0003
+    ]
+  },
+  "selection_criterion": "Final current-stage safe success, then fewer collisions, success, return",
+  "selected_experiment": "002",
+  "selected_critic_learning_rate": 0.0003,
+  "limitations": [
+    "One training seed, 100 evaluation episodes per checkpoint",
+    "Finite loss/Q does not prove policy convergence",
+    "Selection is for the trained current stage, not final-task competence"
+  ]
+}
