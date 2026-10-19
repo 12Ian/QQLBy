@@ -1,0 +1,47 @@
+{
+  "passed": true,
+  "network_tests": 16,
+  "lstm_regression_tests": 17,
+  "smoke": {
+    "stage": "complete",
+    "smoke": true,
+    "seed": 1,
+    "training_steps": 4096,
+    "learner_updates": 240,
+    "elapsed_seconds": 35.43918538093567,
+    "predictor_frozen": true,
+    "models": {
+      "best": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/entity_attention_lstm_capture_v1_20261019/preflight/smoke/results/best_model/best_model.pth",
+      "final": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/entity_attention_lstm_capture_v1_20261019/preflight/smoke/models/entity_attention_lstm_seed_1/seed_1_2026_1019_141023/final_train_model.pth",
+      "initial": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/entity_attention_lstm_capture_v1_20261019/preflight/smoke/models/entity_attention_lstm_seed_1/seed_1_2026_1019_141023/initial_random_model.pth"
+    },
+    "cuda_peak_allocated_bytes": 162481664
+  },
+  "production_batch": {
+    "passed": true,
+    "batch_size": 512,
+    "hidden_sizes": [
+      512,
+      512
+    ],
+    "timed_updates": 10,
+    "seconds_per_learner_update": 0.016326371021568774,
+    "cuda_peak_allocated_bytes": 561073664,
+    "trainable_parameters": 1966981,
+    "last_metrics": {
+      "uav_0/learning_rate_critic": 0.00015,
+      "uav_0/loss_critic": 0.6520275473594666,
+      "uav_0/predictQ_A": -0.2568674683570862,
+      "uav_0/predictQ_B": -0.20247098803520203,
+      "uav_0/predictQ": -0.2573170065879822,
+      "uav_0/learning_rate_actor": 3e-05,
+      "uav_0/loss_actor": 0.2787044048309326,
+      "uav_0/q_policy": -0.2787044048309326
+    }
+  },
+  "paired_reference_initial_scenes": 4,
+  "reference_unchanged": true,
+  "policy_initialization": "random; historical comparator warm-started",
+  "episode_length": 600,
+  "training_seed": 1
+}

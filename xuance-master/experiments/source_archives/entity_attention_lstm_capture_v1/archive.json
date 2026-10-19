@@ -1,0 +1,18 @@
+{
+  "parent_archive": "lstm_matd3_capture_long_v1",
+  "runtime": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/entity_attention_lstm_capture_v1_20261019/code",
+  "overlay_files": [
+    "tools/run_entity_attention_capture.py",
+    "tools/check_entity_attention_preflight.py",
+    "tools/install_entity_attention.py",
+    "xuance/torch/agents/multi_agent_rl/matd3_agents.py",
+    "xuance/torch/policies/uav_entity_attention.py",
+    "xuance/torch/policies/__init__.py",
+    "xuance/torch/policies/uav_attention_matd3.py",
+    "xuance/environment/__init__.py",
+    "tests/test_uav_attention_matd3.py",
+    "tests/test_uav_entity_attention.py"
+  ],
+  "source_files": 698,
+  "scope": "Exact Python source overlay; checkpoints, raw data and logs remain on the server"
+}

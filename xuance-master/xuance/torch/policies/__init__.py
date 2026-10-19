@@ -122,3 +122,6 @@ __all__ = [
     "Gaussian_ISAC", "Gaussian_MASAC", "Gaussain_MAAC",
     "DreamerV2Policy", "DreamerV3Policy",
 ]
+
+from .uav_attention_matd3 import UAV_EntityAttention_MATD3_Policy
+REGISTRY_Policy["UAV_EntityAttention_MATD3_Policy"] = UAV_EntityAttention_MATD3_Policy

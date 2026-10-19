@@ -1,0 +1,43 @@
+{
+  "name": "entity_attention_lstm_capture_v1_20261019",
+  "episode_steps": 600,
+  "decision_dt": 0.5,
+  "training_level": 4,
+  "training_seeds": [
+    1
+  ],
+  "training_environment_steps": 6000000,
+  "initialization": "random entity Actor/twin Critics; same frozen pretrained LSTM; fresh replay/optimizers",
+  "comparison_limitation": "Reference used pretrained exp020 MATD3; initialization differs, not a pure architecture ablation",
+  "reference_job": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/jobs/lstm_seed_1",
+  "validation": {
+    "seed_base": 621000000,
+    "episodes": 100,
+    "interval": 200000,
+    "training_level_only": true
+  },
+  "test": {
+    "seed_base": 631000000,
+    "episodes_per_level": 200,
+    "best_levels": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "final_levels": [
+      4
+    ]
+  },
+  "jobs": [
+    {
+      "id": "attention_lstm_seed_1",
+      "seed": 1,
+      "mode": "lstm",
+      "config": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/entity_attention_lstm_capture_v1_20261019/configs/attention_lstm_seed_1.yaml",
+      "directory": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/entity_attention_lstm_capture_v1_20261019/jobs/attention_lstm_seed_1",
+      "environment_steps": 6000000
+    }
+  ]
+}

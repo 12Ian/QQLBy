@@ -1,0 +1,50 @@
+{
+  "baseline_init_checkpoint": {
+    "reference": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/exp020_021_current_baseline_v1/code/outputs/models/matd3/baseline_exp020_matd3/seed_1_2026_1015_164542/final_train_model.pth",
+    "new": null
+  },
+  "capture_config_path": {
+    "reference": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/configs/lstm_seed_1.yaml",
+    "new": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/entity_attention_lstm_capture_v1_20261019/configs/attention_lstm_seed_1.yaml"
+  },
+  "capture_job_id": {
+    "reference": "lstm_seed_1",
+    "new": "attention_lstm_seed_1"
+  },
+  "entity_attention_dim": {
+    "reference": null,
+    "new": 128
+  },
+  "entity_attention_heads": {
+    "reference": null,
+    "new": 4
+  },
+  "env_id": {
+    "reference": "capture_long_lstm_seed_1",
+    "new": "entity_attention_lstm_seed_1"
+  },
+  "log_dir": {
+    "reference": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/jobs/lstm_seed_1/logs",
+    "new": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/entity_attention_lstm_capture_v1_20261019/jobs/attention_lstm_seed_1/logs"
+  },
+  "model_dir": {
+    "reference": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/jobs/lstm_seed_1/models",
+    "new": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/entity_attention_lstm_capture_v1_20261019/jobs/attention_lstm_seed_1/models"
+  },
+  "policy": {
+    "reference": "MATD3_Policy",
+    "new": "UAV_EntityAttention_MATD3_Policy"
+  },
+  "result_dir": {
+    "reference": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/jobs/lstm_seed_1/results",
+    "new": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/entity_attention_lstm_capture_v1_20261019/jobs/attention_lstm_seed_1/results"
+  },
+  "uav_prediction_diagnostic_dir": {
+    "reference": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/jobs/lstm_seed_1/diagnostics",
+    "new": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/entity_attention_lstm_capture_v1_20261019/jobs/attention_lstm_seed_1/diagnostics"
+  },
+  "uav_prediction_migrate_checkpoint": {
+    "reference": true,
+    "new": false
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/entity_attention_lstm_capture_v1_20261019/configs/attention_lstm_seed_1.yaml": "4452b2974b99a62e76c603da4fe45a78a2793eff0fdfa35cd791d857f21deb85",
+  "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/entity_attention_lstm_capture_v1_20261019/protocol.json": "383bc9a674fd26106af084b97c3a1d2ecbd5269d14d3031afdbebb42809e5fda",
+  "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_prediction_v2_5000_20261019/model/best.pt": "703aa6009a128d8ae23ee41922fcdd696f6cdaaf77fa3df1ab0ff17a798359a7"
+}

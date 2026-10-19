@@ -77,7 +77,7 @@ def make_envs(config: Namespace):
         raise ValueError("Unknown UAV prediction mode")
     if prediction_mode != "none":
         if (config.env_name != "uav_pursuit_coverage_3d" or
-                getattr(config, "policy", None) != "MATD3_Policy" or
+                getattr(config, "policy", None) not in ("MATD3_Policy", "UAV_EntityAttention_MATD3_Policy") or
                 getattr(config, "use_rnn", False) or distributed_training or
                 config.vectorize not in ("DummyVecMultiAgentEnv", "SubprocVecMultiAgentEnv") or
                 getattr(config, "use_target_prediction_obs", True) or

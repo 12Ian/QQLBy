@@ -1,0 +1,14 @@
+{
+  "reference": "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019",
+  "reference_frozen_hashes": {
+    "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/frozen_source_sha256.json": "cc2b01c17ccb17b48166d0778d5664b5ead173bf7d25b8b398a1265025b10df1",
+    "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/frozen_inputs_sha256.json": "ac994e59bfe793cc442519cfa8894f99454af306ad62f27967cc59f249463468",
+    "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/code/xuance/torch/agents/multi_agent_rl/matd3_agents.py": "ba23c220d7f8e1ff33c1cee492220d4cf978c6dcdaf2f82beb8611c0415e47d2",
+    "/home/ryy/UAV_Mine_baseline_coverage/xuance-master/outputs/experiments/lstm_matd3_capture_long_v1_20261019/code/xuance/torch/policies/__init__.py": "f6f32b7e790c7eb576bc2b49d97df84a61f33344df6f97ba6c8cb130677e3803"
+  },
+  "repository_commit": "8ed57eef96152bfa283ba8b74206c009420354ae",
+  "created_local_time": "2026-10-19T14:08:36.227441+08:00",
+  "source_files": 697,
+  "predictor_sha256": "703aa6009a128d8ae23ee41922fcdd696f6cdaaf77fa3df1ab0ff17a798359a7",
+  "reference_unchanged": true
+}
